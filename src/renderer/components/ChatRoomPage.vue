@@ -13,28 +13,36 @@
 import db from '../datastore'
 let canvas
 let ctx
+let fps
+var speed = 1
+var x = 225
+var y = 450
+var width = 600
+var height = 600
+let frameCount = 0
+let start = new Date()
 export default {
   mounted () {
     // loading chat background
     this.initCanvas()
     // loading danmuku
-    var danmu = {   userid: '1999280'  // 用户id
-                  , nickname: 'SayariMio' // 用户昵称
-                  , avatar: ''  // 头像地址
-                  , live_level: '21'  // 直播等级
-                  , xz_level: '1' // 勋章等级
-                  , danmu: '测试' // 弹幕
-                  , time: '1600000000' // 发送时间
+    var danmu = {userid: '1999280', // 用户id
+      nickname: 'SayariMio', // 用户昵称
+      avatar: '', // 头像地址
+      live_level: '21', // 直播等级
+      xz_level: '1', // 勋章等级
+      danmu: '测试', // 弹幕
+      time: '1600000000' // 发送时间
     }
     db.insert(danmu, function (err, ret) {
       console.info(err)
     })
     console.log(db)
-    
     // 当调整窗口大小时重绘canvas
     window.onresize = () => {
       this.initCanvas()
     }
+    window.requestAnimationFrame(this.printDanmu)
   },
   methods: {
     initCanvas () {
@@ -117,6 +125,53 @@ export default {
     drawImgx () {
       const img = document.getElementById('img')
       ctx.drawImage(img, 10, 10)
+    },
+    printDanmu () {
+      if (frameCount % 5 === 0 && frameCount !== 0) {
+        let now = new Date()
+        let avg = (now - start) / 5
+        fps = 1000 / avg
+        if (fps > 10) {
+          console.error(fps)
+        }
+        start = new Date()
+      }
+      frameCount++
+      // this.drawDanmu()
+      console.log('redraw')
+      y -= speed
+
+      if (y < 150) {
+        y = 450
+      }
+      this.drawAll(x, y)
+      window.requestAnimationFrame(this.printDanmu)
+    },
+    drawAll (x, y) {
+      // draw a danmu canvas and make it move
+      ctx.clearRect(0, 0, width, height)
+      // draw backgroud
+      this.drawChatBackground()
+      this.drawFPS()
+      this.drawDanmu()
+    },
+    drawDanmu () {
+      // get danmu from nedb
+      const danmu = '测试'
+      ctx.moveTo(x, y)
+      ctx.fillStyle = 'purple'
+      ctx.font = '20px "微软雅黑"'
+      ctx.textBaseline = 'bottom'
+      ctx.textAlign = 'center'
+      ctx.fillText(danmu, x, y)
+    },
+    drawFPS () {
+      ctx.moveTo(50, 50)
+      ctx.fillStyle = 'orange'
+      ctx.font = '16px "微软雅黑"'
+      ctx.textBaseline = 'bottom'
+      ctx.textAlign = 'center'
+      ctx.fillText('fps:' + Number(fps).toFixed(2), 50, 50)
     }
   }
 }

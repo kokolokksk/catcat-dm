@@ -24,7 +24,7 @@ function createWindow () {
     height: 500,
     useContentSize: true,
     width: 500,
-    frame: true,
+    frame: false,
     transparent: true
   })
 
