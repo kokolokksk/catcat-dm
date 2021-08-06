@@ -13,6 +13,7 @@
 import db from '../datastore'
 let canvas
 let ctx
+let dList
 let fps
 var speed = 1
 var x = 225
@@ -32,7 +33,8 @@ export default {
       live_level: '21', // 直播等级
       xz_level: '1', // 勋章等级
       danmu: '测试', // 弹幕
-      time: '1600000000' // 发送时间
+      time: '1600000000', // 发送时间
+      use_state: 0 // 被使用状态
     }
     db.insert(danmu, function (err, ret) {
       console.info(err)
@@ -61,7 +63,7 @@ export default {
     drawChatBackground () {
       ctx.lineWidth = 2
       ctx.strokeStyle = 'black'
-      ctx.fillStyle = 'rgba(252,157,157,0.3)'
+      ctx.fillStyle = 'rgba(252,157,157,0.5)'
 
       ctx.beginPath()
       ctx.moveTo(158, 202)
@@ -157,13 +159,19 @@ export default {
     },
     drawDanmu () {
       // get danmu from nedb
-      const danmu = '测试'
-      ctx.moveTo(x, y)
-      ctx.fillStyle = 'purple'
-      ctx.font = '20px "微软雅黑"'
-      ctx.textBaseline = 'bottom'
-      ctx.textAlign = 'center'
-      ctx.fillText(danmu, x, y)
+      this.getDanmu()
+      console.info(dList)
+      let i = 0
+      for (let key in dList) {
+        console.info(key)
+        ctx.moveTo(x, y + i * 5)
+        ctx.fillStyle = 'purple'
+        ctx.font = '20px "微软雅黑"'
+        ctx.textBaseline = 'bottom'
+        ctx.textAlign = 'center'
+        ctx.fillText(dList[key], x, y + i * 5)
+        i++
+      }
     },
     drawFPS () {
       ctx.moveTo(50, 50)
@@ -172,6 +180,27 @@ export default {
       ctx.textBaseline = 'bottom'
       ctx.textAlign = 'center'
       ctx.fillText('fps:' + Number(fps).toFixed(2), 50, 50)
+    },
+    getDanmu () {
+      dList = null
+      db.find({
+        use_state: 0 }, function (err, docs) {
+        console.info(docs)
+        console.error(err)
+        dList = docs
+        let i = 0
+        for (let key in dList) {
+          console.info(key)
+          ctx.moveTo(x, y + i * 5)
+          ctx.fillStyle = 'purple'
+          ctx.font = '20px "微软雅黑"'
+          ctx.textBaseline = 'bottom'
+          ctx.textAlign = 'center'
+          ctx.fillText(dList[key], x, y + i * 5)
+          i++
+        }
+      })
+      return dList
     }
   }
 }
@@ -184,6 +213,7 @@ export default {
 #canvas {
   width: 100vw;
   height: 100vh;
+  -webkit-app-region: drag; /** 允许拖动透明窗口中的canvas区域 */
 }
  
 </style>
