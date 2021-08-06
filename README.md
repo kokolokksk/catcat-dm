@@ -1,5 +1,24 @@
 # muamuamua
 
+> muamuamua!
+
+#### TODO
+- [ ] 显示一条文字
+- [ ] 动起来
+- [ ] 对接直播间
+- [ ] 弹幕样式
+- [ ] 背景样式 
+- [ ] 自定义
+
+
+
+
+
+
+
+
+
+
 > An electron-vue project
 
 #### Build Setup
