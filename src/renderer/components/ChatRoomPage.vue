@@ -15,9 +15,9 @@ let canvas
 let ctx
 let dList
 let fps
-var speed = 1
+var speed = 0.5
 var x = 225
-var y = 450
+var y = 425
 var width = 600
 var height = 600
 let frameCount = 0
@@ -146,10 +146,10 @@ export default {
       if (y < 150) {
         y = 450
       }
-      this.drawAll(x, y)
+      this.getDanmu()
       window.requestAnimationFrame(this.printDanmu)
     },
-    drawAll (x, y) {
+    drawAll () {
       // draw a danmu canvas and make it move
       ctx.clearRect(0, 0, width, height)
       // draw backgroud
@@ -159,17 +159,17 @@ export default {
     },
     drawDanmu () {
       // get danmu from nedb
-      this.getDanmu()
-      console.info(dList)
+      // this.getDanmu()
+      // console.info(dList)
       let i = 0
       for (let key in dList) {
         console.info(key)
-        ctx.moveTo(x, y + i * 5)
+        ctx.moveTo(x, y + i * 25)
         ctx.fillStyle = 'purple'
         ctx.font = '20px "微软雅黑"'
         ctx.textBaseline = 'bottom'
         ctx.textAlign = 'center'
-        ctx.fillText(dList[key], x, y + i * 5)
+        ctx.fillText(dList[key].danmu, x, y + i * 25)
         i++
       }
     },
@@ -183,24 +183,16 @@ export default {
     },
     getDanmu () {
       dList = null
+      console.info(dList)
+      let _self = this
       db.find({
         use_state: 0 }, function (err, docs) {
+        // callback(_self.drawAll())
+        dList = docs
+        _self.drawAll()
         console.info(docs)
         console.error(err)
-        dList = docs
-        let i = 0
-        for (let key in dList) {
-          console.info(key)
-          ctx.moveTo(x, y + i * 5)
-          ctx.fillStyle = 'purple'
-          ctx.font = '20px "微软雅黑"'
-          ctx.textBaseline = 'bottom'
-          ctx.textAlign = 'center'
-          ctx.fillText(dList[key], x, y + i * 5)
-          i++
-        }
       })
-      return dList
     }
   }
 }
