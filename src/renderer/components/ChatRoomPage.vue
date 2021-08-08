@@ -11,6 +11,7 @@
 
 <script>
 import db from '../datastore'
+const { KeepLiveWS } = require('bilibili-live-ws')
 let canvas
 let ctx
 let dList
@@ -39,6 +40,7 @@ export default {
     db.insert(danmu, function (err, ret) {
       console.info(err)
     })
+    this.connectLive()
     console.log(db)
     // 当调整窗口大小时重绘canvas
     window.onresize = () => {
@@ -50,7 +52,7 @@ export default {
     initCanvas () {
       console.log('init canvas')
       canvas = document.getElementById('canvas')
-      console.log(canvas)
+      // console.log(canvas)
       ctx = canvas.getContext('2d')
       let winW = window.innerWidth
       let winH = window.innerHeight
@@ -59,6 +61,32 @@ export default {
       this.drawChatBackground()
       // this.drawWord()
       // this.drawImgx()
+    },
+    // FIXME
+    // bilibli-live-ws buffer.js 中使用了flapMap 这里报不存在函数 修改成 for循环 不知道是否一致
+    // packs.forEach(pack => {
+    //    if (pack.protocol === 2) {
+    //        pack == pack.data
+    //    }
+    // });
+    // return packs;
+    // return packs.flatMap(pack => {
+    //     if (pack.protocol === 2) {
+    //         return pack.data;
+    //     }
+    //     return pack;
+    // });
+    connectLive () {
+      let roomid = 2808861
+      const live = new KeepLiveWS(roomid)
+      live.on('open', () => console.log('Connection is established'))
+      live.on('live', () => {
+        live.on('heartbeat', console.log)
+        live.on('msg', (data) => {
+          console.info(data)
+        })
+      // 74185
+      })
     },
     drawChatBackground () {
       ctx.lineWidth = 2
@@ -111,38 +139,20 @@ export default {
       // ctx.stroke()
       // ctx.fill()
     },
-    drawWord () {
-      // 绘制字体
-      ctx.font = '20px "微软雅黑"'
-      ctx.fillStyle = 'red'
-      ctx.textBaseline = 'top'
-      ctx.fillText('Top-g', 100, 300)
-      ctx.textBaseline = 'middle'
-      ctx.fillText('middle-g', 200, 300)
-      ctx.textBaseline = 'bottom'
-      ctx.fillText('bottom-g', 490, 300)
-      ctx.textBaseline = 'Alphabetic'
-      ctx.fillText('Alphabetic-g', 700, 300)
-    },
-    drawImgx () {
-      const img = document.getElementById('img')
-      ctx.drawImage(img, 10, 10)
-    },
     printDanmu () {
       if (frameCount % 5 === 0 && frameCount !== 0) {
         let now = new Date()
         let avg = (now - start) / 5
         fps = 1000 / avg
-        if (fps > 10) {
+        if (fps > 10 && frameCount % 1444 === 0) {
           console.error(fps)
         }
         start = new Date()
       }
       frameCount++
       // this.drawDanmu()
-      console.log('redraw')
+      // console.log('redraw')
       y -= speed
-
       if (y < 150) {
         y = 450
       }
@@ -163,7 +173,7 @@ export default {
       // console.info(dList)
       let i = 0
       for (let key in dList) {
-        console.info(key)
+        // console.info(key)
         ctx.moveTo(x, y + i * 25)
         ctx.fillStyle = 'purple'
         ctx.font = '20px "微软雅黑"'
@@ -183,15 +193,19 @@ export default {
     },
     getDanmu () {
       dList = null
-      console.info(dList)
+      // console.info(dList)
       let _self = this
       db.find({
         use_state: 0 }, function (err, docs) {
         // callback(_self.drawAll())
         dList = docs
         _self.drawAll()
-        console.info(docs)
-        console.error(err)
+        if (docs === null) {
+          console.info(docs)
+        }
+        if (err !== null) {
+          console.error(err)
+        }
       })
     }
   }
