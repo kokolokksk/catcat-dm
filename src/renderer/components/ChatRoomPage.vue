@@ -1,9 +1,9 @@
 <template>
     <div>
     <canvas id ='canvas'>
-      ?
+      
     </canvas>
-    <img id = 'img' src="~@/assets/logo.png" />
+    <img id = 'img' src="~@/assets/bg/s-cut.png" />
     </div>
 
        
@@ -21,7 +21,7 @@ var speed = 0.5
 var x = 225
 var y = 450
 var width = 600
-var height = 600
+var height = 680
 let frameCount = 0
 let start = new Date()
 // define animation state is on
@@ -62,6 +62,17 @@ export default {
       this.drawChatBackground()
       // this.drawWord()
       // this.drawImgx()
+    },
+    drawImage () {
+      const img = document.getElementById('img')
+      // let rectCenterPoint = { x: 241, y: 241 }
+      ctx.save()
+      ctx.globalAlpha = 0.5
+      ctx.drawImage(img, 0, 0)
+      ctx.restore()
+      //  ctx.translate(rectCenterPoint.x, rectCenterPoint.y)
+      // ctx.rotate(2 * Math.PI / 180)
+      // ctx.translate(-rectCenterPoint.x, -rectCenterPoint.y)
     },
     // FIXME
     // bilibli-live-ws buffer.js 中使用了flapMap 这里报不存在函数 修改成 for循环 不知道是否一致
@@ -127,29 +138,36 @@ export default {
     drawChatBackground () {
       ctx.lineWidth = 2
       ctx.strokeStyle = 'black'
-      ctx.fillStyle = 'rgba(252,157,157,0.5)'
+      ctx.fillStyle = 'rgba(1,1,1,0.5)'
 
-      ctx.beginPath()
-      ctx.moveTo(158, 202)
-      ctx.bezierCurveTo(150, 100, 350, 100, 321, 249)
-      ctx.moveTo(321, 249)
-      ctx.bezierCurveTo(499, 217, 459, 485, 294, 390)
-      ctx.moveTo(294, 390)
-      ctx.bezierCurveTo(479, 496, 95, 488, 128, 361)
-      ctx.moveTo(128, 361)
-      ctx.bezierCurveTo(108, 498, -2, 448, 69, 184)
-      ctx.moveTo(69, 184)
-      ctx.bezierCurveTo(29, 71, 170, 33, 158, 202)
+      // ctx.beginPath()
+      // ctx.moveTo(158, 202)
+      // ctx.bezierCurveTo(150, 100, 350, 100, 321, 249)
+      // ctx.moveTo(321, 249)
+      // ctx.bezierCurveTo(499, 217, 459, 485, 294, 390)
+      // ctx.moveTo(294, 390)
+      // ctx.bezierCurveTo(479, 496, 95, 488, 128, 361)
+      // ctx.moveTo(128, 361)
+      // ctx.bezierCurveTo(108, 498, -2, 448, 69, 184)
+      // ctx.moveTo(69, 184)
+      // ctx.bezierCurveTo(29, 71, 170, 33, 158, 202)
+      // // ctx.fill()
+      // ctx.closePath()
+      // ctx.moveTo(158, 202)
+      // ctx.lineTo(321, 249)
+      // ctx.lineTo(294, 390)
+      // ctx.lineTo(128, 361)
+      // ctx.lineTo(69, 184)
+      // ctx.lineTo(158, 202)
+      // ctx.closePath()
       // ctx.fill()
-      ctx.closePath()
-      ctx.moveTo(158, 202)
-      ctx.lineTo(321, 249)
-      ctx.lineTo(294, 390)
-      ctx.lineTo(128, 361)
-      ctx.lineTo(69, 184)
-      ctx.lineTo(158, 202)
-      ctx.closePath()
+      ctx.beginPath()
+      ctx.rect(0, 0, 482, 680)
       ctx.fill()
+      ctx.lineWidth = '2'
+      ctx.strokeStyle = 'rgba(200,250,150,1)'
+      ctx.stroke()
+      this.drawImage()
     },
     printDanmu () {
       if (frameCount % 5 === 0 && frameCount !== 0) {
@@ -176,7 +194,7 @@ export default {
       ctx.clearRect(0, 0, width, height)
       // draw backgroud
       this.drawChatBackground()
-      this.drawFPS()
+      // this.drawFPS()
       this.drawDanmu()
     },
     drawDanmu () {
@@ -198,11 +216,11 @@ export default {
           let i = 0
           for (let key in visibleDmList) {
             ctx.moveTo(x, y - i * 25)
-            ctx.fillStyle = 'purple'
+            ctx.fillStyle = 'rgba(220,220,200,1)'
             ctx.font = '20px "微软雅黑"'
             ctx.textBaseline = 'bottom'
             ctx.textAlign = 'center'
-            ctx.fillText(visibleDmList[key].danmu, x, y - i * 25)
+            ctx.fillText(visibleDmList[key].nickname + ':' + visibleDmList[key].danmu, x, y - i * 25)
             i++
           }
           upState = false
@@ -217,7 +235,7 @@ export default {
         } else {
           for (let key in visibleDmList) {
             ctx.moveTo(x, y - i * 25)
-            ctx.fillStyle = 'purple'
+            ctx.fillStyle = 'rgba(220,220,200,1)'
             ctx.font = '20px "微软雅黑"'
             ctx.textBaseline = 'bottom'
             ctx.textAlign = 'center'
