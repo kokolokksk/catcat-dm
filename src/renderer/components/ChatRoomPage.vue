@@ -11,37 +11,38 @@
 
 <script>
 import db from '../datastore'
+import g from '../utils/globel'
 const { KeepLiveWS } = require('bilibili-live-ws')
 let canvas
 let ctx
-let dList
+// let dList
 let fps
 var speed = 0.5
 var x = 225
-var y = 425
+var y = 450
 var width = 600
 var height = 600
 let frameCount = 0
 let start = new Date()
+// define animation state is on
+let upState = false
+// define visible dm list
+let visibleDmList = []
+// define invisible dm list
+let invisibleDmList = []
+// define dm list
+// let dmList = []
 export default {
   mounted () {
     // loading chat background
     this.initCanvas()
-    // loading danmuku
-    var danmu = {userid: '1999280', // 用户id
-      nickname: 'SayariMio', // 用户昵称
-      avatar: '', // 头像地址
-      live_level: '21', // 直播等级
-      xz_level: '1', // 勋章等级
-      danmu: '测试', // 弹幕
-      time: '1600000000', // 发送时间
-      use_state: 0 // 被使用状态
-    }
-    db.insert(danmu, function (err, ret) {
-      console.info(err)
-    })
     this.connectLive()
-    console.log(db)
+    db.find({}, function (err, docs) {
+      if (err !== null) {
+        console.info(err)
+      }
+      console.info(docs)
+    })
     // 当调整窗口大小时重绘canvas
     window.onresize = () => {
       this.initCanvas()
@@ -77,13 +78,48 @@ export default {
     //     return pack;
     // });
     connectLive () {
-      let roomid = 2808861
-      const live = new KeepLiveWS(roomid)
-      live.on('open', () => console.log('Connection is established'))
+      // let roomid = 2808861
+      const live = new KeepLiveWS(g.roomid)
+      live.on('open', () => console.log('连接已建立 · · ·'))
       live.on('live', () => {
-        live.on('heartbeat', console.log)
+        live.on('heartbeat', (online) => {
+          // console.log(online)
+          g.online = online
+        })
         live.on('msg', (data) => {
           console.info(data)
+          // first only dm msg
+          if (data instanceof Array) {
+            console.info('is array')
+            if (data[0].type === 'message') {
+              if (data[0].data.cmd === 'DANMU_MSG') {
+                let danmuStore = {userid: '', // user id
+                  nickname: '', // user nickname
+                  avatar: '', // avatar address
+                  live_level: '', // live level
+                  xz_level: '', // xz level
+                  danmu: '', // dm
+                  time: 0, // send time
+                  use_state: 0 // use state
+                }
+                let info = data[0].data.info
+                const danmu = info[1]
+                const userInfo = info[2]
+                // add danmu to nedb
+                // let danmuInfo = g.danmu
+                danmuStore.danmu = danmu
+                danmuStore.userid = userInfo[0]
+                danmuStore.nickname = userInfo[1]
+                danmuStore.time = (info[9].ts === null || info[9].ts === undefined) ? info[0][4] : info[9].ts
+                // do repeat check
+                db.insert(danmuStore, function (err, ret) {
+                  if (err !== null) {
+                    console.info(err)
+                  }
+                })
+              }
+            }
+          }
         })
       // 74185
       })
@@ -114,30 +150,6 @@ export default {
       ctx.lineTo(158, 202)
       ctx.closePath()
       ctx.fill()
-      // ctx.stroke()
-      // // 花瓣右上
-      // ctx.beginPath()
-      // ctx.arc(550, 200, 50, 0, 2 * Math.PI)
-      // ctx.stroke()
-      // ctx.fill()
-
-      // // 花瓣右下
-      // ctx.beginPath()
-      // ctx.arc(550, 300, 50, 0, 2 * Math.PI)
-      // ctx.stroke()
-      // ctx.fill()
-
-      // // 花瓣左上
-      // ctx.beginPath()
-      // ctx.arc(450, 200, 50, 0, 2 * Math.PI, true)
-      // ctx.stroke()
-      // ctx.fill()
-
-      // // 花瓣左下
-      // ctx.beginPath()
-      // ctx.arc(450, 300, 50, 0, 2 * Math.PI)
-      // ctx.stroke()
-      // ctx.fill()
     },
     printDanmu () {
       if (frameCount % 5 === 0 && frameCount !== 0) {
@@ -152,10 +164,10 @@ export default {
       frameCount++
       // this.drawDanmu()
       // console.log('redraw')
-      y -= speed
-      if (y < 150) {
-        y = 450
-      }
+      // y -= speed
+      // if (y < 150) {
+      //   y = 450
+      // }
       this.getDanmu()
       window.requestAnimationFrame(this.printDanmu)
     },
@@ -168,19 +180,51 @@ export default {
       this.drawDanmu()
     },
     drawDanmu () {
-      // get danmu from nedb
-      // this.getDanmu()
-      // console.info(dList)
-      let i = 0
-      for (let key in dList) {
-        // console.info(key)
-        ctx.moveTo(x, y + i * 25)
-        ctx.fillStyle = 'purple'
-        ctx.font = '20px "微软雅黑"'
-        ctx.textBaseline = 'bottom'
-        ctx.textAlign = 'center'
-        ctx.fillText(dList[key].danmu, x, y + i * 25)
-        i++
+      // if animation state is on wait is
+      // false means last invisibleDmList is empty
+      if (!upState) {
+        if (invisibleDmList.length !== 0) {
+          // start line 225 425
+          console.info('animation stop ,invisible list:')
+          console.info(invisibleDmList)
+          let dm = invisibleDmList.pop()
+          visibleDmList.push(dm)
+          visibleDmList.sort(function (a, b) {
+            return (a.time - b.time)
+          })
+          upState = true
+        } else {
+          // draw visibleDmList
+          let i = 0
+          for (let key in visibleDmList) {
+            ctx.moveTo(x, y - i * 25)
+            ctx.fillStyle = 'purple'
+            ctx.font = '20px "微软雅黑"'
+            ctx.textBaseline = 'bottom'
+            ctx.textAlign = 'center'
+            ctx.fillText(visibleDmList[key].danmu, x, y - i * 25)
+            i++
+          }
+          upState = false
+        }
+      } else {
+        // do animation
+        let i = 0
+        y -= speed
+        if (y <= 425) {
+          upState = false
+          y = 450
+        } else {
+          for (let key in visibleDmList) {
+            ctx.moveTo(x, y - i * 25)
+            ctx.fillStyle = 'purple'
+            ctx.font = '20px "微软雅黑"'
+            ctx.textBaseline = 'bottom'
+            ctx.textAlign = 'center'
+            ctx.fillText(visibleDmList[key].danmu, x, y - i * 25)
+            i++
+          }
+        }
       }
     },
     drawFPS () {
@@ -192,21 +236,50 @@ export default {
       ctx.fillText('fps:' + Number(fps).toFixed(2), 50, 50)
     },
     getDanmu () {
-      dList = null
+      // dList = null
       // console.info(dList)
       let _self = this
-      db.find({
-        use_state: 0 }, function (err, docs) {
-        // callback(_self.drawAll())
-        dList = docs
-        _self.drawAll()
-        if (docs === null) {
-          console.info(docs)
-        }
-        if (err !== null) {
-          console.error(err)
-        }
-      })
+      if (!upState) {
+        db.find({}).sort({ time: -1 }).limit(10).exec(function (err, docs) {
+          // callback(_self.drawAll())
+          // dList = docs
+          let newDmList = []
+          // dmList = visibleDmList.concat(invisibleDmList)
+          if (!upState) {
+            docs.forEach(doc => {
+              let exist = false
+              visibleDmList.forEach(d => {
+                if (d._id === doc._id) {
+                  exist = true
+                }
+              })
+              invisibleDmList.forEach(d => {
+                if (d._id === doc._id) {
+                  exist = true
+                }
+              })
+              if (!exist) {
+                newDmList.push(doc)
+                if (invisibleDmList.length === 0) {
+                  invisibleDmList.push(doc)
+                }
+              }
+            })
+            _self.drawAll()
+            // if (newDmList.length !== 0) {
+            //   _self.drawAll()
+            // }
+          }
+          if (docs === null) {
+            console.info(docs)
+          }
+          if (err !== null) {
+            console.error(err)
+          }
+        })
+      } else {
+        this.drawAll()
+      }
     }
   }
 }
