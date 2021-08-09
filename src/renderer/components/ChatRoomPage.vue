@@ -190,7 +190,7 @@ export default {
           let dm = invisibleDmList.pop()
           visibleDmList.push(dm)
           visibleDmList.sort(function (a, b) {
-            return (a.time - b.time)
+            return (b.time - a.time)
           })
           upState = true
         } else {
