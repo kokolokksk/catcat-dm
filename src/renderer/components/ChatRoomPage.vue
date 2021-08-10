@@ -2,7 +2,17 @@
     <div >
     <div style="position:fixed;top:0px;height:100px;width:479px" class="top-bg-color">
       <div style="position:fixed;right:10px;user-select: none;-webkit-app-region: no-drag; ">
-        <i @click="triggerTopLevel" class="el-icon-news top-style" style="user-select: none;-webkit-app-region: no-drag;font-size:20 "/>
+         
+        <el-tooltip :content="'未置顶'" placement="top">
+          <el-switch
+            @click="triggerTopLevel"
+            v-model="value"
+            active-color="#fffef9"
+            inactive-color="#77787b"
+            active-value="已置顶"
+            inactive-value="未置顶">
+          </el-switch>
+        </el-tooltip>
       </div>
       <div style="position:fixed;right:10px;top:30px;user-select: none;-webkit-app-region: no-drag; ">
         <i @click="openSettingWindow" class="el-icon-setting top-style" style="user-select: none;-webkit-app-region: no-drag;font-size:20 "/>
@@ -42,6 +52,11 @@ let invisibleDmList = []
 // define dm list
 // let dmList = []
 export default {
+  data () {
+    return {
+      value: '未置顶'
+    }
+  },
   mounted () {
     // this.$electronremote.getCurrentWindow().setAlwaysOnTop(true)
     // loading chat background
