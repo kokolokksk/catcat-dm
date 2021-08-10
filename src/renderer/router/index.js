@@ -11,6 +11,11 @@ export default new Router({
       component: require('@/components/ChatRoomPage').default
     },
     {
+      path: '/settingWindow',
+      name: 'settingWindow',
+      component: require('@/components/SettingWindowPage').default
+    },
+    {
       path: '*',
       redirect: '/'
     }

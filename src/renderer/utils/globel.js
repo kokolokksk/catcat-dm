@@ -7,7 +7,8 @@ export default {
     xz_level: '', // 勋章等级
     danmu: '', // 弹幕
     time: '', // 发送时间
-    use_state: 0 // 被使用状态
+    use_state: 0, // 被使用状态
+    type: 1
   },
-  roomid: 19864// 2808861
+  roomid: 666888// 2808861
 }
