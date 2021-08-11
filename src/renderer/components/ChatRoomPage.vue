@@ -61,7 +61,7 @@ export default {
     // this.$electronremote.getCurrentWindow().setAlwaysOnTop(true)
     // loading chat background
     this.initCanvas()
-    this.connectLive()
+    // this.connectLive()
     db.find({}, function (err, docs) {
       if (err !== null) {
         console.info(err)
@@ -199,7 +199,7 @@ export default {
       ctx.rect(0, 0, 482, 500)
       ctx.fill()
       ctx.lineWidth = '2'
-      ctx.strokeStyle = 'rgba(255,255,255,1)'
+      ctx.strokeStyle = 'rgba(168,168,168,1)'
       ctx.stroke()
       // this.drawImage()
     },
@@ -359,11 +359,11 @@ export default {
 }
 .top-bg-color {
   background-color: rgb(0, 0, 0);
-  border:2px solid rgb(255, 255, 255)
+  border:2px solid rgb(168, 168, 168)
 } 
 .top-style {
   font-size: 20pt;
-  color: rgb(255,255,255)
+  color: rgb(158, 158, 158)
 }
 #canvas {
   width: 100vw;

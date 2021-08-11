@@ -46,11 +46,11 @@ function createSettingWindow () {
     : `file://${__dirname}/index.html#settingWindow`
   // 使用hash对子页面跳转，这是vue的路由思想
   settingWindow = new BrowserWindow({
-    width: 600,
-    height: 400,
-    webPreferences: {
-      webSecurity: false
-    },
+    height: 500,
+    useContentSize: true,
+    width: 500,
+    frame: false,
+    transparent: false,
     parent: mainWindow // mainWindow是主窗口
   })
 
