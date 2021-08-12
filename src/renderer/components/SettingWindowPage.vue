@@ -1,11 +1,11 @@
 <template>
     <ul class="ul-h">
-        <li v-for="item in menuList" :key="item.id" class="li-style" @click="liClick(item)">
+        <li v-for="(item,index) in menuList" :key="item.id" class="li-style" @click="menuIndex=index">
                <p class="p-style"></p>
                 {{
                     item.name
                 }}
-                <p class="line-style"></p>
+                <p  :class="menuIndex==index?'line-style-display':'line-style'"></p>
                 
         </li>
     </ul>    
@@ -16,19 +16,18 @@ export default {
     return {
       menuList: [{
         id: 1,
-        name: '基本设置'
+        name: '基本设置',
+        status:0
       }, {
         id: 2,
-        name: '关于'
-      }]
+        name: '关于',
+        status:0
+      }],
+      menuIndex:-1
     }
   },
   mounted () {},
   methods: {
-    liClick (item) {
-      console.info(item)
-      
-    }
   }
 }
 </script>
@@ -80,5 +79,15 @@ export default {
       height: 20%;
       display: none;
       z-index: -1;
+    }
+    .line-style-display{
+      position: absolute;
+      background: rgba(16, 88, 55, 0.7);
+      left: 0;
+      top: 14pt;
+      width: 80%;
+      height: 20%;
+      z-index: -1;
+      display: block;
     }
 </style>

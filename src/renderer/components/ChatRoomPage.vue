@@ -14,12 +14,12 @@
           </el-switch>
         </el-tooltip>
       </div>
-      <div style="position:fixed;right:10px;top:30px;user-select: none;-webkit-app-region: no-drag; ">
+      <div style="position:fixed;right:10px;top:80px;user-select: none;-webkit-app-region: no-drag; ">
         <i @click="openSettingWindow" class="el-icon-setting top-style" style="user-select: none;-webkit-app-region: no-drag;font-size:20 "/>
       </div>
      
     </div>
-    <canvas id ='canvas' style="position:fixed;top:100px">
+    <canvas id ='canvas' style="position:fixed;top:0" z-index="21">
       
     </canvas>
     
@@ -172,7 +172,7 @@ export default {
     drawChatBackground () {
       // ctx.lineWidth = 2
       // ctx.strokeStyle = 'black'
-      ctx.fillStyle = 'rgba(0,0,0,0.9)'
+      ctx.fillStyle = 'rgba(255,255,255,1)'
 
       // ctx.beginPath()
       // ctx.moveTo(158, 202)
@@ -199,7 +199,7 @@ export default {
       ctx.rect(0, 0, 482, 500)
       ctx.fill()
       ctx.lineWidth = '2'
-      ctx.strokeStyle = 'rgba(168,168,168,1)'
+      ctx.strokeStyle = 'rgba(255,168,168,1)'
       ctx.stroke()
       // this.drawImage()
     },
