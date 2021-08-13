@@ -337,11 +337,7 @@ export default {
     triggerTopLevel () {
       // alert('123')
       topState = !topState
-      if (topState) {
-        this.$electron.remote.getCurrentWindow().setAlwaysOnTop(true)
-      } else {
-        this.$electron.remote.getCurrentWindow().setAlwaysOnTop(false)
-      }
+      this.$electron.remote.getCurrentWindow().setAlwaysOnTop(topState)
     },
     openSettingWindow () {
       this.$electron.ipcRenderer.send('createSettingWindow')

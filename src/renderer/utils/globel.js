@@ -8,7 +8,7 @@ export default {
     danmu: '', // 弹幕
     time: '', // 发送时间
     use_state: 0, // 被使用状态
-    type: 1
+    type: 1 // 1dm 2roomid 3comein
   },
-  roomid: 666888// 2808861
+  roomid: 2808861// 2808861
 }
