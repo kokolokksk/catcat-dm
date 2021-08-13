@@ -47,24 +47,25 @@ export default {
     },
     drawChatPage () {
       let _self = this
-      if (!animationState) {
-        _self.$db.find({type: 1, use_state: 0}).sort({ time: -1 }).limit(10).exec(function (err, docs) {
-          let count = 0
-          if (docs.length !== 0) {
-            invisibleDmList.push(docs[0])
-            // do update
-            _self.$db.update({ _id: docs[0]._id }, { $set: { use_state: 1 } }, {}, function () {
-              count++
-            })
-          }
-          _self.drawAll()
-          if (err !== null) {
-            console.error(err)
-          }
-        })
-      } else {
-        _self.drawAll()
-      }
+      _self.drawAll()
+      // if (!animationState) {
+      //   _self.$db.find({type: 1, use_state: 0}).sort({ time: -1 }).limit(10).exec(function (err, docs) {
+      //     let count = 0
+      //     if (docs.length !== 0) {
+      //       invisibleDmList.push(docs[0])
+      //       // do update
+      //       _self.$db.update({ _id: docs[0]._id }, { $set: { use_state: 1 } }, {}, function () {
+      //         count++
+      //       })
+      //     }
+      //     _self.drawAll()
+      //     if (err !== null) {
+      //       console.error(err)
+      //     }
+      //   })
+      // } else {
+      //   _self.drawAll()
+      // }
     },
     drawAll () {
       ctx.clearRect(0, 0, width, height)
@@ -120,6 +121,19 @@ export default {
           // start line 10,0 10,500
           console.info('animation stop ,invisible list:')
           console.info(invisibleDmList)
+          let tempList = []
+          visibleDmList.sort((a, b) => {
+            return a.time - b.time
+          })
+          if (visibleDmList.length > 5) {
+            tempList.push(visibleDmList[visibleDmList.length - 6])
+            tempList.push(visibleDmList[visibleDmList.length - 5])
+            tempList.push(visibleDmList[visibleDmList.length - 4])
+            tempList.push(visibleDmList[visibleDmList.length - 3])
+            tempList.push(visibleDmList[visibleDmList.length - 2])
+            tempList.push(visibleDmList[visibleDmList.length - 1])
+            visibleDmList = tempList
+          }
           let dm = invisibleDmList.pop()
           visibleDmList.push(dm)
           visibleDmList.sort(function (a, b) {
@@ -149,6 +163,8 @@ export default {
       } else {
         // do animation
         let i = 0
+        speed = invisibleDmList.length * 0.5 + 0.5
+        console.info(speed)
         y -= speed
         if (y <= 275) {
           animationState = false
@@ -194,60 +210,64 @@ export default {
             // first only dm msg
             if (data instanceof Array) {
               console.info('is array')
-              if (data[0].type === 'message') {
-                if (data[0].data.cmd === 'DANMU_MSG') {
-                  let danmuStore = {userid: '', // user id
-                    nickname: '', // user nickname
-                    avatar: '', // avatar address
-                    live_level: '', // live level
-                    xz_level: '', // xz level
-                    danmu: '', // dm
-                    time: 0, // send time
-                    use_state: 0, // use state
-                    type: 1
+              for (let index in data) {
+                if (data[index].type === 'message') {
+                  if (data[index].data.cmd === 'DANMU_MSG') {
+                    let danmuStore = {userid: '', // user id
+                      nickname: '', // user nickname
+                      avatar: '', // avatar address
+                      live_level: '', // live level
+                      xz_level: '', // xz level
+                      danmu: '', // dm
+                      time: 0, // send time
+                      use_state: 0, // use state
+                      type: 1
+                    }
+                    let info = data[index].data.info
+                    const danmu = info[1]
+                    const userInfo = info[2]
+                    // add danmu to nedb
+                    // let danmuInfo = g.danmu
+                    danmuStore.danmu = danmu
+                    danmuStore.userid = userInfo[0]
+                    danmuStore.nickname = userInfo[1]
+                    danmuStore.time = (info[9].ts === null || info[9].ts === undefined) ? info[0][4] : info[9].ts
+                    // add to list
+                    invisibleDmList.push(danmuStore)
+                    // do repeat check
+                    this.$db.find({time: danmuStore.time}, (err, docs) => {
+                      if (docs.length === 0) {
+                        this.$db.insert(danmuStore, (err, ret) => {
+                          if (err !== null) {
+                            console.info(err)
+                          }
+                        })
+                      }
+                      if (err !== null) {
+                        console.info(err)
+                      }
+                    })
+                  } else if (data[0].data.cmd === 'INTERACT_WORD') {
+                    let comeInStore = {
+                      userid: '',
+                      uname: '',
+                      uname_color: '',
+                      time: '',
+                      use_state: 0,
+                      type: 3
+                    }
+                    comeInStore.userid = data[0].data.data.userid
+                    comeInStore.uname = data[0].data.data.uname
+                    comeInStore.uname_color = data[0].data.data.uname_color
+                    comeInStore.time = data[0].data.data.timestamp
+                    this.$db.insert(comeInStore, (err, ret) => {
+                      if (err !== null) {
+                        console.info(err)
+                      }
+                    })
+                  } else {
+                    console.info('other')
                   }
-                  let info = data[0].data.info
-                  const danmu = info[1]
-                  const userInfo = info[2]
-                  // add danmu to nedb
-                  // let danmuInfo = g.danmu
-                  danmuStore.danmu = danmu
-                  danmuStore.userid = userInfo[0]
-                  danmuStore.nickname = userInfo[1]
-                  danmuStore.time = (info[9].ts === null || info[9].ts === undefined) ? info[0][4] : info[9].ts
-                  // do repeat check
-                  this.$db.find({time: danmuStore.time}, (err, docs) => {
-                    if (docs.length === 0) {
-                      this.$db.insert(danmuStore, (err, ret) => {
-                        if (err !== null) {
-                          console.info(err)
-                        }
-                      })
-                    }
-                    if (err !== null) {
-                      console.info(err)
-                    }
-                  })
-                } else if (data[0].data.cmd === 'INTERACT_WORD') {
-                  let comeInStore = {
-                    userid: '',
-                    uname: '',
-                    uname_color: '',
-                    time: '',
-                    use_state: 0,
-                    type: 3
-                  }
-                  comeInStore.userid = data[0].data.data.userid
-                  comeInStore.uname = data[0].data.data.uname
-                  comeInStore.uname_color = data[0].data.data.uname_color
-                  comeInStore.time = data[0].data.data.timestamp
-                  this.$db.insert(comeInStore, (err, ret) => {
-                    if (err !== null) {
-                      console.info(err)
-                    }
-                  })
-                } else {
-                  console.info('other')
                 }
               }
             }

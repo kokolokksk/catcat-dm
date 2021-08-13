@@ -58,6 +58,7 @@
     "bufferutil": "^4.0.3",
     "element-ui": "^2.15.5",
     "isomorphic-ws": "^4.0.1",
+    "less": "^4.1.1",
     "nedb": "^1.8.0",
     "utf-8-validate": "^5.0.5",
     "vue": "^2.5.16",
