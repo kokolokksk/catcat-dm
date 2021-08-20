@@ -1,9 +1,15 @@
 <template>  
   <div>
+    <div id="tool_bar" class="tool-bar">
+      <div @click="openSetting">
+        <svg  xmlns="http://www.w3.org/2000/svg" version="1.1">
+          <circle cx="10" cy="10" r="3" stroke="red" stroke-width="2" fill="red" />
+        </svg>
+      </div>
+    </div>
     <canvas ref="canvas" id="canvas">
     </canvas>
-    <div id="tool_bar" class="tool-bar">
-    </div>
+    
   </div>
 </template>
 <script>
@@ -73,12 +79,12 @@ export default {
       this.drawDanmu()
     },
     drawBackground () {
-      ctx.fillStyle = 'rgba(255,255,255,1)'
+      ctx.fillStyle = 'rgba(255,255,255,0)'
       ctx.beginPath()
       ctx.rect(0, 100, 400, 300)
       ctx.fill()
-      ctx.lineWidth = '10'
-      ctx.strokeStyle = 'rgba(255,100,100,1)'
+      ctx.lineWidth = '1'
+      ctx.strokeStyle = 'rgba(255,100,100,0.8)'
       ctx.stroke()
       ctx.beginPath()
       ctx.moveTo(0, 100)
@@ -88,7 +94,7 @@ export default {
       ctx.lineTo(100, 20)
       ctx.lineTo(20, 100)
       ctx.moveTo(0, 100)
-      ctx.fillStyle = 'rgba(255,100,100,1)'
+      ctx.fillStyle = 'rgba(255,100,100,0.6)'
       ctx.fill()
       ctx.beginPath()
       ctx.moveTo(200, 100)
@@ -104,7 +110,7 @@ export default {
       ctx.lineTo(100, 20)
       ctx.lineTo(180, 100)
       ctx.lineTo(20, 100)
-      ctx.fillStyle = 'rgba(80,80,80,1)'
+      ctx.fillStyle = 'rgba(80,80,80,0.5)'
       ctx.fill()
       ctx.beginPath()
       ctx.moveTo(220, 100)
@@ -149,7 +155,7 @@ export default {
           })
           for (let key in visibleDmList) {
             ctx.moveTo(20, y - i * 25)
-            ctx.fillStyle = 'rgba(0,0,0,1)'
+            ctx.fillStyle = 'rgba(102,204,255,1)'
             ctx.font = '15px "Consolas"'
             ctx.textBaseline = 'bottom'
             ctx.textAlign = 'left'
@@ -175,7 +181,7 @@ export default {
           })
           for (let key in visibleDmList) {
             ctx.moveTo(20, y - i * 25)
-            ctx.fillStyle = 'rgba(0,0,0,1)'
+            ctx.fillStyle = 'rgba(102,204,255,1)'
             ctx.font = '15px "Consolas"'
             ctx.textBaseline = 'bottom'
             ctx.textAlign = 'left'
@@ -193,13 +199,29 @@ export default {
       let _self = this
       this.$db.find({ type: 2 }, (err, docs) => {
         let roomid = this.$g.roomid
+        if (docs !== null && docs.length !== 0) {
+          roomid = docs[0].roomid
+        }
         if (err !== null) {
           console.info(err)
         }
         console.info(docs)
         // let roomid = 2808861
-        const live = new KeepLiveWS(roomid)
-        live.on('open', () => console.log('连接已建立 · · ·'))
+        const live = new KeepLiveWS(Number(roomid))
+        live.on('open', () => {
+          console.log('连接已建立 · · ·')
+          let sysInfo = {userid: '', // user id
+            nickname: '系统信息', // user nickname
+            avatar: '', // avatar address
+            live_level: '', // live level
+            xz_level: '', // xz level
+            danmu: '连接已建立 · · ·', // dm
+            time: 0, // send time
+            use_state: 0, // use state
+            type: 1
+          }
+          invisibleDmList.push(sysInfo)
+        })
         live.on('live', () => {
           live.on('heartbeat', (online) => {
             // console.log(online)
@@ -275,21 +297,33 @@ export default {
         // 74185
         })
       })
+    },
+    openSetting () {
+      console.info('come in openSetting windows')
+      this.$electron.ipcRenderer.send('createSettingWindow')
     }
   }
 }
 </script>
 
 <style>
+body,html{
+  padding: 0;
+  margin: 0;
+  background-color: transparent
+}
 #canvas {
+  position: fixed;
   width: 100vw;
   height: 100vh;
   -webkit-app-region: drag; /** 允许拖动透明窗口中的canvas区域 */
+  top: 50px
 }
 .tool-bar {
-  position: fixed;
-  right: -10px;
-  top: 0;
+  position:fixed;
+  top:0px;
+  height:50px;
+  width:500px
 }
 ::-webkit-scrollbar {
   display: none;
