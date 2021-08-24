@@ -56,7 +56,6 @@
     "axios": "^0.18.0",
     "bilibili-live-ws": "^5.1.1",
     "bufferutil": "^4.0.3",
-    "element-ui": "^2.15.5",
     "isomorphic-ws": "^4.0.1",
     "less": "^4.1.1",
     "nedb": "^1.8.0",
