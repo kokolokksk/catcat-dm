@@ -23,6 +23,11 @@ let width = 500
 let height = 500
 let y = 300
 let speed = 0.5
+let comeInColor = 'rgba(125,127,125,1)'
+let danmuColor = 'rgba(0,0,0,1)'
+let danmuAreaColor = 'rgb(250,250,250)'
+let danmuFont = '"zxfyyt"'
+let danmuSize = '18px '
 export default {
   data () {
     return {
@@ -81,12 +86,12 @@ export default {
       this.drawComeInList()
     },
     drawBackground () {
-      ctx.fillStyle = 'rgba(255,255,255,0)'
+      ctx.fillStyle = danmuAreaColor
       ctx.beginPath()
       ctx.rect(0, 100, 400, 300)
       ctx.fill()
-      ctx.lineWidth = '1'
-      ctx.strokeStyle = 'rgba(255,100,100,0.8)'
+      ctx.lineWidth = '2'
+      ctx.strokeStyle = 'rgba(255,250,250,1)'
       ctx.stroke()
       ctx.beginPath()
       ctx.moveTo(0, 100)
@@ -96,7 +101,7 @@ export default {
       ctx.lineTo(100, 20)
       ctx.lineTo(20, 100)
       ctx.moveTo(0, 100)
-      ctx.fillStyle = 'rgba(255,100,100,0.6)'
+      ctx.fillStyle = 'rgba(255,100,100,1)'
       ctx.fill()
       ctx.beginPath()
       ctx.moveTo(200, 100)
@@ -112,7 +117,7 @@ export default {
       ctx.lineTo(100, 20)
       ctx.lineTo(180, 100)
       ctx.lineTo(20, 100)
-      ctx.fillStyle = 'rgba(80,80,80,0.5)'
+      ctx.fillStyle = 'rgba(80,80,80,1)'
       ctx.fill()
       ctx.beginPath()
       ctx.moveTo(220, 100)
@@ -157,8 +162,8 @@ export default {
           })
           for (let key in visibleDmList) {
             ctx.moveTo(20, y - i * 25)
-            ctx.fillStyle = 'rgba(102,204,255,1)'
-            ctx.font = '15px "Consolas"'
+            ctx.fillStyle = danmuColor
+            ctx.font = danmuSize + ' ' + danmuFont
             ctx.textBaseline = 'bottom'
             ctx.textAlign = 'left'
             if (i < 5) {
@@ -183,8 +188,8 @@ export default {
           })
           for (let key in visibleDmList) {
             ctx.moveTo(20, y - i * 25)
-            ctx.fillStyle = 'rgba(102,204,255,1)'
-            ctx.font = '15px "Consolas"'
+            ctx.fillStyle = danmuColor
+            ctx.font = danmuSize + ' ' + danmuFont
             ctx.textBaseline = 'bottom'
             ctx.textAlign = 'left'
             if (i < 5) {
@@ -199,8 +204,8 @@ export default {
     drawComeInList () {
       if (comeInList.length !== 0) {
         ctx.moveTo(20, 450)
-        ctx.fillStyle = 'rgba(178,177,185,1)'
-        ctx.font = '15px "Consolas"'
+        ctx.fillStyle = comeInColor
+        ctx.font = '15px ' + '"zxfyyt"'
         ctx.textBaseline = 'bottom'
         ctx.textAlign = 'left'
         comeInList.sort(function (a, b) {
