@@ -18,6 +18,7 @@ let canvas, ctx
 let animationState = false
 let visibleDmList = []
 let invisibleDmList = []
+let comeInList = []
 let width = 500
 let height = 500
 let y = 300
@@ -77,6 +78,7 @@ export default {
       ctx.clearRect(0, 0, width, height)
       this.drawBackground()
       this.drawDanmu()
+      this.drawComeInList()
     },
     drawBackground () {
       ctx.fillStyle = 'rgba(255,255,255,0)'
@@ -194,6 +196,23 @@ export default {
         }
       }
     },
+    drawComeInList () {
+      if (comeInList.length !== 0) {
+        ctx.moveTo(20, 450)
+        ctx.fillStyle = 'rgba(178,177,185,1)'
+        ctx.font = '15px "Consolas"'
+        ctx.textBaseline = 'bottom'
+        ctx.textAlign = 'left'
+        comeInList.sort(function (a, b) {
+          return (b.time - a.time)
+        })
+        let c = comeInList.pop()
+        ctx.fillText(c.uname + '进入了直播间', 20, 400)
+        if (comeInList.length === 0) {
+          comeInList.push(c)
+        }
+      }
+    },
     connectLive () {
       // get init configure
       let _self = this
@@ -269,7 +288,7 @@ export default {
                         console.info(err)
                       }
                     })
-                  } else if (data[0].data.cmd === 'INTERACT_WORD') {
+                  } else if (data[index].data.cmd === 'INTERACT_WORD') {
                     let comeInStore = {
                       userid: '',
                       uname: '',
@@ -278,15 +297,17 @@ export default {
                       use_state: 0,
                       type: 3
                     }
-                    comeInStore.userid = data[0].data.data.userid
-                    comeInStore.uname = data[0].data.data.uname
-                    comeInStore.uname_color = data[0].data.data.uname_color
-                    comeInStore.time = data[0].data.data.timestamp
-                    this.$db.insert(comeInStore, (err, ret) => {
-                      if (err !== null) {
-                        console.info(err)
-                      }
-                    })
+                    // console.info(data[index].data.data)
+                    comeInStore.userid = data[index].data.data.uid
+                    comeInStore.uname = data[index].data.data.uname
+                    comeInStore.uname_color = data[index].data.data.uname_color
+                    comeInStore.time = data[index].data.data.timestamp
+                    comeInList.push(comeInStore)
+                    // this.$db.insert(comeInStore, (err, ret) => {
+                    //   if (err !== null) {
+                    //     console.info(err)
+                    //   }
+                    // })
                   } else {
                     console.info('other')
                   }
