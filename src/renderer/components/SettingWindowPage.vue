@@ -11,9 +11,34 @@
     </ul>  
     <p class="line"/>
     roomid:<input type='text' v-model = roomid name= "roomid" /><button @click="setRoomId" type='button'>设置</button>
+    <div id="demo-content">
+      <div id="demo-app">
+        <p>
+      background color:
+      <input id="bgc" data-jscolor="{value:'rgba(192,160,255,0.5)'}" onInput="update(this.jscolor)"><button @click="setBackgroundColor" type='button'>设置</button>
+      </p>
+      <em id="pr2" style="display:inline-block; padding:1em;">background</em>
+      <em id="pr3" style="display:inline-block; padding:1em;">background color</em>
+      <br>
+       <p>
+      danmu color:
+      <input id="dmc" data-jscolor="{value:'rgba(192,160,255,0.5)'}" onInput="updateDanmu(this.jscolor)"><button @click="setDanmuColor" type='button'>设置</button>
+      </p>
+      </div> 
+		</div> 
   </div> 
 </template>
 <script>
+let jscolor = window.jscolor
+window.update = function update (picker) {
+  document.getElementById('pr2').style.background = picker.toBackground()
+  document.getElementById('pr3').style.background = picker.toRGBAString()
+}
+window.updateDanmu = function updateDanmu (picker) {
+  document.getElementById('pr2').style.color = picker.toRGBAString()
+  document.getElementById('pr3').style.color = picker.toRGBAString()
+}
+jscolor.trigger('input')
 let roomid
 export default {
   data () {
@@ -41,6 +66,9 @@ export default {
         if (docs !== null && docs.length !== 0) {
           console.info(docs)
           _self.roomid = docs[0].roomid
+          // fixme load color
+          document.getElementById('bgc').nodeValue = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
+          document.getElementById('dmc').nodeValue = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
         }
         if (err !== null) {
           console.info(err)
@@ -48,9 +76,10 @@ export default {
       })
     },
     setRoomId () {
-      console.info('?')
+      // console.info('?')
       let _self = this
       this.$db.find({ type: 2 }, (err, docs) => {
+        console.info(docs)
         if (docs !== null && docs.length !== 0) {
           console.info(_self.roomid)
           _self.$db.update({ _id: docs[0]._id }, { $set: { roomid: _self.roomid } }, {}, function () {
@@ -65,6 +94,36 @@ export default {
             if (err !== null) {
               console.info(err)
             }
+          })
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
+    },
+    setBackgroundColor () {
+      let _self = this
+      let color = document.getElementById('bgc').getAttribute('data-current-color')
+      console.info(color)
+      _self.$db.find({ type: 2 }, (err, docs) => {
+        if (docs !== null && docs.length !== 0) {
+          _self.$db.update({ _id: docs[0]._id }, { $set: { bgc: color } }, {}, function () {
+            console.info('update success')
+          })
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
+    },
+    setDanmuColor () {
+      let _self = this
+      let color = document.getElementById('dmc').getAttribute('data-current-color')
+      console.info(color)
+      _self.$db.find({ type: 2 }, (err, docs) => {
+        if (docs !== null && docs.length !== 0) {
+          _self.$db.update({ _id: docs[0]._id }, { $set: { dmc: color } }, {}, function () {
+            console.info('update success')
           })
         }
         if (err !== null) {

@@ -35,6 +35,7 @@ export default {
   },
   mounted () {
     this.$electron.remote.getCurrentWindow().setAlwaysOnTop(true)
+    this.loadConfig()
     this.initCanvas()
     this.connectLive()
     // 当调整窗口大小时重绘canvas
@@ -44,6 +45,21 @@ export default {
     window.requestAnimationFrame(this.startDraw)
   },
   methods: {
+    loadConfig () {
+      let _self = this
+      this.$db.find({ type: 2 }, (err, docs) => {
+        if (docs !== null && docs.length !== 0) {
+          console.info(docs)
+          _self.roomid = docs[0].roomid
+          // fixme load color
+          danmuColor = docs[0].dmc === null ? 'rgba(255,255,255,1)' : docs[0].dmc
+          danmuAreaColor = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
+    },
     initCanvas () {
       console.log('init canvas')
       canvas = this.$refs.canvas
