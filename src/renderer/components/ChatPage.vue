@@ -28,6 +28,7 @@ let danmuColor = 'rgba(0,0,0,1)'
 let danmuAreaColor = 'rgb(250,250,250)'
 let danmuFont = '"zxfyyt"'
 let danmuSize = '18px '
+let onlneCount = '人气'
 export default {
   data () {
     return {
@@ -143,6 +144,13 @@ export default {
       ctx.fill()
     },
     drawDanmu () {
+      // draw online count (人气)
+      ctx.moveTo(20, 100)
+      ctx.fillStyle = 'rgba(173,187,255,1)'
+      ctx.font = danmuSize + ' ' + danmuFont
+      ctx.textBaseline = 'bottom'
+      ctx.textAlign = 'left'
+      ctx.fillText(onlneCount + ':' + this.$g.online, 20, 100)
       // if animation state is on wait is
       // false means last invisibleDmList is empty
       if (!animationState) {
@@ -329,6 +337,17 @@ export default {
                     //     console.info(err)
                     //   }
                     // })
+                  } else if (data[index].data.cmd === 'SEND_GIFT') {
+                    let giftStore = {
+                      giftName:'',
+                      userid: '',
+                      uname: '',
+                      num:0,
+                      uname_color: '',
+                      time: '',
+                      use_state: 0,
+                      type: 4  
+                    }
                   } else {
                     console.info('other')
                   }
