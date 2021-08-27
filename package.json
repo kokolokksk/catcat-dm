@@ -54,6 +54,7 @@
   },
   "dependencies": {
     "@eastdesire/jscolor": "^2.4.6",
+    "animate.css": "^4.1.1",
     "axios": "^0.18.0",
     "bilibili-live-ws": "^5.1.1",
     "bufferutil": "^4.0.3",
