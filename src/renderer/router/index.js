@@ -8,7 +8,7 @@ export default new Router({
     {
       path: '/',
       name: 'landing-page',
-      component: require('@/components/ChatDomPage').default
+      component: require('@/components/ChatPage').default
     },
     {
       path: '/settingWindow',

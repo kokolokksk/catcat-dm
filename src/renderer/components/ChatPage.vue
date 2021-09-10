@@ -19,6 +19,7 @@ let animationState = false
 let visibleDmList = []
 let invisibleDmList = []
 let comeInList = []
+let giftList = []
 let width = 500
 let height = 500
 let y = 300
@@ -101,6 +102,7 @@ export default {
       this.drawBackground()
       this.drawDanmu()
       this.drawComeInList()
+      this.drawGiftList()
     },
     drawBackground () {
       ctx.fillStyle = danmuAreaColor
@@ -201,7 +203,7 @@ export default {
         // do animation
         let i = 0
         speed = invisibleDmList.length * 0.5 + 0.5
-        console.info(speed)
+        // console.info(speed)
         y -= speed
         if (y <= 275) {
           animationState = false
@@ -220,7 +222,7 @@ export default {
               ctx.fillText(visibleDmList[i].nickname + ':' + visibleDmList[i].danmu, 20, y - i * 25)
             }
             i++
-            console.info(key)
+            // console.info(key)
           }
         }
       }
@@ -239,6 +241,23 @@ export default {
         ctx.fillText(c.uname + '进入了直播间', 20, 400)
         if (comeInList.length === 0) {
           comeInList.push(c)
+        }
+      }
+    },
+    drawGiftList () {
+      if (giftList.length !== 0) {
+        ctx.moveTo(250, 450)
+        ctx.fillStyle = comeInColor
+        ctx.font = '15px ' + '"zxfyyt"'
+        ctx.textBaseline = 'bottom'
+        ctx.textAlign = 'left'
+        giftList.sort(function (a, b) {
+          return (b.time - a.time)
+        })
+        let c = giftList.pop()
+        ctx.fillText(c.uname + '赠送了' + c.giftName, 220, 400)
+        if (giftList.length === 0) {
+          giftList.push(c)
         }
       }
     },
@@ -346,8 +365,15 @@ export default {
                       uname_color: '',
                       time: '',
                       use_state: 0,
-                      type: 4  
+                      type: 4
                     }
+                    giftStore.giftName = data[index].data.data.giftName
+                    giftStore.userid = data[index].data.data.userid
+                    giftStore.uname = data[index].data.data.uname
+                    giftStore.uname_color = data[index].data.data.uname_color
+                    giftStore.time = data[index].data.data.timestamp
+                    giftList.push(giftStore)
+                    console.info('in gift')
                   } else {
                     console.info('other')
                   }

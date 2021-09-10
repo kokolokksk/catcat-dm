@@ -8,7 +8,6 @@ import g from './utils/globel'
 import db from './datastore'
 import VueElectron from 'vue-electron'
 import '@/assets/style/font.less'
-import 'animate.css'
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.use(VueElectron)
 Vue.http = Vue.prototype.$http = axios
