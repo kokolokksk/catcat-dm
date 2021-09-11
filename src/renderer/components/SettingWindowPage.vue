@@ -10,22 +10,24 @@
       </li>
     </ul>  
     <p class="line"/>
-    roomid:<input type='text' v-model = roomid name= "roomid" /><button @click="setRoomId" type='button'>设置</button>
+    房间号:<input type='text' v-model = roomid name= "roomid" /><button @click="setRoomId" type='button'>设置</button>
     <div id="demo-content">
       <div id="demo-app">
         <p>
-      background color:
+      背景颜色:
       <input id="bgc" data-jscolor="{value:'rgba(192,160,255,0.5)'}" onInput="update(this.jscolor)"><button @click="setBackgroundColor" type='button'>设置</button>
       </p>
       <em id="pr2" style="display:inline-block; padding:1em;">background</em>
       <em id="pr3" style="display:inline-block; padding:1em;">background color</em>
       <br>
        <p>
-      danmu color:
+      弹幕颜色:
       <input id="dmc" data-jscolor="{value:'rgba(192,160,255,0.5)'}" onInput="updateDanmu(this.jscolor)"><button @click="setDanmuColor" type='button'>设置</button>
       </p>
       </div> 
 		</div> 
+    <p class="line"/>
+    缩放倍率:<input type='text' v-model = scaleX name= "scaleX" /><button @click="setScaleX" type='button'>设置</button>
   </div> 
 </template>
 <script>
@@ -53,7 +55,8 @@ export default {
         status:0
       }],
       menuIndex:-1,
-      roomid:0
+      roomid:0,
+      scaleX:1
     }
   },
   mounted () {
@@ -66,6 +69,7 @@ export default {
         if (docs !== null && docs.length !== 0) {
           console.info(docs)
           _self.roomid = docs[0].roomid
+          _self.scaleX = docs[0].scaleX
           // fixme load color
           document.getElementById('bgc').nodeValue = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
           document.getElementById('dmc').nodeValue = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
@@ -88,6 +92,32 @@ export default {
         } else {
           let roomStore = {
             roomid: _self.roomid, // user id
+            type: 2
+          }
+          _self.$db.insert(roomStore, (err, ret) => {
+            if (err !== null) {
+              console.info(err)
+            }
+          })
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
+    },
+    setScaleX () {
+      // console.info('?')
+      let _self = this
+      this.$db.find({ type: 2 }, (err, docs) => {
+        console.info(docs)
+        if (docs !== null && docs.length !== 0) {
+          console.info(_self.scaleX)
+          _self.$db.update({ _id: docs[0]._id }, { $set: { scaleX: _self.scaleX } }, {}, function () {
+            console.info('update success')
+          })
+        } else {
+          let roomStore = {
+            scaleX: _self.scaleX, // user id
             type: 2
           }
           _self.$db.insert(roomStore, (err, ret) => {

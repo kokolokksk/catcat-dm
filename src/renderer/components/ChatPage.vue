@@ -14,6 +14,7 @@
 </template>
 <script>
 const { KeepLiveWS } = require('bilibili-live-ws')
+const { remote } = require('electron')
 let canvas, ctx
 let animationState = false
 let visibleDmList = []
@@ -26,6 +27,7 @@ let y = 300
 let speed = 0.5
 let comeInColor = 'rgba(125,127,125,1)'
 let danmuColor = 'rgba(0,0,0,1)'
+let scaleX = 1.0
 let danmuAreaColor = 'rgb(250,250,250)'
 let danmuFont = '"zxfyyt"'
 let danmuSize = '18px '
@@ -38,13 +40,6 @@ export default {
   mounted () {
     this.$electron.remote.getCurrentWindow().setAlwaysOnTop(true)
     this.loadConfig()
-    this.initCanvas()
-    this.connectLive()
-    // 当调整窗口大小时重绘canvas
-    window.onresize = () => {
-      this.initCanvas()
-    }
-    window.requestAnimationFrame(this.startDraw)
   },
   methods: {
     loadConfig () {
@@ -56,20 +51,31 @@ export default {
           // fixme load color
           danmuColor = docs[0].dmc === null ? 'rgba(255,255,255,1)' : docs[0].dmc
           danmuAreaColor = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
+          scaleX = docs[0].scaleX === null ? scaleX : docs[0].scaleX
         }
         if (err !== null) {
           console.info(err)
         }
+        this.initCanvas()
+        this.connectLive()
+        // 当调整窗口大小时重绘canvas
+        window.onresize = () => {
+          this.initCanvas()
+        }
+        window.requestAnimationFrame(this.startDraw)
       })
     },
     initCanvas () {
       console.log('init canvas')
       canvas = this.$refs.canvas
-      let winW = window.innerWidth
-      let winH = window.innerHeight
+      remote.getCurrentWindow().setSize(width * scaleX, height * scaleX)
+      let winW = width * scaleX // window.innerWidth
+      let winH = height * scaleX // window.innerHeight
       canvas.width = winW
       canvas.height = winH
       ctx = canvas.getContext('2d')
+      ctx.scale(scaleX, scaleX)
+      console.info('scale:' + scaleX + ';width:' + canvas.width + ';height:' + canvas.height)
     },
     startDraw () {
       this.drawChatPage()
@@ -401,8 +407,8 @@ body,html{
 }
 #canvas {
   position: fixed;
-  width: 100vw;
-  height: 100vh;
+  /* width: 100vw;
+  height: 100vh; */
   -webkit-app-region: drag; /** 允许拖动透明窗口中的canvas区域 */
   top: 50px
 }
@@ -410,7 +416,7 @@ body,html{
   position:fixed;
   top:0px;
   height:50px;
-  width:500px
+  /* width:500px */
 }
 ::-webkit-scrollbar {
   display: none;
