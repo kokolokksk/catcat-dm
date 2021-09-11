@@ -2,8 +2,12 @@
 
 > muamuamua!
 
+### 说明
+windows下查看 哔哩哔哩 直播弹幕
+
 ![界面截图](desc/screencut.png)
 
+[下载地址](https://github.com/kokolokksk/muamuamua/releases)
 #### TODO
 - [x] 显示一条文字
 - [x] 动起来
