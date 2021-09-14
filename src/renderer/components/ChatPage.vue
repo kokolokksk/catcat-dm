@@ -51,6 +51,7 @@ export default {
           // fixme load color
           danmuColor = docs[0].dmc === null ? 'rgba(255,255,255,1)' : docs[0].dmc
           danmuAreaColor = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
+          danmuFont = docs[0].dmf === null ? 'zxfyyt' : docs[0].dmf
           scaleX = docs[0].scaleX === null ? scaleX : docs[0].scaleX
         }
         if (err !== null) {
@@ -237,7 +238,7 @@ export default {
       if (comeInList.length !== 0) {
         ctx.moveTo(20, 450)
         ctx.fillStyle = comeInColor
-        ctx.font = '15px ' + '"zxfyyt"'
+        ctx.font = '15px ' + danmuFont
         ctx.textBaseline = 'bottom'
         ctx.textAlign = 'left'
         comeInList.sort(function (a, b) {
@@ -253,15 +254,33 @@ export default {
     drawGiftList () {
       if (giftList.length !== 0) {
         ctx.moveTo(250, 450)
-        ctx.fillStyle = comeInColor
-        ctx.font = '15px ' + '"zxfyyt"'
+        ctx.font = '15px ' + danmuFont
         ctx.textBaseline = 'bottom'
         ctx.textAlign = 'left'
         giftList.sort(function (a, b) {
           return (b.time - a.time)
         })
         let c = giftList.pop()
-        ctx.fillText(c.uname + '赠送了' + c.giftName, 220, 400)
+        // name
+        let gifUserNameColor = c.uname_color
+        if (gifUserNameColor === '') {
+          gifUserNameColor = comeInColor
+        }
+        ctx.fillStyle = gifUserNameColor
+        ctx.fillText(c.uname, 220, 400, 50)
+        ctx.fillStyle = comeInColor
+        let gn = c.giftName
+        switch (gn) {
+          case '小心心':
+            gn += '♥'
+            break
+          case '辣条':
+            gn += '🐍'
+            break
+          default:
+            break
+        }
+        ctx.fillText('赠送了' + gn, 270, 400, 130)
         if (giftList.length === 0) {
           giftList.push(c)
         }

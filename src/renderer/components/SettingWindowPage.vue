@@ -1,6 +1,6 @@
 <template>
   <div class="setting">
-    <ul class="ul-h">
+    <!-- <ul class="ul-h">
       <li v-for="(item,index) in menuList" :key="item.id" class="li-style" @click="menuIndex=index">
         <p class="p-style"></p>
           {{
@@ -8,26 +8,31 @@
           }}
         <p  :class="menuIndex==index?'line-style-display':'line-style'"></p>
       </li>
-    </ul>  
+    </ul>   -->
     <p class="line"/>
-    房间号:<input type='text' v-model = roomid name= "roomid" /><button @click="setRoomId" type='button'>设置</button>
+    房间号:<input type='text' v-model = roomid name= "roomid" /><a-button class="left-margin" type="default" @click="setRoomId" >设置</a-button>
+    <p class="line"/>
     <div id="demo-content">
       <div id="demo-app">
         <p>
       背景颜色:
-      <input id="bgc" data-jscolor="{value:'rgba(192,160,255,0.5)'}" onInput="update(this.jscolor)"><button @click="setBackgroundColor" type='button'>设置</button>
+      <input id="bgc" data-jscolor="{value:'rgba(192,160,255,0.5)'}" onInput="update(this.jscolor)"><a-button class="left-margin" @click="setBackgroundColor" type='default'>设置</a-button>
       </p>
       <em id="pr2" style="display:inline-block; padding:1em;">background</em>
       <em id="pr3" style="display:inline-block; padding:1em;">background color</em>
       <br>
-       <p>
+       <p class="line"/>
       弹幕颜色:
-      <input id="dmc" data-jscolor="{value:'rgba(192,160,255,0.5)'}" onInput="updateDanmu(this.jscolor)"><button @click="setDanmuColor" type='button'>设置</button>
-      </p>
+      <input id="dmc" data-jscolor="{value:'rgba(192,160,255,0.5)'}" onInput="updateDanmu(this.jscolor)"><a-button class="left-margin" @click="setDanmuColor" type='default'>设置</a-button>
+       <p class="line"/>
       </div> 
 		</div> 
     <p class="line"/>
-    缩放倍率:<input type='text' v-model = scaleX name= "scaleX" /><button @click="setScaleX" type='button'>设置</button>
+    缩放倍率:<input type='text' v-model = scaleX name= "scaleX" /><a-button class="left-margin" @click="setScaleX" type='default'>设置</a-button>
+    <p class="line"/>
+    全局字体:<select v-model = "dmf" name= "dmf">
+                 <option v-for="(item,index) in fontList" :key="index" :value='item.value'>{{item.title}}</option>  
+            </select><a-button @click="setDmf" class="left-margin" type='default'>设置</a-button>
   </div> 
 </template>
 <script>
@@ -56,7 +61,9 @@ export default {
       }],
       menuIndex:-1,
       roomid:0,
-      scaleX:1
+      scaleX:1,
+      dmf:'1',
+      fontList:[{id: 1, title: '字心坊韵圆体', value: 'zxfyyt'}, {id: 2, title: '微软雅黑', value: 'Microsoft YaHei'}, {id: 3, title: 'Consolas', value: 'Consolas'}]
     }
   },
   mounted () {
@@ -70,6 +77,7 @@ export default {
           console.info(docs)
           _self.roomid = docs[0].roomid
           _self.scaleX = docs[0].scaleX
+          _self.dmf = docs[0].dmf
           // fixme load color
           document.getElementById('bgc').nodeValue = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
           document.getElementById('dmc').nodeValue = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
@@ -160,19 +168,49 @@ export default {
           console.info(err)
         }
       })
+    },
+    setDmf () {
+      let _self = this
+      this.$db.find({ type: 2 }, (err, docs) => {
+        console.info(docs)
+        if (docs !== null && docs.length !== 0) {
+          console.info(_self.dmf)
+          _self.$db.update({ _id: docs[0]._id }, { $set: { dmf: _self.dmf } }, {}, function () {
+            console.info('update success')
+          })
+        } else {
+          let dmfStore = {
+            dmf: _self.dmf, // user id
+            type: 2
+          }
+          _self.$db.insert(dmfStore, (err, ret) => {
+            if (err !== null) {
+              console.info(err)
+            }
+          })
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
     }
   }
 }
 </script>
 <style>
-    
+    .left-margin{
+      margin-left: 2px;
+      height: 27px;
+    }
     .setting{
       width: 410px;
       height: 400px;
+      margin-left: 10px;
      }
      .line {
        height: 5px;
        width: 1px;
+       margin-top: 5px;
      }
     * {
       margin: 0;

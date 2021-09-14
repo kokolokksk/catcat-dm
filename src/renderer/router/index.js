@@ -13,6 +13,10 @@ export default new Router({
     {
       path: '/settingWindow',
       name: 'settingWindow',
+      meta: {
+        // 页面标题title
+        title: '设置'
+      },
       component: require('@/components/SettingWindowPage').default
     },
     {
