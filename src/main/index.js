@@ -51,7 +51,7 @@ function createSettingWindow () {
     width: 410,
     frame: true,
     transparent: false,
-    parent: mainWindow, // mainWindow是主窗口
+    parent: mainWindow // mainWindow是主窗口
   })
   settingWindow.setMenuBarVisibility(false)
   settingWindow.loadURL(modalPath)

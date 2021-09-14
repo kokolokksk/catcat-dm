@@ -1,9 +1,9 @@
 {
-  "name": "muamuamua",
-  "version": "0.0.1",
+  "name": "mua",
+  "version": "0.0.9",
   "author": "loveloliii <woshigegefengleng@live.com>",
-  "description": "An electron-vue project",
-  "license": null,
+  "description": "bilibili live mua",
+  "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
@@ -19,7 +19,7 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "muamuamua",
+    "productName": "mua",
     "appId": "mua.loli.monster",
     "directories": {
       "output": "build"
