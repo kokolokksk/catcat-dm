@@ -15,6 +15,7 @@
 <script>
 const { KeepLiveWS } = require('bilibili-live-ws')
 const { remote } = require('electron')
+const log = require('electron-log')
 let canvas, ctx
 let animationState = false
 let visibleDmList = []
@@ -48,19 +49,24 @@ export default {
   },
   methods: {
     loadConfig () {
+      log.info('try load config')
       let _self = this
       this.$db.find({ type: 2 }, (err, docs) => {
         if (docs !== null && docs.length !== 0) {
           console.info(docs)
+          log.info('have local config')
+          log.info(docs)
           _self.roomid = docs[0].roomid
           // fixme load color
-          danmuColor = docs[0].dmc === null ? 'rgba(255,255,255,1)' : docs[0].dmc
-          danmuAreaColor = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
-          danmuFont = docs[0].dmf === null ? 'zxfyyt' : docs[0].dmf
-          scaleX = docs[0].scaleX === null ? scaleX : docs[0].scaleX
-          tts = docs[0].tts === null ? false : docs[0].tts
+          danmuColor = docs[0].dmc === null || undefined || 'undefined' ? 'rgba(0,0,0,1)' : docs[0].dmc
+          danmuAreaColor = docs[0].bgc === null || undefined || 'undefined' ? 'rgba(255,255,255,1)' : docs[0].bgc
+          danmuFont = docs[0].dmf === null || undefined || 'undefined' ? 'zxfyyt' : docs[0].dmf
+          scaleX = docs[0].scaleX === null || undefined || 'undefined' ? scaleX : docs[0].scaleX
+          tts = docs[0].tts === null || undefined || 'undefined' ? false : docs[0].tts
+          log.info('init param has loaded. dmc:' + danmuColor + ';bgc:' + danmuAreaColor + ';dmf:' + danmuFont + ';scale:' + scaleX + ';tts:' + tts)
         }
         if (err !== null) {
+          log.info('maybe no local config')
           console.info(err)
         }
         this.initCanvas()
