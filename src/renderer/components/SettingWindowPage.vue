@@ -30,8 +30,8 @@
     <p class="line"/>
     缩放倍率:<input type='text' v-model = scaleX name= "scaleX" /><a-button class="left-margin" @click="setScaleX" type='default'>设置</a-button>
     <p class="line"/>
-    全局字体:<select v-model = "dmf" name= "dmf">
-                 <option v-for="(item,index) in fontList" :key="index" :value='item.value'>{{item.title}}</option>  
+    全局字体:<select v-model = "dmf" name= "dmf" class= fc @change="setFc">
+                 <option v-for="(item,index) in fontList" :key="index" :value='item.value' :class='item.class'>{{item.title}}</option>  
             </select><a-button @click="setDmf" class="left-margin" type='default'>设置</a-button>
     <p class="line"/>
     <div>
@@ -66,8 +66,20 @@ export default {
       menuIndex:-1,
       roomid:0,
       scaleX:1,
+      fc:'Consolas',
       dmf:'1',
-      fontList:[{id: 1, title: '字心坊韵圆体', value: 'zxfyyt'}, {id: 2, title: '微软雅黑', value: 'Microsoft YaHei'}, {id: 3, title: 'Consolas', value: 'Consolas'}],
+      fontList:[{id: 1, title: '字心坊韵圆体', value: 'zxfyyt', class: 'zxfyyt'},
+        {id: 2, title: '微软雅黑', value: 'Microsoft YaHei', class: 'yahei'},
+        {id: 4, title: 'Consolas', value: 'Consolas', class: 'consolas'},
+        {id: 4, title: 'Fira Code', value: 'Fira Code', class: 'FiraCode'},
+        {id: 5, title: '宋体', value: 'SimSun', class: 'SimSun'},
+        {id: 6, title: '黑体', value: 'SimHei', class: 'SimHei'},
+        {id: 7, title: '微软正黑体', value: 'Microsoft JhengHei', class: 'JhengHei'},
+        {id: 8, title: '幼圆', value: 'YouYuan', class: 'YouYuan'},
+        {id: 9, title: '苹方', value: 'PingFang SC', class: 'PingFangSC'},
+        {id: 10, title: '华文彩云', value: 'STCaiyun', class: 'STCaiyun'},
+        {id: 11, title: '华文琥珀', value: 'STHupo', class: 'STHupo'},
+        {id: 12, title: '冬青黑体简', value: 'Hiragino Sans GB', class: 'HiraginoSansGB'}],
       tts:false
     }
   },
@@ -229,6 +241,33 @@ export default {
 }
 </script>
 <style>
+    .FiraCode{
+      font-family: "Fira Code",sans-serif;
+    }
+    .HiraginoSansGB{
+      font-family: "Hiragino Sans GB",sans-serif;
+    }
+    .STHupo{
+      font-family: "STHupo",sans-serif;
+    }
+    .STCaiyun{
+      font-family: "STCaiyun",sans-serif;
+    }
+    .PingFangSC{
+      font-family: "PingFang SC",sans-serif;
+    }
+    .SimSun{
+      font-family: "SimSun",sans-serif;
+    }
+    .SimHei{
+      font-family: "SimHei",sans-serif;
+    }
+    .JhengHei{
+      font-family: "Microsoft JhengHei",sans-serif;
+    }
+    .YouYuan{
+      font-family: "YouYuan",sans-serif;
+    }
     .left-margin{
       margin-left: 2px;
       height: 27px;
@@ -236,6 +275,7 @@ export default {
     .setting{
       width: 410px;
       height: 400px;
+      /* font-family: "Consolas","Microsoft YaHei",sans-serif; */
       margin-left: 10px;
      }
      .line {
@@ -253,6 +293,18 @@ export default {
       -webkit-user-select:none;
       -ms-user-select:none;
       user-select:none;
+    }
+    body,html{
+      font-family: "Consolas",sans-serif;
+    }
+    .zxfyyt{
+      font-family: "zxfyyt",sans-serif;
+    }
+    .yahei{
+      font-family: "Microsoft YaHei",sans-serif;
+    }
+    .consolas{
+      font-family: "Consolas",sans-serif;
     }
     li {
       padding-right: 5px ;
