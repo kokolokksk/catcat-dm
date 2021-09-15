@@ -21,14 +21,14 @@ windows下查看 哔哩哔哩 直播弹幕
 - [x] 弹幕颜色
 - [ ] 弹幕滚动速度
 - [x] 人气
-- [ ] TTS
+- [x] TTS
 - [x] 进入直播间 
 - [ ] 关注UP
 - [x] 礼物(基本显示)
 - [ ] super chat
 - [ ] 通过chat 窗口回复
 #### NEXT TODO
-TTS
+super chat
 
 
 
