@@ -33,6 +33,10 @@
     全局字体:<select v-model = "dmf" name= "dmf">
                  <option v-for="(item,index) in fontList" :key="index" :value='item.value'>{{item.title}}</option>  
             </select><a-button @click="setDmf" class="left-margin" type='default'>设置</a-button>
+    <p class="line"/>
+    <div>
+        TTS:<a-switch default-unchecked v-model="tts" checked-children="开" un-checked-children="关" @change="setTTS" />
+    </div>
   </div> 
 </template>
 <script>
@@ -63,7 +67,8 @@ export default {
       roomid:0,
       scaleX:1,
       dmf:'1',
-      fontList:[{id: 1, title: '字心坊韵圆体', value: 'zxfyyt'}, {id: 2, title: '微软雅黑', value: 'Microsoft YaHei'}, {id: 3, title: 'Consolas', value: 'Consolas'}]
+      fontList:[{id: 1, title: '字心坊韵圆体', value: 'zxfyyt'}, {id: 2, title: '微软雅黑', value: 'Microsoft YaHei'}, {id: 3, title: 'Consolas', value: 'Consolas'}],
+      tts:false
     }
   },
   mounted () {
@@ -78,9 +83,35 @@ export default {
           _self.roomid = docs[0].roomid
           _self.scaleX = docs[0].scaleX
           _self.dmf = docs[0].dmf
+          _self.tts = docs[0].tts
           // fixme load color
           document.getElementById('bgc').nodeValue = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
           document.getElementById('dmc').nodeValue = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
+    },
+    setTTS () {
+      let _self = this
+      this.$db.find({ type: 2 }, (err, docs) => {
+        console.info(docs)
+        if (docs !== null && docs.length !== 0) {
+          console.info(_self.tts)
+          _self.$db.update({ _id: docs[0]._id }, { $set: { tts: _self.tts } }, {}, function () {
+            console.info('update success')
+          })
+        } else {
+          let ttsStore = {
+            tts: _self.tts, // user id
+            type: 2
+          }
+          _self.$db.insert(ttsStore, (err, ret) => {
+            if (err !== null) {
+              console.info(err)
+            }
+          })
         }
         if (err !== null) {
           console.info(err)

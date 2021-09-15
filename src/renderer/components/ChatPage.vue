@@ -33,6 +33,7 @@ let danmuFont = '"zxfyyt"'
 let danmuSize = '18px '
 let onlneCount = '人气'
 let speakStatus = false
+let tts = false
 let speakList = []
 const Say = require('say').Say
 const say = new Say('darwin' || 'win32' || 'linux')
@@ -57,6 +58,7 @@ export default {
           danmuAreaColor = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
           danmuFont = docs[0].dmf === null ? 'zxfyyt' : docs[0].dmf
           scaleX = docs[0].scaleX === null ? scaleX : docs[0].scaleX
+          tts = docs[0].tts === null ? false : docs[0].tts
         }
         if (err !== null) {
           console.info(err)
@@ -205,19 +207,21 @@ export default {
             ctx.textAlign = 'left'
             if (i < 5) {
               ctx.fillText(visibleDmList[key].nickname + ':' + visibleDmList[key].danmu, 20, y - i * 25 - 25)
-              // 判断是否在阅读
-              if (speakStatus) {
-                // 不阅读 把其加入阅读list
-                speakList.unshift(visibleDmList[key].nickname + ':' + visibleDmList[key].danmu)
-              } else {
-                let tempText = speakList.pop()
-                say.speak(tempText, 1.0, (err) => {
-                  if (err) {
-                    return console.error(err)
-                  }
-                  speakStatus = false
-                  console.log('Text has been spoken.')
-                })
+              if (tts) {
+                // 判断是否在阅读
+                if (speakStatus) {
+                  // 不阅读 把其加入阅读list
+                  speakList.unshift(visibleDmList[key].nickname + ':' + visibleDmList[key].danmu)
+                } else {
+                  let tempText = speakList.pop()
+                  say.speak(tempText, 1.0, (err) => {
+                    if (err) {
+                      return console.error(err)
+                    }
+                    speakStatus = false
+                    console.log('Text has been spoken.')
+                  })
+                }
               }
             }
             i++

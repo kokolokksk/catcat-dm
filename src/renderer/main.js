@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import axios from 'axios'
-import Button from 'ant-design-vue/lib/button'
+import {Switch, Button} from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
 
 import App from './App'
@@ -13,6 +13,7 @@ import '@/assets/style/font.less'
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.use(VueElectron)
 Vue.component(Button.name, Button)
+Vue.component(Switch.name, Switch)
 Vue.config.productionTip = false
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
