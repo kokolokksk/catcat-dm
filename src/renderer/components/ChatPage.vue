@@ -58,11 +58,12 @@ export default {
           log.info(docs)
           _self.roomid = docs[0].roomid
           // fixme load color
-          danmuColor = docs[0].dmc === null || undefined || 'undefined' ? 'rgba(0,0,0,1)' : docs[0].dmc
-          danmuAreaColor = docs[0].bgc === null || undefined || 'undefined' ? 'rgba(255,255,255,1)' : docs[0].bgc
-          danmuFont = docs[0].dmf === null || undefined || 'undefined' ? 'zxfyyt' : docs[0].dmf
-          scaleX = docs[0].scaleX === null || undefined || 'undefined' ? scaleX : docs[0].scaleX
-          tts = docs[0].tts === null || undefined || 'undefined' ? false : docs[0].tts
+          danmuColor = typeof (docs[0].dmc) === 'undefined' ? 'rgba(0,0,0,1)' : docs[0].dmc
+          danmuAreaColor = typeof (docs[0].bgc) === 'undefined' ? 'rgba(255,255,255,1)' : docs[0].bgc
+          danmuFont = typeof (docs[0].dmf) === 'undefined' ? 'zxfyyt' : docs[0].dmf
+          log.info(docs[0].scaleX)
+          scaleX = typeof (docs[0].scaleX) === 'undefined' ? scaleX : docs[0].scaleX
+          tts = typeof (docs[0].tts) === 'undefined' ? false : docs[0].tts
           log.info('init param has loaded. dmc:' + danmuColor + ';bgc:' + danmuAreaColor + ';dmf:' + danmuFont + ';scale:' + scaleX + ';tts:' + tts)
         }
         if (err !== null) {
