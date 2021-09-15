@@ -37,7 +37,7 @@ let speakStatus = false
 let tts = false
 let speakList = []
 const Say = require('say').Say
-const say = new Say('darwin' || 'win32' || 'linux')
+const say = new Say('win32')
 export default {
   data () {
     return {
@@ -121,8 +121,28 @@ export default {
       ctx.clearRect(0, 0, width, height)
       this.drawBackground()
       this.drawDanmu()
+      this.speakDanmu()
       this.drawComeInList()
       this.drawGiftList()
+    },
+    speakDanmu () {
+      if (tts) {
+      // 判断是否在阅读
+        if (speakStatus) {
+          // 不阅读 把其加入阅读list
+        } else {
+          let tempText = speakList.pop()
+          if (typeof tempText !== 'undefined') {
+            say.speak(tempText.nickname + ':' + tempText.danmu, null, 1.0, (err) => {
+              if (err) {
+                return console.error(err)
+              }
+              speakStatus = false
+              console.log('Text has been spoken.')
+            })
+          }
+        }
+      }
     },
     drawBackground () {
       ctx.fillStyle = danmuAreaColor
@@ -214,22 +234,6 @@ export default {
             ctx.textAlign = 'left'
             if (i < 5) {
               ctx.fillText(visibleDmList[key].nickname + ':' + visibleDmList[key].danmu, 20, y - i * 25 - 25)
-              if (tts) {
-                // 判断是否在阅读
-                if (speakStatus) {
-                  // 不阅读 把其加入阅读list
-                  speakList.unshift(visibleDmList[key].nickname + ':' + visibleDmList[key].danmu)
-                } else {
-                  let tempText = speakList.pop()
-                  say.speak(tempText, 1.0, (err) => {
-                    if (err) {
-                      return console.error(err)
-                    }
-                    speakStatus = false
-                    console.log('Text has been spoken.')
-                  })
-                }
-              }
             }
             i++
           }
@@ -377,6 +381,7 @@ export default {
                     danmuStore.time = (info[9].ts === null || info[9].ts === undefined) ? info[0][4] : info[9].ts
                     // add to list
                     invisibleDmList.push(danmuStore)
+                    speakList.push(danmuStore)
                     // do repeat check
                     this.$db.find({time: danmuStore.time}, (err, docs) => {
                       if (docs.length === 0) {
