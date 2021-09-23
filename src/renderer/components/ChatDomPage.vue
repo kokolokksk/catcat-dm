@@ -1,8 +1,25 @@
 <template>
   <div id='root'>
+    
     <div class="left-cat-ear"></div>
+    <div class="left-cat-ear-large"></div>
+    <div id="tool_bar" class="tool-bar">
+      <div @click="openSettingN" style="z-index:999999">
+        <svg  xmlns="http://www.w3.org/2000/svg" version="1.1">
+          <circle cx="10" cy="10" r="3" stroke="rgba(255,168,168,1)" stroke-width="4" fill="rgba(255,168,168,1)" />
+        </svg>
+      </div>
+    </div>
     <div class="right-cat-ear"></div>
+    <div class="right-cat-ear-large"></div>
+    <!-- background -->
     <div id="c-bg">
+    </div>
+    <!-- danmu -->
+    <div class="danmu-container">
+      <div class="danmu">
+        <div class="fans">呐卷</div><div class="dm-name">loveloliii</div><div class="dm-c">123</div>
+      </div>
     </div>
     <div class="dm" :class="class1&&'animate__animated animate__bounce'">
       123
@@ -21,7 +38,7 @@ let speakList = []
 const Say = require('say').Say
 const say = new Say('win32')
 let muaConfig = {
-  roomid: '0',
+  roomid: 6,
   windowWidth: 500, // 窗口宽度
   windowHeight: 500, // 窗口高度
   y: 300, // dm初始高度
@@ -58,22 +75,22 @@ export default {
           console.info(docs)
           log.info('have local config')
           log.info(docs)
-          _self.muaConfig.roomid = typeof (docs[0].roomid) === 'undefined' ? _self.muaConfig.roomid : docs[0].roomid
+          muaConfig.roomid = typeof (docs[0].roomid) === 'undefined' ? muaConfig.roomid : docs[0].roomid
           // fixme load color
-          _self.muaConfig.danmuColor = typeof (docs[0].dmc) === 'undefined' ? _self.muaConfig.danmuColor : docs[0].dmc
-          _self.muaConfig.danmuAreaColor = typeof (docs[0].bgc) === 'undefined' ? _self.muaConfig.danmuAreaColor : docs[0].bgc
-          _self.muaConfig.danmuFont = typeof (docs[0].dmf) === 'undefined' ? _self.muaConfig.danmuFont : docs[0].dmf
+          muaConfig.danmuColor = typeof (docs[0].dmc) === 'undefined' ? muaConfig.danmuColor : docs[0].dmc
+          muaConfig.danmuAreaColor = typeof (docs[0].bgc) === 'undefined' ? muaConfig.danmuAreaColor : docs[0].bgc
+          muaConfig.danmuFont = typeof (docs[0].dmf) === 'undefined' ? muaConfig.danmuFont : docs[0].dmf
           log.info(docs[0].scaleX)
-          _self.muaConfig.scale = typeof (docs[0].scaleX) === 'undefined' ? _self.muaConfig.scale : docs[0].scaleX
-          _self.muaConfig.tts = typeof (docs[0].tts) === 'undefined' ? _self.muaConfig.tts : docs[0].tts
-          log.info('init param has loaded. dmc:' + _self.muaConfig.danmuColor + ';bgc:' + _self.muaConfig.danmuAreaColor + ';dmf:' + _self.muaConfig.danmuFont + ';scale:' + _self.muaConfig.scale + ';tts:' + _self.muaConfig.tts)
+          muaConfig.scale = typeof (docs[0].scaleX) === 'undefined' ? muaConfig.scale : docs[0].scaleX
+          muaConfig.tts = typeof (docs[0].tts) === 'undefined' ? muaConfig.tts : docs[0].tts
+          log.info('init param has loaded. dmc:' + muaConfig.danmuColor + ';bgc:' + muaConfig.danmuAreaColor + ';dmf:' + muaConfig.danmuFont + ';scale:' + muaConfig.scale + ';tts:' + muaConfig.tts)
         }
         if (err !== null) {
           log.info('maybe no local config')
           console.info(err)
         }
         this.connectLive()
-        window.requestAnimationFrame(this.startDraw)
+        // window.requestAnimationFrame(this.startDraw)
       })
     },
     connectLive () {
@@ -189,28 +206,106 @@ export default {
         })
       // 74185
       })
+    },
+    openSettingN () {
+      console.info('come in openSetting windows')
+      this.$electron.ipcRenderer.send('createSettingWindow')
     }
   }
 }
 </script>
 <style>
-  /* .left-cat-ear {
+  .fans {
+    float: left;
+    height: 100%;
+    width: 15%;
+  }
+  .dm-name {
+    float: left;
+    height: 100%;
+    width: auto;
+  }
+  .dm-c {
+    float: left;
+    height: 100%;
+    width: auto;
+  }
+  .danmu {
+    align-content: center;
+    background-color: teal;
+    height: 15%;
+    width: 100%;
+    z-index: 3;
+
+  }
+  .danmu-container {
+    align-content: center;
+    position: fixed;
+    height: 50%;
+    width: 70%;
+    left: 5%;
+    top: 30%;
+    background-color: #ffc8ea;
+    z-index: 2;
+  }
+
+  .left-cat-ear-large {
+    -webkit-app-region: drag;
     position: fixed;
     width: 0;
+    top:0%;
     height: 0;
-    border: 50px solid #85b3b3;
-    border-right: 50px solid transparent;
-    border-bottom: 50px solid transparent;
+    border-bottom: 100px solid rgba(255,168,168,1);
+    border-right: 100px solid transparent;
+    border-left: 100px solid transparent;
+    z-index: -2;
   }
+  .left-cat-ear {
+    position: fixed;
+    width: 0;
+    top:10%;
+    left: 10%;
+    height: 0;
+    border-bottom: 50px solid #64a8a8;
+    border-right: 50px solid transparent;
+    border-left: 50px solid transparent;
+    z-index: -1;
+  }
+/* .setting-point {
+  right: 0;
+  z-index: 1;
+} */
+.tool-bar {
+  position:fixed;
+  top:10px;
+  height:0;
+  width:100%;
+  z-index: 2;
+}
+
   .right-cat-ear {
     position: fixed;
-    right: 0;
+    right: 30%;
+    top:10%;
     width: 0;
     height: 0;
-    border: 50px solid #85b3b3;
+    border-bottom: 50px solid #739c9c;
     border-left: 50px solid transparent;
-    border-bottom: 50px solid transparent;
-  } */
+    border-right: 50px solid transparent;
+    z-index: 1000;
+  }
+  .right-cat-ear-large {
+    -webkit-app-region: drag;
+    position: fixed;
+    right: 20%;
+    top:0%;
+    width: 0;
+    height: 0;
+    border-bottom: 100px solid rgba(255,168,168,1);
+    border-left: 100px solid transparent;
+    border-right: 100px solid transparent;
+    z-index: 1;
+  }
   .dm{
     width: 10%;
     position: fixed;
@@ -229,11 +324,13 @@ export default {
     background-color: transparent;
   }
   #c-bg{
+    z-index: 1;
     -webkit-app-region: drag;
-    width: 100%;
-    height: 100%;
+    width: 80%;
+    height: 70%;
+    bottom: 10%;
     position: fixed;
-    border-radius:50%;
+    border-radius:1%;
     background-image:  repeating-radial-gradient(circle at 50% 50%,#99CCCC 20px, #99CCCC 20px, #99CCCC 40px, #99CCCC 40px, #99CCCC 60px, #99CCCC 60px, #99CCCC 80px, #99CCCC 80px, #99CCCC 100px);
    
   }
