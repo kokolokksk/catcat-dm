@@ -17,12 +17,11 @@
     </div>
     <!-- danmu -->
     <div class="danmu-container">
-      <div class="danmu">
-        <div class="fans">呐卷</div><div class="dm-name">loveloliii</div><div class="dm-c">123</div>
+      <transition-group name="list" tag="div" mode="out-in">
+      <div v-for="(item,index) in invisibleDmList" class="danmu" :key="index">
+        <div class="fans" ><div v-if="item.xz_name" class="xzn">{{item.xz_name}}</div><div v-if="item.xz_level" class="xzl">&nbsp;{{item.xz_level}}&nbsp;</div></div><div class="dm-name">&nbsp;{{item.nickname}}:</div><div class="dm-c">{{item.danmu}}</div>
       </div>
-    </div>
-    <div class="dm" :class="class1&&'animate__animated animate__bounce'">
-      123
+      </transition-group>
     </div>
   </div>
 </template>
@@ -57,6 +56,8 @@ let muaConfig = {
 export default {
   data () {
     return {
+      invisibleDmList,
+      visibleDmList,
       class1:false
     }
   },
@@ -129,6 +130,7 @@ export default {
                     avatar: '', // avatar address
                     live_level: '', // live level
                     xz_level: '', // xz level
+                    xz_name: '',
                     danmu: '', // dm
                     time: 0, // send time
                     use_state: 0, // use state
@@ -137,14 +139,21 @@ export default {
                   let info = data[index].data.info
                   const danmu = info[1]
                   const userInfo = info[2]
+                  const xzInfo = info[3]
                   // add danmu to nedb
                   // let danmuInfo = g.danmu
                   danmuStore.danmu = danmu
                   danmuStore.userid = userInfo[0]
                   danmuStore.nickname = userInfo[1]
                   danmuStore.time = (info[9].ts === null || info[9].ts === undefined) ? info[0][4] : info[9].ts
+                  danmuStore.xz_level = (xzInfo[0] === null || xzInfo[0] === undefined) ? '' : xzInfo[0]
+                  danmuStore.xz_name = (xzInfo[1] === null || xzInfo[1] === undefined) ? '' : xzInfo[1]
                   // add to list
+                  console.info(danmuStore)
                   invisibleDmList.push(danmuStore)
+                  if (invisibleDmList.length >= 10) {
+                    invisibleDmList.shift()
+                  }
                   speakList.push(danmuStore)
                   // do repeat check
                   this.$db.find({time: danmuStore.time}, (err, docs) => {
@@ -215,12 +224,70 @@ export default {
 }
 </script>
 <style>
+.list-enter-active, .list-leave-active {
+  transition: all 1s;
+}
+.list-enter, .list-leave-to
+/* .list-leave-active for below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateY(30px);
+}
+/* .list-move {
+  transition: transform 1s;
+} */
+ .list-complete-item {
+  transition: all 1s;
+  display: inline-block;
+  margin-right: 10px;
+}
+.list-complete-enter, .list-complete-leave-to
+/* .list-complete-leave-active for below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateY(30px);
+}
+.list-complete-leave-active {
+  position: absolute;
+}
+
+.xzn {
+  margin-left: 5px;
+  font-size: 9pt;
+  font-family: 'zxfyyt';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left:1px;
+  padding-right:1px;
+    border: 2px solid #ffffff;
+    border-right-width: 0px;
+    background: #55b344;
+    border-radius: 25% 5% 5% 25%;
+    color: rgb(180, 255, 170);
+    z-index: 4;
+}
+.xzl {
+  display: flex;
+  align-items: center;
+  font-family: 'zxfyyt';
+   justify-content: center;
+   padding-left:1px;
+  padding-right:1px;
+    border: 2px solid #ffffff;
+    border-left-color: #d5f5cf;
+    background: #55b344;
+    border-radius: 5% 5% 5% 5%;
+    color:#ffffff;
+    z-index: 4;
+}
   .fans {
+    z-index: 4;
     float: left;
     height: 100%;
-    width: 15%;
+    width: auto;
+    display: inline-flex;
   }
   .dm-name {
+    
     float: left;
     height: 100%;
     width: auto;
@@ -229,14 +296,18 @@ export default {
     float: left;
     height: 100%;
     width: auto;
+    max-width: 100%;
   }
   .danmu {
+    display: flex;
+    margin-bottom: 5px;
+    align-items: center;
+    /* display: inline-block; */
     align-content: center;
-    background-color: teal;
+    /* background-color: teal; */
     height: 15%;
     width: 100%;
     z-index: 3;
-
   }
   .danmu-container {
     align-content: center;
