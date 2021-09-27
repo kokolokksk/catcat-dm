@@ -12,7 +12,7 @@
     <p class="line"/>
     房间号:<input type='text' v-model = roomid name= "roomid" /><a-button class="left-margin" type="default" @click="setRoomId" >设置</a-button>
     <p class="line"/>
-    <div id="demo-content">
+    <!-- <div id="demo-content">
       <div id="demo-app">
         <p>
       背景颜色:
@@ -27,12 +27,14 @@
        <p class="line"/>
       </div> 
 		</div> 
-    <p class="line"/>
+    <p class="line"/> -->
+    置顶:<a-switch default-checked v-model="alwaysOnTop" checked-children="开" un-checked-children="关" @change="setAlwaysOnTop" />
+    <!-- <p class="line"/>
     缩放倍率:<input type='text' v-model = scaleX name= "scaleX" /><a-button class="left-margin" @click="setScaleX" type='default'>设置</a-button>
     <p class="line"/>
     全局字体:<select v-model = "dmf" name= "dmf" class= fc @change="setFc">
                  <option v-for="(item,index) in fontList" :key="index" :value='item.value' :class='item.class'>{{item.title}}</option>  
-            </select><a-button @click="setDmf" class="left-margin" type='default'>设置</a-button>
+            </select><a-button @click="setDmf" class="left-margin" type='default'>设置</a-button> -->
     <p class="line"/>
     <div>
         TTS:<a-switch default-unchecked v-model="tts" checked-children="开" un-checked-children="关" @change="setTTS" />
@@ -80,7 +82,8 @@ export default {
         {id: 10, title: '华文彩云', value: 'STCaiyun', class: 'STCaiyun'},
         {id: 11, title: '华文琥珀', value: 'STHupo', class: 'STHupo'},
         {id: 12, title: '冬青黑体简', value: 'Hiragino Sans GB', class: 'HiraginoSansGB'}],
-      tts:false
+      tts:false,
+      alwaysOnTop: true
     }
   },
   mounted () {
@@ -96,6 +99,7 @@ export default {
           _self.scaleX = docs[0].scaleX
           _self.dmf = docs[0].dmf
           _self.tts = docs[0].tts
+          _self.alwaysOnTop = docs[0].alwaysOnTop
           // fixme load color
           document.getElementById('bgc').nodeValue = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
           document.getElementById('dmc').nodeValue = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
@@ -120,6 +124,31 @@ export default {
             type: 2
           }
           _self.$db.insert(ttsStore, (err, ret) => {
+            if (err !== null) {
+              console.info(err)
+            }
+          })
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
+    },
+    setAlwaysOnTop () {
+      let _self = this
+      this.$db.find({ type: 2 }, (err, docs) => {
+        console.info(docs)
+        if (docs !== null && docs.length !== 0) {
+          console.info(_self.alwaysOnTop)
+          _self.$db.update({ _id: docs[0]._id }, { $set: { alwaysOnTop: _self.alwaysOnTop } }, {}, function () {
+            console.info('update success')
+          })
+        } else {
+          let alwaysOnTopStore = {
+            alwaysOnTop: _self.alwaysOnTop, // user id
+            type: 2
+          }
+          _self.$db.insert(alwaysOnTopStore, (err, ret) => {
             if (err !== null) {
               console.info(err)
             }
