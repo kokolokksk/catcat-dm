@@ -2,6 +2,9 @@
   <div id='root'>
     <div class="settingClass"  @click="openSettingN"   >
     </div> 
+    <div class="online">
+    <span>人气：{{muaConfig.onlineCount}}</span>
+    </div>
     <div class="left-cat-ear"></div>
     <div class="left-cat-ear-large"></div>
     <div class="right-cat-ear"></div>
@@ -80,7 +83,7 @@ let muaConfig = {
   danmuAreaColor: 'rgb(250,250,250)', // 背景色
   danmuFont: 'zxfyyt', // dm字体家族
   danmuSize: '18px ', // dm字体大小
-  onlneCount: '人气',
+  onlineCount: '人气',
   speakStatus:false, // 发言状态
   tts:false, // tts开关
   alwaysOnTop:true // 置顶
@@ -93,6 +96,7 @@ export default {
       visibleDmList,
       comeInList,
       giftList,
+      muaConfig,
       class1:false
     }
   },
@@ -156,7 +160,7 @@ export default {
       })
       live.on('live', () => {
         live.on('heartbeat', (online) => {
-          muaConfig.onlneCount = online
+          _self.muaConfig.onlineCount = online
         })
         live.on('msg', (data) => {
           console.info(data)
@@ -192,7 +196,7 @@ export default {
                   // add to list
                   console.info(danmuStore)
                   invisibleDmList.push(danmuStore)
-                  if (invisibleDmList.length >= 10) {
+                  if (invisibleDmList.length >= 9) {
                     invisibleDmList.shift()
                   }
                   speakList.push(danmuStore)
@@ -290,6 +294,14 @@ export default {
 }
 </script>
 <style>
+.online {
+  left: 5%;
+  position:fixed;
+  top:23%;
+  background-color: #99CCCC;
+  color: #ffffff;
+  z-index: 5;
+}
 .settingClass { 
   background-color: #55b344;
   width: 10px;
