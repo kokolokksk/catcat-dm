@@ -682,7 +682,7 @@ export default {
     /* display: inline-block; */
     align-content: center;
     /* background-color: teal; */
-    height: 15%;
+    height: 10%;
     width: 100%;
     z-index: 3;
   }
