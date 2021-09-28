@@ -1,5 +1,16 @@
 <template>
   <div id='root'>
+    <div class="waveWrapper waveAnimation">
+  <div class="waveWrapperInner bgTop">
+    <div class="wave waveTop" style="background-image: url('http://front-end-noobs.com/jecko/img/wave-top.png')"></div>
+  </div>
+  <div class="waveWrapperInner bgMiddle">
+    <div class="wave waveMiddle" style="background-image: url('http://front-end-noobs.com/jecko/img/wave-mid.png')"></div>
+  </div>
+  <div class="waveWrapperInner bgBottom">
+    <div class="wave waveBottom" style="background-image: url('http://front-end-noobs.com/jecko/img/wave-bot.png')"></div>
+  </div>
+</div>
     <div class="settingClass"  @click="openSettingN"   >
     </div> 
     <div class="online">
@@ -14,7 +25,7 @@
     </div>
     <!-- danmu -->
     <div class="danmu-container" style="font-size:11pt">
-      <transition-group name="list" tag="div" mode="out-in">
+      <transition-group appear name="list" tag="div" mode="out-in">
       <div v-for="(item,index) in invisibleDmList" class="danmu" :key="index">
         <div class="fans" ><div v-if="item.xz_name" 
         :class="{
@@ -294,16 +305,89 @@ export default {
 }
 </script>
 <style>
+@keyframes move_wave {
+    0% {
+        transform: translateX(0) translateZ(0) scaleY(1)
+    }
+    50% {
+        transform: translateX(-25%) translateZ(0) scaleY(0.55)
+    }
+    100% {
+        transform: translateX(-50%) translateZ(0) scaleY(1)
+    }
+}
+.waveWrapper {
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    right: 20%;
+    bottom: 10%;
+    top: 20%;
+    margin: auto;
+}
+.waveWrapperInner {
+    position: absolute;
+    width: 100%;
+    overflow: hidden;
+    height: 100%;
+    bottom: -1px;
+    background-image: linear-gradient(to top, #967b92 20%, #e2bfd8 80%);
+}
+.bgTop {
+    z-index: 15;
+    opacity: 0.5;
+     z-index: -4;
+}
+.bgMiddle {
+    z-index: 10;
+    opacity: 0.75;
+     z-index: -4;
+}
+.bgBottom {
+    z-index: 5;
+     z-index: -4;
+}
+.wave {
+  z-index: -4;
+    position: absolute;
+    left: 0;
+    width: 400%;
+    height: 100%;
+    background-repeat: repeat no-repeat;
+    background-position: 0 bottom;
+    transform-origin: center bottom;
+}
+.waveTop {
+    background-size: 50% 100px;
+}
+.waveAnimation .waveTop {
+  animation: move-wave 3s;
+   -webkit-animation: move-wave 3s;
+   -webkit-animation-delay: 1s;
+   animation-delay: 1s;
+}
+.waveMiddle {
+    background-size: 50% 120px;
+}
+.waveAnimation .waveMiddle {
+    animation: move_wave 10s linear infinite;
+}
+.waveBottom {
+    background-size: 50% 100px;
+}
+.waveAnimation .waveBottom {
+    animation: move_wave 15s linear infinite;
+}
 .online {
   left: 5%;
   position:fixed;
   top:23%;
-  background-color: #99CCCC;
+  background-color: transparent;
   color: #ffffff;
   z-index: 5;
 }
 .settingClass { 
-  background-color: #55b344;
+  background-image: linear-gradient(45deg, rgb(245, 100, 17), rgb(245, 110, 32) ,rgb(245, 110, 32),rgb(247, 142, 82),rgb(255, 135, 66),rgb(245, 195, 166),rgb(255, 255, 255));
   width: 10px;
   height: 10px; 
   position: fixed;
@@ -697,11 +781,13 @@ export default {
     height: 10%;
     width: 100%;
     z-index: 3;
+    color: #000;
+    font-family: 'Consolas','zxfyyt','YouYuan';
   }
   .comein {
-    font-family: 'Consolas';
+    font-family: 'YouYuan';
     font-size: 10pt;
-    color: gray;
+    color: rgb(32, 32, 32);
     display: flex;
     margin-bottom: 5px;
     align-items: center;
@@ -715,7 +801,7 @@ export default {
   .gift {
     font-family: 'Consolas';
     font-size: 10pt;
-    color: gray;
+    color: rgb(248, 156, 113);
     display: flex;
     margin-bottom: 5px;
     align-items: center;
@@ -727,13 +813,14 @@ export default {
     z-index: 3;
   }
   .danmu-container {
+    padding: 5px;
     align-content: center;
     position: fixed;
     height: 50%;
     width: 70%;
     left: 5%;
     top: 30%;
-    background-color: #ffc8ea;
+    background-color: rgba(221, 170, 170, 0.74);
     z-index: 2;
   }
   .comein-container {
@@ -744,9 +831,11 @@ export default {
     left: 5%;
     top: 80%;
     /* background-color: #cc88b2; */
+    background-color: transparent;
     z-index: 2;
   } 
   .gift-container {
+    background-color: transparent;
     align-content: center;
     position: fixed;
     height: 5%;
@@ -761,7 +850,7 @@ export default {
     top:0%;
     height: 0;
     pointer-events: none;
-    border-bottom: 100px solid rgba(255,168,168,1);
+    border-bottom: 100px solid rgba(216, 160, 160, 0.74);
     border-right: 100px solid transparent;
     border-left: 100px solid transparent;
     z-index: -2;
@@ -772,7 +861,7 @@ export default {
     top:10%;
     left: 10%;
     height: 0;
-    border-bottom: 50px solid #64a8a8;
+    border-bottom: 50px solid rgba(136, 100, 100, 0.74);
     border-right: 50px solid transparent;
     border-left: 50px solid transparent;
     z-index: -1;
@@ -795,7 +884,7 @@ export default {
     top:10%;
     width: 0;
     height: 0;
-    border-bottom: 50px solid #739c9c;
+    border-bottom: 50px solid rgba(136, 100, 100, 0.74);
     border-left: 50px solid transparent;
     border-right: 50px solid transparent;
     z-index: 1000;
@@ -807,20 +896,20 @@ export default {
     top:0%;
     width: 0;
     height: 0;
-    border-bottom: 100px solid rgba(255,168,168,1);
+    border-bottom: 100px solid rgba(216, 160, 160, 0.74);
     border-left: 100px solid transparent;
     border-right: 100px solid transparent;
     z-index: 1;
   }
-  .dm{
+  /* .dm{
     width: 10%;
     position: fixed;
     top: 45%;
     left: 40%;
     background-color: #85b3b3; display: inline-block; margin: 0 0.5rem;
-    animation: bounce; /* referring directly to the animation's @keyframe declaration */
-    animation-duration: 2s; /* don't forget to set a duration! */
-  }
+    animation: bounce;  
+    animation-duration: 2s;  
+  } */
   #root{
     width: 500px;
     height: 500px;
@@ -837,9 +926,16 @@ export default {
     bottom: 10%;
     position: fixed;
     border-radius:1%;
-    background-image:  repeating-radial-gradient(circle at 50% 50%,#99CCCC 20px, #99CCCC 20px, #99CCCC 40px, #99CCCC 40px, #99CCCC 60px, #99CCCC 60px, #99CCCC 80px, #99CCCC 80px, #99CCCC 100px);
+    -webkit-background-size: 50px 50px;
+		-moz-background-size: 50px 50px;
+		background-size: 50px 50px;
+		-moz-box-shadow: 8px 8px 8px gray;
+		-webkit-box-shadow: 8px 8px 8px gray;
+		box-shadow: 1px 1px 8px gray;
+    /* background-image:  repeating-radial-gradient(circle at 50% 50%,#e98892 20px, #e98892 20px, #e98892 40px, #e98892 40px, #e98892 60px, #e98892 60px, #e98892 80px, #e98892 80px, #e98892 100px); */
    
-  }
+    background:transparent
+    }
   ::-webkit-scrollbar {
     display: none;
   }
