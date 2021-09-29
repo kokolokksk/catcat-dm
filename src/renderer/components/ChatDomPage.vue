@@ -2,19 +2,22 @@
   <div id='root'>
     <div class="waveWrapper waveAnimation">
   <div class="waveWrapperInner bgTop">
-    <div class="wave waveTop" style="background-image: url('http://front-end-noobs.com/jecko/img/wave-top.png')"></div>
+    <div class="wave waveTop" style="background-image: url('/static/wave-top.png')"></div>
   </div>
   <div class="waveWrapperInner bgMiddle">
-    <div class="wave waveMiddle" style="background-image: url('http://front-end-noobs.com/jecko/img/wave-mid.png')"></div>
+    <div class="wave waveMiddle" style="background-image: url('/static/wave-mid.png')"></div>
   </div>
   <div class="waveWrapperInner bgBottom">
-    <div class="wave waveBottom" style="background-image: url('http://front-end-noobs.com/jecko/img/wave-bot.png')"></div>
+    <div class="wave waveBottom" style="background-image: url('/static/wave-bot.png')"></div>
   </div>
 </div>
     <div class="settingClass"  @click="openSettingN"   >
     </div> 
     <div class="online">
     <span>人气：{{muaConfig.onlineCount}}</span>
+    </div>
+    <div class="comeinLastMinute">
+    <span>进入/分钟：{{muaConfig.comeinLastMinute}}</span>
     </div>
     <div class="left-cat-ear"></div>
     <div class="left-cat-ear-large"></div>
@@ -26,7 +29,7 @@
     <!-- danmu -->
     <div class="danmu-container" style="font-size:11pt">
       <transition-group appear name="list" tag="div" mode="out-in">
-      <div v-for="(item,index) in invisibleDmList" class="danmu" :key="index">
+      <div v-for="(item) in invisibleDmList" class="danmu" :key="item.time">
         <div class="fans" ><div v-if="item.xz_name" 
         :class="{
         xzn_1:item.xz_level>=1 && item.xz_level<=4,
@@ -56,14 +59,14 @@
     </div>
     <div class="comein-container"> 
       <transition-group name="list" tag="div" mode="out-in">
-      <div v-for="(item,index) in comeInList" class="comein" :key="index">
+      <div v-for="(item) in comeInList" class="comein" :key="item.time">
         <div class="dm-name">{{item.uname}}进入了房间。</div>
       </div>
       </transition-group>
     </div>
     <div class="gift-container"> 
       <transition-group name="list" tag="div" mode="out-in">
-      <div v-for="(item,index) in giftList" class="gift" :key="index">
+      <div v-for="(item) in giftList" class="gift" :key="item.time">
         <div class="dm-name">{{item.uname}}赠送了{{item.giftName}}</div>
       </div>
       </transition-group>
@@ -95,6 +98,7 @@ let muaConfig = {
   danmuFont: 'zxfyyt', // dm字体家族
   danmuSize: '18px ', // dm字体大小
   onlineCount: '人气',
+  comeinLastMinute: 0,
   speakStatus:false, // 发言状态
   tts:false, // tts开关
   alwaysOnTop:true // 置顶
@@ -147,8 +151,13 @@ export default {
           console.info(err)
         }
         this.connectLive()
-        // window.requestAnimationFrame(this.startDraw)
+        window.requestAnimationFrame(this.count)
       })
+    },
+    count () {
+      if (new Date().getSeconds === 0) {
+        muaConfig.comeinLastMinute = 0
+      }
     },
     connectLive () {
       // get init configure
@@ -239,6 +248,7 @@ export default {
                   comeInStore.uname_color = data[index].data.data.uname_color
                   comeInStore.time = data[index].data.data.timestamp
                   comeInList.push(comeInStore)
+                  muaConfig.comeinLastMinute++
                   if (comeInList.length >= 2) {
                     comeInList.shift()
                   }
@@ -382,6 +392,14 @@ export default {
   left: 5%;
   position:fixed;
   top:23%;
+  background-color: transparent;
+  color: #ffffff;
+  z-index: 5;
+}
+.comeinLastMinute {
+  left: 5%;
+  position:fixed;
+  top:26%;
   background-color: transparent;
   color: #ffffff;
   z-index: 5;
@@ -820,8 +838,7 @@ export default {
     width: 70%;
     left: 5%;
     top: 30%;
-    background-color: rgba(221, 170, 170, 0.74);
-    z-index: 2;
+    background-image:  linear-gradient(0deg, rgba(241, 147, 156,0.1), rgba(234, 81, 127,0.9));
   }
   .comein-container {
     align-content: center;
