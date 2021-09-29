@@ -58,14 +58,14 @@
       </transition-group>
     </div>
     <div class="comein-container"> 
-      <transition-group name="list" tag="div" mode="out-in">
+      <transition-group name="listc" tag="div" mode="out-in">
       <div v-for="(item) in comeInList" class="comein" :key="item.time">
         <div class="dm-name">{{item.uname}}进入了房间。</div>
       </div>
       </transition-group>
     </div>
     <div class="gift-container"> 
-      <transition-group name="list" tag="div" mode="out-in">
+      <transition-group name="listg" tag="div" mode="out-in">
       <div v-for="(item) in giftList" class="gift" :key="item.time">
         <div class="dm-name">{{item.uname}}赠送了{{item.giftName}}</div>
       </div>
@@ -421,7 +421,7 @@ export default {
 .list-enter, .list-leave-to
 /* .list-leave-active for below version 2.1.8 */ {
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateY(-5%);
 }
 /* .list-move {
   transition: transform 1s;
@@ -434,7 +434,7 @@ export default {
 .list-complete-enter, .list-complete-leave-to
 /* .list-complete-leave-active for below version 2.1.8 */ {
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateY(-5%);
 }
 .list-complete-leave-active {
   position: absolute;
@@ -867,7 +867,7 @@ export default {
     top:0%;
     height: 0;
     pointer-events: none;
-    border-bottom: 100px solid rgba(216, 160, 160, 0.74);
+    border-bottom: 100px solid rgba(255, 149, 149, 0.842);
     border-right: 100px solid transparent;
     border-left: 100px solid transparent;
     z-index: -2;
@@ -878,7 +878,7 @@ export default {
     top:10%;
     left: 10%;
     height: 0;
-    border-bottom: 50px solid rgba(136, 100, 100, 0.74);
+    border-bottom: 50px solid rgba(165, 106, 106, 0.74);
     border-right: 50px solid transparent;
     border-left: 50px solid transparent;
     z-index: -1;
@@ -901,7 +901,7 @@ export default {
     top:10%;
     width: 0;
     height: 0;
-    border-bottom: 50px solid rgba(136, 100, 100, 0.74);
+    border-bottom: 50px solid rgba(165, 106, 106, 0.74);
     border-left: 50px solid transparent;
     border-right: 50px solid transparent;
     z-index: 1000;
@@ -913,7 +913,7 @@ export default {
     top:0%;
     width: 0;
     height: 0;
-    border-bottom: 100px solid rgba(216, 160, 160, 0.74);
+    border-bottom: 100px solid rgba(255, 149, 149, 0.842);
     border-left: 100px solid transparent;
     border-right: 100px solid transparent;
     z-index: 1;
