@@ -8,7 +8,7 @@
 >dom版
  - ![界面截图](desc/2021-9-29_11-25-05.gif)
 
-- [下载地址](https://github.com/kokolokksk/muamuamua/releases)
+- [下载地址](https://github.com/kokolokksk/mua/releases/latest)
 
 #### 待做列表
 - [x] 显示一条文字
