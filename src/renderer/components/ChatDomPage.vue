@@ -123,6 +123,9 @@ export default {
   },
   methods: {
     loadConfig () {
+      setInterval(() => {
+        this.count()
+      }, 1000)
       log.info('try load config')
       let _self = this
       this.$db.find({ type: 2 }, (err, docs) => {
@@ -151,11 +154,13 @@ export default {
           console.info(err)
         }
         this.connectLive()
-        window.requestAnimationFrame(this.count)
+        // window.requestAnimationFrame(this.count)
       })
     },
     count () {
-      if (new Date().getSeconds === 0) {
+      let t = new Date()
+      if (t.getSeconds() === 0) {
+        console.info('try reset count')
         muaConfig.comeinLastMinute = 0
       }
     },
