@@ -1,7 +1,7 @@
 {
   "name": "mua",
-  "version": "0.1.1",
-  "author": "loveloliii <woshigegefengleng@live.com>",
+  "version": "dom-v-0.0.4",
+  "author": "loveloliii <loli@loli.monster>",
   "description": "bilibili live mua",
   "license": "MIT",
   "main": "./dist/electron/main.js",
