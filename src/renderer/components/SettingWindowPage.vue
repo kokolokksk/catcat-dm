@@ -12,7 +12,7 @@
     <p class="line"/>
     房间号:<input type='text' v-model = roomid name= "roomid" /><a-button class="left-margin" type="default" @click="setRoomId" >设置</a-button>
     <p class="line"/>
-    <!-- <div id="demo-content">
+    <div id="demo-content">
       <div id="demo-app">
         <p>
       背景颜色:
@@ -27,7 +27,7 @@
        <p class="line"/>
       </div> 
 		</div> 
-    <p class="line"/> -->
+    <p class="line"/>
     置顶:<a-switch default-checked v-model="alwaysOnTop" checked-children="开" un-checked-children="关" @change="setAlwaysOnTop" />
     <!-- <p class="line"/>
     缩放倍率:<input type='text' v-model = scaleX name= "scaleX" /><a-button class="left-margin" @click="setScaleX" type='default'>设置</a-button>

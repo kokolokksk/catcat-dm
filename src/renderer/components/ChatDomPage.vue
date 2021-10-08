@@ -27,9 +27,9 @@
     <div id="c-bg">
     </div>
     <!-- danmu -->
-    <div class="danmu-container" style="font-size:11pt">
+    <div class="danmu-container"  v-bind:style="{ fontSize:'11pt', backgroundImage: 'linear-gradient(0deg, rgba(241, 147, 156,0.1), '+ muaConfig.danmuAreaColor+ ')'}">
       <transition-group appear name="list" tag="div" mode="out-in">
-      <div v-for="(item) in invisibleDmList" class="danmu" :key="item.time">
+      <div v-for="(item) in invisibleDmList" class="danmu" :style="{ color : muaConfig.danmuColor}" :key="item.time">
         <div class="fans" ><div v-if="item.xz_name" 
         :class="{
         xzn_1:item.xz_level>=1 && item.xz_level<=4,
@@ -76,6 +76,9 @@
 <script>
 const { KeepLiveWS } = require('bilibili-live-ws')
 const { remote } = require('electron')
+require('electron').ipcRenderer.on('did-close-fresh', (event, message) => {
+  location.reload()
+})
 const log = require('electron-log')
 let visibleDmList = []
 let invisibleDmList = []

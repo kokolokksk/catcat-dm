@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, ipcRenderer } from 'electron'
 import '../renderer/store'
 
 /**
@@ -57,7 +57,7 @@ function createSettingWindow () {
   settingWindow.loadURL(modalPath)
 
   settingWindow.on('closed', () => {
-    mainWindow.loadURL(winURL)
+    mainWindow.webContents.send('did-close-fresh', 'refresh')
     settingWindow = null
   })
 }
