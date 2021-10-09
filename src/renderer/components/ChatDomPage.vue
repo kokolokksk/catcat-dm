@@ -1,14 +1,14 @@
 <template>
   <div id='root'>
-    <div class="waveWrapper waveAnimation">
+    <div class="waveWrapper waveAnimation"  >
   <div class="waveWrapperInner bgTop">
     <div class="wave waveTop" style="background-image: url('/static/wave-top.png')"></div>
   </div>
-  <div class="waveWrapperInner bgMiddle">
+  <div class="waveWrapperInner bgMiddle"  >
     <div class="wave waveMiddle" style="background-image: url('/static/wave-mid.png')"></div>
   </div>
-  <div class="waveWrapperInner bgBottom">
-    <div class="wave waveBottom" style="background-image: url('/static/wave-bot.png')"></div>
+  <div class="waveWrapperInner bgBottom" >
+    <div class="wave waveBottom" :style="{display:waveDisplay === true ? 'bloack' : 'none'}"  style="background-image: url('/static/wave-bot.png')"></div>
   </div>
 </div>
     <div class="settingClass"  @click="openSettingN"   >
@@ -29,8 +29,9 @@
     <!-- danmu -->
     <div class="danmu-container"  v-bind:style="{ fontSize:'11pt', backgroundImage: 'linear-gradient(0deg, rgba(241, 147, 156,0.1), '+ muaConfig.danmuAreaColor+ ')'}">
       <transition-group appear name="list" tag="div" mode="out-in">
-      <div v-for="(item) in invisibleDmList" class="danmu" :style="{ color : muaConfig.danmuColor}" :key="item.time">
-        <div class="fans" ><div v-if="item.xz_name" 
+      <div v-for="(item) in invisibleDmList" class="danmu" :style="{ color : muaConfig.danmuColor}" :key="item.uuid">
+        <div class="fans" >
+          <div v-if="item.xz_name" 
         :class="{
         xzn_1:item.xz_level>=1 && item.xz_level<=4,
         xzn_2:item.xz_level>=5 && item.xz_level<=8,
@@ -41,7 +42,8 @@
         xzn_7:item.xz_level>=25 && item.xz_level<=28,
         xzn_8:item.xz_level>=29 && item.xz_level<=32,
         xzn_9:item.xz_level>=33 && item.xz_level<=36,
-        xzn_10:item.xz_level>=37 && item.xz_level<=40}">{{item.xz_name}}</div><div v-if="item.xz_level" 
+        xzn_10:item.xz_level>=37 && item.xz_level<=40}">{{item.xz_name}}</div>
+        <div v-if="item.xz_level" 
         :class="{
         xzl_1:item.xz_level>=1 && item.xz_level<=4,
         xzl_2:item.xz_level>=5 && item.xz_level<=8,
@@ -53,7 +55,21 @@
         xzl_8:item.xz_level>=29 && item.xz_level<=32,
         xzl_9:item.xz_level>=33 && item.xz_level<=36,
         xzl_10:item.xz_level>=37 && item.xz_level<=40  
-        }">&nbsp;{{item.xz_level}}&nbsp;</div></div><div class="dm-name">&nbsp;{{item.nickname}}:</div><div class="dm-c">{{item.danmu}}</div>
+        }">&nbsp;{{item.xz_level}}&nbsp;</div>
+        </div>
+        <div class="dm-name">&nbsp;{{item.nickname}}:</div>
+        <div class="dm-c" :class="{
+        xzl_dm_1:item.xz_level>=1 && item.xz_level<=4 && item.xz_name === '呐卷',
+        xzl_dm_2:item.xz_level>=5 && item.xz_level<=8 && item.xz_name === '呐卷',
+        xzl_dm_3:item.xz_level>=9 && item.xz_level<=12 && item.xz_name === '呐卷',
+        xzl_dm_4:item.xz_level>=13 && item.xz_level<=16 && item.xz_name === '呐卷',
+        xzl_dm_5:item.xz_level>=17 && item.xz_level<=20 && item.xz_name === '呐卷',
+        xzl_dm_6:item.xz_level>=21 && item.xz_level<=24 && item.xz_name === '呐卷',
+        xzl_dm_7:item.xz_level>=25 && item.xz_level<=28 && item.xz_name === '呐卷',
+        xzl_dm_8:item.xz_level>=29 && item.xz_level<=32 && item.xz_name === '呐卷',
+        xzl_dm_9:item.xz_level>=33 && item.xz_level<=36 && item.xz_name === '呐卷',
+        xzl_dm_10:item.xz_level>=37 && item.xz_level<=40 && item.xz_name === '呐卷' 
+        }">{{item.danmu}}</div>
       </div>
       </transition-group>
     </div>
@@ -74,12 +90,15 @@
   </div>
 </template>
 <script>
-const { KeepLiveWS } = require('bilibili-live-ws')
+const { LiveWS } = require('bilibili-live-ws')
 const { remote } = require('electron')
 require('electron').ipcRenderer.on('did-close-fresh', (event, message) => {
+  live.close()
   location.reload()
 })
 const log = require('electron-log')
+let live
+let waveDisplay = true
 let visibleDmList = []
 let invisibleDmList = []
 let comeInList = []
@@ -95,9 +114,9 @@ let muaConfig = {
   y: 300, // dm初始高度
   speed: 0.5, // 滚动速度
   comeInColor: 'rgba(125,127,125,1)', // 进入颜色
-  danmuColor: 'rgba(0,0,0,1)', // dm颜色
+  danmuColor: 'rgba(255,255,255,1)', // dm颜色
   scale: 1.0, // 缩放倍率
-  danmuAreaColor: 'rgb(250,250,250)', // 背景色
+  danmuAreaColor: 'rgba(192,160,255,1)', // 背景色
   danmuFont: 'zxfyyt', // dm字体家族
   danmuSize: '18px ', // dm字体大小
   onlineCount: '人气',
@@ -114,7 +133,9 @@ export default {
       visibleDmList,
       comeInList,
       giftList,
+      waveDisplay,
       muaConfig,
+      live,
       class1:false
     }
   },
@@ -139,6 +160,7 @@ export default {
           muaConfig.roomid = typeof (docs[0].roomid) === 'undefined' ? muaConfig.roomid : docs[0].roomid
           // fixme load color
           muaConfig.danmuColor = typeof (docs[0].dmc) === 'undefined' ? muaConfig.danmuColor : docs[0].dmc
+          _self.waveDisplay = typeof (docs[0].waveD) === 'undefined' ? _self.waveDisplay : docs[0].waveD
           muaConfig.danmuAreaColor = typeof (docs[0].bgc) === 'undefined' ? muaConfig.danmuAreaColor : docs[0].bgc
           muaConfig.danmuFont = typeof (docs[0].dmf) === 'undefined' ? muaConfig.danmuFont : docs[0].dmf
           log.info(docs[0].scaleX)
@@ -171,7 +193,7 @@ export default {
       // get init configure
       let _self = this
       // let roomid = 2808861
-      const live = new KeepLiveWS(Number(muaConfig.roomid))
+      live = new LiveWS(Number(muaConfig.roomid))
       live.on('open', () => {
         console.log('连接已建立 · · ·')
         let sysInfo = {userid: '', // user id
@@ -215,6 +237,7 @@ export default {
                   const xzInfo = info[3]
                   // add danmu to nedb
                   // let danmuInfo = g.danmu
+                  danmuStore.uuid = Math.random(1000000)
                   danmuStore.danmu = danmu
                   danmuStore.userid = userInfo[0]
                   danmuStore.nickname = userInfo[1]
@@ -460,7 +483,7 @@ export default {
   border: 2px solid rgb(83, 134, 128);
   border-right-width: 0px;
   background-image: linear-gradient(45deg, rgb(92, 150, 142), rgb(92, 150, 142));
-  border-radius: 25% 5% 5% 25%;
+  border-radius: 5% 5% 5% 5%;
   color: rgb(255, 255, 255);
   z-index: 4;
 }
@@ -474,10 +497,10 @@ export default {
   justify-content: center;
   padding-left:1px;
   padding-right:1px;
-  border: 2px solid rgb(82, 109, 139),;
+  border: 1px solid rgb(82, 109, 139),;
   border-right-width: 0px;
   background-image: linear-gradient(45deg, rgb(93, 123, 158), rgb(93, 123, 158));
-  border-radius: 25% 5% 5% 25%;
+  border-radius: 5% 5% 5% 5%;
   color: rgb(255, 255, 255);
   z-index: 4;
 }
@@ -491,10 +514,10 @@ export default {
   justify-content: center;
   padding-left:1px;
   padding-right:1px;
-  border: 2px solid rgb(128, 113, 151);
+  border: 1px solid rgb(128, 113, 151);
   border-right-width: 0px;
   background-image: linear-gradient(45deg, rgb(141, 124, 166), rgb(141, 124, 166));
-  border-radius: 25% 5% 5% 25%;
+  border-radius:  5% 5% 5% 5%;
   color: rgb(255, 255, 255);
   z-index: 4;
 }
@@ -508,10 +531,10 @@ export default {
   justify-content: center;
   padding-left:1px;
   padding-right:1px;
-  border: 2px solid rgb(173, 94, 123);
+  border: 1px solid rgb(173, 94, 123);
   border-right-width: 0px;
   background-image: linear-gradient(45deg, rgb(190, 102, 134), rgb(190, 102, 134));
-  border-radius: 25% 5% 5% 25%;
+  border-radius: 5% 5% 5% 5%;
   color: rgb(255, 255, 255);
   z-index: 4;
 }
@@ -525,10 +548,10 @@ export default {
   justify-content: center;
   padding-left:1px;
   padding-right:1px;
-  border: 2px solid rgb(180, 143, 33);
+  border: 1px solid rgb(180, 143, 33);
   border-right-width: 0px;
   background-image: linear-gradient(45deg, rgb(199, 157, 36), rgb(199, 157, 36));
-  border-radius: 25% 5% 5% 25%;
+  border-radius: 5% 5% 5% 5%;
   color: rgb(255, 255, 255);
   z-index: 4;
 }
@@ -542,10 +565,10 @@ export default {
   justify-content: center;
   padding-left:1px;
   padding-right:1px;
-  border: 2px solid rgb(30, 88, 80);
+  border: 1px solid rgb(30, 88, 80);
   border-right-width: 0px;
   background-image: linear-gradient(45deg, rgb(30, 88, 80), rgb(77, 151, 151));
-  border-radius: 25% 5% 5% 25%;
+  border-radius:  5% 5% 5% 5%;
   color: rgb(255, 255, 255);
   z-index: 4;
 }
@@ -559,10 +582,10 @@ export default {
   justify-content: center;
   padding-left:1px;
   padding-right:1px;
-  border: 2px solid rgb(16, 32, 90);
+  border: 1px solid rgb(16, 32, 90);
   border-right-width: 0px;
   background-image: linear-gradient(45deg, rgb(16, 32, 90), rgb(96, 128, 228));
-  border-radius: 25% 5% 5% 25%;
+  border-radius: 5% 5% 5% 5%;
   color: rgb(255, 255, 255);
   z-index: 4;
 }
@@ -576,10 +599,10 @@ export default {
   justify-content: center;
   padding-left:1px;
   padding-right:1px;
-  border: 2px solid rgb(56, 26, 107);
+  border: 1px solid rgb(56, 26, 107);
   border-right-width: 0px;
   background-image: linear-gradient(45deg, rgb(56, 26, 107), rgb(116, 101, 193));
-  border-radius: 25% 5% 5% 25%;
+  border-radius: 5% 5% 5% 5%;
   color: rgb(255, 255, 255);
   z-index: 4;
 }
@@ -593,10 +616,10 @@ export default {
   justify-content: center;
   padding-left:1px;
   padding-right:1px;
-  border: 2px solid rgb(136, 20, 54);
+  border: 1px solid rgb(136, 20, 54);
   border-right-width: 0px;
   background-image: linear-gradient(45deg, rgb(136, 20, 54), rgb(194, 88, 129));
-  border-radius: 25% 5% 5% 25%;
+  border-radius: 5% 5% 5% 5%;
   color: rgb(255, 255, 255);
   z-index: 4;
 }
@@ -610,10 +633,10 @@ export default {
   justify-content: center;
   padding-left:1px;
   padding-right:1px;
-  border: 2px solid rgb(255, 110, 25);
+  border: 1px solid rgb(255, 110, 25);
   border-right-width: 0px;
   background-image: linear-gradient(45deg, rgb(255, 110, 25), rgb(255, 170, 85));
-  border-radius: 25% 5% 5% 25%;
+  border-radius: 5% 5% 5% 5%;
   color: rgb(255, 255, 255);
   z-index: 4;
 }
@@ -778,6 +801,124 @@ export default {
   z-index: 4;
 }
 
+/** dm color */
+/* 1234 */
+.xzl_dm_1 {
+  text-shadow: 1px 1px 1px  #FFFFFF;
+  align-items: left;
+  font-family: 'zxfyyt';
+  justify-content: center;
+  color: rgb(92, 150, 142);
+  z-index: 4;
+}
+/* 5678 */
+.xzl_dm_2 {
+  text-shadow: 1px 1px 1px  #FFFFFF;
+  display: flex;
+  align-items: left;
+  font-family: 'zxfyyt';
+  justify-content: left;
+  color: rgb(93, 123, 158);
+  z-index: 4;
+}
+/*9-12 */
+.xzl_dm_3 {
+  text-shadow: 1px 1px 1px  #FFFFFF;
+  display: flex;
+  align-items: center;
+  font-family: 'zxfyyt';
+  justify-content: center; 
+  color: rgb(141, 124, 166); 
+  z-index: 4;
+}
+/* 13-16 */
+.xzl_dm_4 {
+  text-shadow: 1px 1px 1px  #FFFFFF;
+  display: flex;
+  align-items: center;
+  font-family: 'zxfyyt';
+  justify-content: center;
+  padding-left:1px; 
+  color: rgb(190, 102, 134);
+  border-radius: 5% 5% 5% 5%;
+  z-index: 4;
+}
+/* 17-20 */
+.xzl_dm_5 {
+  text-shadow: 1px 1px 1px  #FFFFFF;
+  display: flex;
+  align-items: center;
+  font-family: 'zxfyyt';
+  justify-content: center;
+  padding-left:1px;
+  color: rgb(199, 157, 36);
+  border-radius: 5% 5% 5% 5%;
+  z-index: 4;
+}
+/* 21-24 */
+.xzl_dm_6 {
+  text-shadow: 1px 1px 1px  #FFFFFF;
+  display: flex;
+  align-items: center;
+  font-family: 'zxfyyt';
+  justify-content: center;
+  padding-left:1px;
+  color: rgb(30, 88, 80);
+  border-radius: 5% 5% 5% 5%;
+  z-index: 4;
+}
+/* 25-28 */
+.xzl_dm_7 {
+  text-shadow: 1px 1px 1px  #FFFFFF;
+  display: flex;
+  align-items: center;
+  font-family: 'zxfyyt';
+  justify-content: center;
+  padding-left:1px;
+  color: rgb(16, 32, 90);
+  border-radius: 5% 5% 5% 5%;
+  z-index: 4;
+}
+/* 29-32 */
+.xzl_dm_8 {
+  text-shadow: 1px 1px 1px  #FFFFFF;
+  display: flex;
+  align-items: center;
+  font-family: 'zxfyyt';
+  justify-content: center;
+  padding-left:1px;
+  color: rgb(56, 26, 107);
+  border-radius: 5% 5% 5% 5%;
+  z-index: 4;
+}
+/* 33-36 */
+.xzl_dm_9 {
+  text-shadow: 1px 1px 1px  #FFFFFF;
+  display: flex;
+  align-items: center;
+  font-family: 'zxfyyt';
+  justify-content: center;
+  padding-left:1px;
+  color: rgb(136, 20, 55);
+  border-radius: 5% 5% 5% 5%;
+  z-index: 4;
+}
+/* 37-40 */
+.xzl_dm_10 {
+  text-shadow: 1px 1px 1px  #FFFFFF;
+  font-size: 8pt;
+  display: flex;
+  align-items: center;
+  font-family: 'zxfyyt';
+  justify-content: center;
+  padding-left:1px;
+  padding-right:1px;
+  border: 2px solid #ffffff;
+  border-left-color: #d5f5cf;
+  color: rgb(255, 110, 25); 
+  z-index: 4;
+}
+
   .fans {
     z-index: 4;
     float: left;
@@ -792,6 +933,7 @@ export default {
     width: auto;
   }
   .dm-c {
+    text-shadow: 2px 2px 2px  #FFFFFF;
     float: left;
     height: 100%;
     width: auto;

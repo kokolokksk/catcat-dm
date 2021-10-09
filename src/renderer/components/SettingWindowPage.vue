@@ -22,13 +22,15 @@
       <em id="pr3" style="display:inline-block; padding:1em;">background color</em>
       <br>
        <p class="line"/>
-      弹幕颜色:
+      弹幕颜色(非呐卷用户):
       <input id="dmc" data-jscolor="{value:'rgba(192,160,255,0.5)'}" onInput="updateDanmu(this.jscolor)"><a-button class="left-margin" @click="setDanmuColor" type='default'>设置</a-button>
        <p class="line"/>
       </div> 
 		</div> 
     <p class="line"/>
     置顶:<a-switch default-checked v-model="alwaysOnTop" checked-children="开" un-checked-children="关" @change="setAlwaysOnTop" />
+    <p class="line"/>
+    波浪:<a-switch default-checked v-model="waveD" checked-children="开" un-checked-children="关" @change="setWaveD" />
     <!-- <p class="line"/>
     缩放倍率:<input type='text' v-model = scaleX name= "scaleX" /><a-button class="left-margin" @click="setScaleX" type='default'>设置</a-button>
     <p class="line"/>
@@ -67,6 +69,7 @@ export default {
       }],
       menuIndex:-1,
       roomid:0,
+      waveD:true,
       scaleX:1,
       fc:'Consolas',
       dmf:'1',
@@ -100,6 +103,7 @@ export default {
           _self.dmf = docs[0].dmf
           _self.tts = docs[0].tts
           _self.alwaysOnTop = docs[0].alwaysOnTop
+          _self.waveD = docs[0].waveD
           // fixme load color
           document.getElementById('bgc').nodeValue = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
           document.getElementById('dmc').nodeValue = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
@@ -124,6 +128,31 @@ export default {
             type: 2
           }
           _self.$db.insert(ttsStore, (err, ret) => {
+            if (err !== null) {
+              console.info(err)
+            }
+          })
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
+    },
+    setWaveD () {
+      let _self = this
+      this.$db.find({ type: 2 }, (err, docs) => {
+        console.info(docs)
+        if (docs !== null && docs.length !== 0) {
+          console.info(_self.waveD)
+          _self.$db.update({ _id: docs[0]._id }, { $set: { waveD: _self.waveD } }, {}, function () {
+            console.info('update success')
+          })
+        } else {
+          let waveDStore = {
+            waveD: _self.waveD, // user id
+            type: 2
+          }
+          _self.$db.insert(waveDStore, (err, ret) => {
             if (err !== null) {
               console.info(err)
             }
