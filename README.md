@@ -7,6 +7,7 @@
 
 >dom版
  - ![界面截图](desc/2021-9-29_11-25-05.gif)
+ - ![设置界面](desc/20211009171802.png)
 
 - [下载地址](https://github.com/kokolokksk/mua/releases/latest)
 
