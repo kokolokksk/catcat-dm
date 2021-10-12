@@ -29,7 +29,7 @@
     <!-- danmu -->
     <div class="danmu-container"  v-bind:style="{ fontSize:'11pt', backgroundImage: 'linear-gradient(0deg, rgba(241, 147, 156,0.1), '+ muaConfig.danmuAreaColor+ ')'}">
       <transition-group appear name="list" tag="div" mode="out-in">
-      <div v-for="(item) in invisibleDmList" class="danmu" :style="{ color : muaConfig.danmuColor}" :key="item.uuid">
+      <div v-for="(item) in dispalyDmList" class="danmu" :style="{ color : muaConfig.danmuColor}" :key="item.uuid">
         <div class="fans" >
           <div v-if="item.xz_name" 
         :class="{
@@ -99,8 +99,8 @@ require('electron').ipcRenderer.on('did-close-fresh', (event, message) => {
 const log = require('electron-log')
 let live
 let waveDisplay = true
-let visibleDmList = []
-let invisibleDmList = []
+let waitUpdateDmList = []
+let dispalyDmList = []
 let comeInList = []
 let giftList = []
 let speakList = []
@@ -129,8 +129,8 @@ let muaConfig = {
 export default {
   data () {
     return {
-      invisibleDmList,
-      visibleDmList,
+      dispalyDmList,
+      waitUpdateDmList,
       comeInList,
       giftList,
       waveDisplay,
@@ -179,8 +179,18 @@ export default {
           console.info(err)
         }
         this.connectLive()
-        // window.requestAnimationFrame(this.count)
+        setInterval(() => {
+          this.updateDanmuList()
+        }, 500)
       })
+    },
+    updateDanmuList () {
+       if (dispalyDmList.length > 7) {
+        dispalyDmList.shift()
+      }
+      if (waitUpdateDmList.length > 0) {
+        dispalyDmList.push(waitUpdateDmList.shift())
+      }
     },
     count () {
       let t = new Date()
@@ -206,7 +216,7 @@ export default {
           use_state: 0, // use state
           type: 1
         }
-        invisibleDmList.push(sysInfo)
+        dispalyDmList.push(sysInfo)
       })
       live.on('live', () => {
         live.on('heartbeat', (online) => {
@@ -246,9 +256,10 @@ export default {
                   danmuStore.xz_name = (xzInfo[1] === null || xzInfo[1] === undefined) ? '' : xzInfo[1]
                   // add to list
                   console.info(danmuStore)
-                  invisibleDmList.push(danmuStore)
-                  if (invisibleDmList.length >= 9) {
-                    invisibleDmList.shift()
+                  if (dispalyDmList.length < 7) {
+                    dispalyDmList.push(danmuStore)
+                  } else {
+                    waitUpdateDmList.push(danmuStore)
                   }
                   speakList.push(danmuStore)
                   // do repeat check
@@ -938,6 +949,7 @@ export default {
     height: 100%;
     width: auto;
     max-width: 100%;
+    /* background-image:url('/static/IST_20425_103834.png'); */
   }
   .danmu {
     display: inline-block;
