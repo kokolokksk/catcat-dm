@@ -185,7 +185,7 @@ export default {
       })
     },
     updateDanmuList () {
-       if (dispalyDmList.length > 7) {
+      if (dispalyDmList.length > 7) {
         dispalyDmList.shift()
       }
       if (waitUpdateDmList.length > 0) {
