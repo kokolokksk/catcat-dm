@@ -1,6 +1,6 @@
 # muamuamua
 
-> muamuamua!
+> muamuamua! The meta-etronct-bilibili-danmu application!
 
 ### 说明
 哔哩哔哩 直播弹幕姬
