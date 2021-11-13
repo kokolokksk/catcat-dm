@@ -1,9 +1,9 @@
-# muamuamua
+# catcatDM
 
-> muamuamua! The meta-electron-bilibili-danmu application!
+> catcatDm! The meta-electron-catcat-bilibili-danmu application!
 
 ### 说明
-哔哩哔哩 直播弹幕姬
+喵喵酱牌 哔哩哔哩 直播弹幕姬（没有直播功能 只能看弹幕！）
 
 >dom版
  - ![界面截图](desc/2021-9-29_11-25-05.gif)
@@ -26,7 +26,7 @@
 
 
 #### 下一步
-- base ui
+- 将着重美化UI
 
 ### 感谢（Thanks）
 - npm module bilibili-live-ws
