@@ -167,7 +167,7 @@ export default {
           muaConfig.scale = typeof (docs[0].scaleX) === 'undefined' ? muaConfig.scale : docs[0].scaleX
           muaConfig.tts = typeof (docs[0].tts) === 'undefined' ? muaConfig.tts : docs[0].tts
           muaConfig.alwaysOnTop = typeof (docs[0].alwaysOnTop) === 'undefined' ? true : docs[0].alwaysOnTop
-          if (muaConfig.alwaysOnTop) {
+          if (muaConfig.alwaysOnTop === true) {
             _self.$electron.remote.getCurrentWindow().setAlwaysOnTop(true)
           } else {
             _self.$electron.remote.getCurrentWindow().setAlwaysOnTop(false)
@@ -316,7 +316,7 @@ export default {
                   giftStore.uname_color = data[index].data.data.uname_color
                   giftStore.time = data[index].data.data.timestamp
                   giftList.push(giftStore)
-                  if (giftList.length >= 2) {
+                  if (giftList.length >= 4) {
                     giftList.shift()
                   }
                   console.info('in gift')
@@ -1014,12 +1014,11 @@ export default {
     z-index: 2;
   } 
   .gift-container {
-    background-color: transparent;
+    background-color: #FFFFFF;
     align-content: center;
     position: fixed;
-    height: 5%;
-    width: 70%;
-    left: 5%;
+    padding-left: 5%;
+    width: 80%;
     top: 85%;
     z-index: 2;
   } 
