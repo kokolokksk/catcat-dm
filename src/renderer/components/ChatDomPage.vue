@@ -1,16 +1,19 @@
 <template>
   <div id='root'>
-    <div class="waveWrapper waveAnimation"  >
-  <div class="waveWrapperInner bgTop">
-    <div class="wave waveTop" style="background-image: url('/static/wave-top.png')"></div>
-  </div>
-  <div class="waveWrapperInner bgMiddle"  >
-    <div class="wave waveMiddle" style="background-image: url('/static/wave-mid.png')"></div>
-  </div>
-  <div class="waveWrapperInner bgBottom" >
-    <div class="wave waveBottom" :style="{display:waveDisplay === true ? 'bloack' : 'none'}"  style="background-image: url('/static/wave-bot.png')"></div>
-  </div>
-</div>
+    <!-- dm top bg : use animition -->
+    <div class = "dm-bg-top">
+      <div class="waveWrapper waveAnimation">
+        <div class="waveWrapperInner bgTop">
+          <div class="wave waveTop" style="background-image: url('static/wave-top.png')"></div>
+        </div>
+        <div class="waveWrapperInner bgMiddle"  >
+          <div class="wave waveMiddle" style="background-image: url('static/wave-mid.png')"></div>
+        </div>
+        <div class="waveWrapperInner bgBottom" >
+          <div class="wave waveBottom" :style="{display:waveDisplay === true ? 'bloack' : 'none'}"  style="background-image: url('static/wave-bot.png')"></div>
+        </div>
+      </div>
+    </div>
     <div class="settingClass"  @click="openSettingN"   >
     </div> 
     <div class="online">
@@ -24,6 +27,7 @@
     <div class="right-cat-ear"></div>
     <div class="right-cat-ear-large"></div>
     <!-- background -->
+    <!-- base backgroup bg-->
     <div id="c-bg">
     </div>
     <!-- danmu -->
@@ -172,6 +176,7 @@ export default {
           } else {
             _self.$electron.remote.getCurrentWindow().setAlwaysOnTop(false)
           }
+          log.info(muaConfig)
           log.info('init param has loaded. dmc:' + muaConfig.danmuColor + ';bgc:' + muaConfig.danmuAreaColor + ';dmf:' + muaConfig.danmuFont + ';scale:' + muaConfig.scale + ';tts:' + muaConfig.tts)
         }
         if (err !== null) {

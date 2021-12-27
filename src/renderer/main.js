@@ -10,6 +10,7 @@ import g from './utils/globel'
 import db from './datastore'
 import VueElectron from 'vue-electron'
 import '@/assets/style/font.less'
+import {theme, themeSetup} from './assets/theme/index.js'
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.use(VueElectron)
 Vue.component(Button.name, Button)
@@ -20,6 +21,12 @@ Vue.config.productionTip = false
 Vue.prototype.$db = db
 Vue.prototype.$g = g
 /* eslint-disable no-new */
+
+/** ------------------------------
+                主题
+ -------------------------------- */
+Vue.themeSetup = Vue.prototype.$themeSetup = themeSetup
+Vue.theme = Vue.prototype.$theme = theme
 
 router.beforeEach((to, from, next) => {
   /* 路由发生变化修改页面title */
