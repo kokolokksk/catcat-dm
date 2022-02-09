@@ -41,6 +41,8 @@
     <div>
         TTS:<a-switch default-unchecked v-model="tts" checked-children="开" un-checked-children="关" @change="setTTS" />
     </div>
+    <p class="line"/>
+    当前版本:dom-v-1.0.2<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
   </div> 
 </template>
 <script>
@@ -294,6 +296,20 @@ export default {
           console.info(err)
         }
       })
+    },
+    checkUpdate () {
+      let _self = this
+      let a = this.$http
+      a.get('https://raw.githubusercontent.com/kokolokksk/catcat-dm/dom/version.json')
+        .then(function (response) {
+          // handle success
+          console.log(response)
+          alert('最新版本为：' + response.data.version)
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error)
+        })
     }
   }
 }

@@ -187,6 +187,9 @@ export default {
         setInterval(() => {
           this.updateDanmuList()
         }, 500)
+        setInterval(() => {
+          this.speakDanmu(null)
+        }, 500)
       })
     },
     updateDanmuList () {
@@ -266,7 +269,7 @@ export default {
                   } else {
                     waitUpdateDmList.push(danmuStore)
                   }
-                  speakList.push(danmuStore)
+                  // speakList.push(danmuStore)
                   // do repeat check
                   this.$db.find({time: danmuStore.time}, (err, docs) => {
                     if (docs.length === 0) {
@@ -321,6 +324,7 @@ export default {
                   giftStore.uname_color = data[index].data.data.uname_color
                   giftStore.time = data[index].data.data.timestamp
                   giftList.push(giftStore)
+                  _self.speakDanmu(giftStore)
                   if (giftList.length >= 4) {
                     giftList.shift()
                   }
@@ -339,23 +343,41 @@ export default {
       console.info('come in openSetting windows')
       this.$electron.ipcRenderer.send('createSettingWindow')
     },
-    speakDanmu () {
+    speakDanmu (gift) {
       if (muaConfig.tts) {
       // 判断是否在阅读
         if (speakStatus) {
           // 不阅读 把其加入阅读list
+          if (gift !== null) {
+            speakList.push(gift)
+          }
         } else {
-          let tempText = speakList.pop()
-          if (typeof tempText !== 'undefined') {
-            say.speak(tempText.nickname + ':' + tempText.danmu, null, 1.0, (err) => {
-              if (err) {
-                return console.error(err)
-              }
-              speakStatus = false
-              console.log('Text has been spoken.')
-            })
+          if (speakList.length !== 0) {
+            speakStatus = true
+            if (gift !== null) {
+              speakList.push(gift)
+            }
+            let tempText = speakList.pop()
+            this.speak(tempText)
+          } else {
+            if (gift !== null) {
+              speakStatus = true
+              let tempText = gift
+              this.speak(tempText)
+            }
           }
         }
+      }
+    },
+    speak (tempText) {
+      if (typeof tempText !== 'undefined') {
+        say.speak('感谢' + tempText.uname + '赠送的' + tempText.giftName, null, 1.0, (err) => {
+          if (err) {
+            return console.error(err)
+          }
+          speakStatus = false
+          console.log('Text has been spoken.')
+        })
       }
     }
   }
