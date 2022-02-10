@@ -20,6 +20,15 @@ export default new Router({
       component: require('@/components/SettingWindowPage').default
     },
     {
+      path: '/chatWindow',
+      name: 'chatWindow',
+      meta: {
+        // 页面标题title
+        title: 'send'
+      },
+      component: require('@/components/ChatWindowPage').default
+    },
+    {
       path: '*',
       redirect: '/'
     }

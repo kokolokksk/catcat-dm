@@ -1,0 +1,61 @@
+<template>
+  <div>
+    <input type='text' v-model = danmu name= "danmu" /><a-button class="left-margin" type="default" @click="sendDm" >发送</a-button>
+  </div>
+</template>
+<script>
+const send = require('bilibili-live-danmaku-api')
+const { remote } = require('electron')
+require('electron').ipcRenderer.on('setchat-close-fresh', (event, message) => {
+  location.reload()
+})
+export default {
+  data () {
+    return {
+      roomid:0,
+      danmu:'',
+      SESSDATA:'',
+      csrf:''
+    }
+  },
+  mounted () {
+    this.initData()
+  },
+  methods: {
+    initData () {
+      let _self = this
+      this.$db.find({ type: 2 }, (err, docs) => {
+        if (docs !== null && docs.length !== 0) {
+          console.info(docs)
+          _self.roomid = docs[0].roomid
+          _self.SESSDATA = docs[0].SESSDATA
+          _self.csrf = docs[0].csrf
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
+    },
+    sendDm () {
+      // console.info('?')
+      let _self = this
+      const msg = _self.danmu/* Message */
+      const roomid = _self.roomid/* Roomid */
+      const SESSDATA = _self.SESSDATA/* Cookie: SESSDATA */
+      const csrf = _self.csrf/* Cookie: bili_jct */
+      if (msg !== '') {
+        send({
+          msg,
+          roomid,
+          SESSDATA,
+          csrf
+          // extra
+        })
+        _self.danmu = ''
+      } else {
+        alert('不能为空')
+      }
+    }
+  }
+}
+</script>

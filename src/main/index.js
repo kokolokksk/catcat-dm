@@ -11,7 +11,7 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
-let mainWindow
+let mainWindow, chatWindow
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
@@ -32,6 +32,27 @@ function createWindow () {
 
   mainWindow.on('closed', () => {
     mainWindow = null
+  })
+}
+function createChatWindow () {
+  /**
+   * Initial window options
+   */
+  chatWindow = new BrowserWindow({
+    height: 20,
+    useContentSize: true,
+    width: 260,
+    frame: true,
+    transparent: false
+  })
+  const chatPath = process.env.NODE_ENV === 'development'
+    ? 'http://localhost:9080/#/chatWindow'
+    : `file://${__dirname}/index.html#chatWindow`
+  chatWindow.setMenuBarVisibility(false)
+  chatWindow.loadURL(chatPath)
+
+  chatWindow.on('closed', () => {
+    chatWindow = null
   })
 }
 
@@ -58,10 +79,14 @@ function createSettingWindow () {
 
   settingWindow.on('closed', () => {
     mainWindow.webContents.send('did-close-fresh', 'refresh')
+    chatWindow.webContents.send('setchat-close-fresh', 'refresh')
     settingWindow = null
   })
 }
-app.on('ready', createWindow)
+app.on('ready', () => {
+  createWindow()
+  createChatWindow()
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

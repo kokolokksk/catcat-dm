@@ -42,7 +42,11 @@
         TTS:<a-switch default-unchecked v-model="tts" checked-children="开" un-checked-children="关" @change="setTTS" />
     </div>
     <p class="line"/>
-    当前版本:dom-v-1.0.2<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
+    当前版本:dom-v-1.0.3<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
+    <p class="line"/>
+    SESSDATA:<input type='text' v-model = SESSDATA name= "SESSDATA" /><a-button class="left-margin" type="default" @click="setSESSDATA" >设置</a-button>
+    <p class="line"/>
+    csrf:<input type='text' v-model = csrf name= "csrf" /><a-button class="left-margin" type="default" @click="setCsrf" >设置</a-button>
   </div> 
 </template>
 <script>
@@ -88,7 +92,9 @@ export default {
         {id: 11, title: '华文琥珀', value: 'STHupo', class: 'STHupo'},
         {id: 12, title: '冬青黑体简', value: 'Hiragino Sans GB', class: 'HiraginoSansGB'}],
       tts:false,
-      alwaysOnTop: true
+      alwaysOnTop: true,
+      SESSDATA:'',
+      csrf:''
     }
   },
   mounted () {
@@ -310,6 +316,58 @@ export default {
           // handle error
           console.log(error)
         })
+    },
+    setSESSDATA () {
+      // console.info('?')
+      let _self = this
+      this.$db.find({ type: 2 }, (err, docs) => {
+        console.info(docs)
+        if (docs !== null && docs.length !== 0) {
+          console.info(_self.SESSDATA)
+          _self.$db.update({ _id: docs[0]._id }, { $set: { SESSDATA: _self.SESSDATA } }, {}, function () {
+            console.info('update success')
+          })
+        } else {
+          let SESSDATAStore = {
+            SESSDATA: _self.SESSDATA, // user id
+            type: 2
+          }
+          _self.$db.insert(SESSDATAStore, (err, ret) => {
+            if (err !== null) {
+              console.info(err)
+            }
+          })
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
+    },
+    setCsrf () {
+      // console.info('?')
+      let _self = this
+      this.$db.find({ type: 2 }, (err, docs) => {
+        console.info(docs)
+        if (docs !== null && docs.length !== 0) {
+          console.info(_self.csrf)
+          _self.$db.update({ _id: docs[0]._id }, { $set: { csrf: _self.csrf } }, {}, function () {
+            console.info('update success')
+          })
+        } else {
+          let csrfStore = {
+            csrf: _self.csrf, // user id
+            type: 2
+          }
+          _self.$db.insert(csrfStore, (err, ret) => {
+            if (err !== null) {
+              console.info(err)
+            }
+          })
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
     }
   }
 }
