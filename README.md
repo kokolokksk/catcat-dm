@@ -37,3 +37,6 @@
 - npm module [bilibili-live-danmaku-api](https://github.com/simon300000/bilibili-live-danmaku-api)
 - [background image](https://codepen.io/plavookac/pen/QMwObb)
 - This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
+
+### 交流
+issue 或者 qq群（319833969）
