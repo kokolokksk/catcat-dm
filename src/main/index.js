@@ -79,7 +79,9 @@ function createSettingWindow () {
 
   settingWindow.on('closed', () => {
     mainWindow.webContents.send('did-close-fresh', 'refresh')
-    chatWindow.webContents.send('setchat-close-fresh', 'refresh')
+    if (chatWindow !== null) {
+      chatWindow.webContents.send('setchat-close-fresh', 'refresh')
+    }
     settingWindow = null
   })
 }

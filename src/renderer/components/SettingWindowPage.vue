@@ -42,7 +42,7 @@
         TTS:<a-switch default-unchecked v-model="tts" checked-children="开" un-checked-children="关" @change="setTTS" />
     </div>
     <p class="line"/>
-    当前版本:dom-v-1.0.3<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
+    当前版本:dom-v-1.0.4<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
     <p class="line"/>
     SESSDATA:<input type='text' v-model = SESSDATA name= "SESSDATA" /><a-button class="left-margin" type="default" @click="setSESSDATA" >设置</a-button>
     <p class="line"/>

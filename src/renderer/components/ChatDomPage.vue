@@ -370,7 +370,7 @@ export default {
       }
     },
     speak (tempText) {
-      if (typeof tempText !== 'undefined') {
+      if (typeof tempText !== 'undefined' && tempText.giftName !== '小心心' && tempText.giftName !== '辣条') {
         say.speak('感谢' + tempText.uname + '赠送的' + tempText.giftName, null, 1.0, (err) => {
           if (err) {
             return console.error(err)
