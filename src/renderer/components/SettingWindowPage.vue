@@ -30,6 +30,8 @@
     <p class="line"/>
     置顶:<a-switch default-checked v-model="alwaysOnTop" checked-children="开" un-checked-children="关" @change="setAlwaysOnTop" />
     <p class="line"/>
+    chat置顶:<a-switch default-checked v-model="chatAlwaysOnTop" checked-children="开" un-checked-children="关" @change="setChatAlwaysOnTop" />
+    <p class="line"/>
     波浪:<a-switch default-checked v-model="waveD" checked-children="开" un-checked-children="关" @change="setWaveD" />
     <!-- <p class="line"/>
     缩放倍率:<input type='text' v-model = scaleX name= "scaleX" /><a-button class="left-margin" @click="setScaleX" type='default'>设置</a-button>
@@ -42,7 +44,7 @@
         TTS:<a-switch default-unchecked v-model="tts" checked-children="开" un-checked-children="关" @change="setTTS" />
     </div>
     <p class="line"/>
-    当前版本:dom-v-1.0.4<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
+    当前版本:dom-v-1.0.5<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
     <p class="line"/>
     SESSDATA:<input type='text' v-model = SESSDATA name= "SESSDATA" /><a-button class="left-margin" type="default" @click="setSESSDATA" >设置</a-button>
     <p class="line"/>
@@ -93,6 +95,7 @@ export default {
         {id: 12, title: '冬青黑体简', value: 'Hiragino Sans GB', class: 'HiraginoSansGB'}],
       tts:false,
       alwaysOnTop: true,
+      chatAlwaysOnTop: false,
       SESSDATA:'',
       csrf:''
     }
@@ -111,6 +114,7 @@ export default {
           _self.dmf = docs[0].dmf
           _self.tts = docs[0].tts
           _self.alwaysOnTop = docs[0].alwaysOnTop
+          _self.chatAlwaysOnTop = docs[0].chatAlwaysOnTop
           _self.waveD = docs[0].waveD
           // fixme load color
           document.getElementById('bgc').nodeValue = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
@@ -186,6 +190,31 @@ export default {
             type: 2
           }
           _self.$db.insert(alwaysOnTopStore, (err, ret) => {
+            if (err !== null) {
+              console.info(err)
+            }
+          })
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
+    },
+    setChatAlwaysOnTop () {
+      let _self = this
+      this.$db.find({ type: 2 }, (err, docs) => {
+        console.info(docs)
+        if (docs !== null && docs.length !== 0) {
+          console.info(_self.chatAlwaysOnTop)
+          _self.$db.update({ _id: docs[0]._id }, { $set: { chatAlwaysOnTop: _self.chatAlwaysOnTop } }, {}, function () {
+            console.info('update success')
+          })
+        } else {
+          let chatAlwaysOnTopStore = {
+            chatAlwaysOnTop: _self.chatAlwaysOnTop, // user id
+            type: 2
+          }
+          _self.$db.insert(chatAlwaysOnTopStore, (err, ret) => {
             if (err !== null) {
               console.info(err)
             }

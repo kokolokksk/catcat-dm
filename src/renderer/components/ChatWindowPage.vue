@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input type='text' v-model = danmu name= "danmu" /><a-button class="left-margin" type="default" @click="sendDm" >发送</a-button>
+    <input type='text' v-model = danmu name= "danmu" @keyup.enter="sendDm" /><a-button class="left-margin" type="default" @click="sendDm" >发送</a-button>
   </div>
 </template>
 <script>
@@ -15,7 +15,8 @@ export default {
       roomid:0,
       danmu:'',
       SESSDATA:'',
-      csrf:''
+      csrf:'',
+      top: false
     }
   },
   mounted () {
@@ -30,6 +31,12 @@ export default {
           _self.roomid = docs[0].roomid
           _self.SESSDATA = docs[0].SESSDATA
           _self.csrf = docs[0].csrf
+          _self.top = typeof (docs[0].chatAlwaysOnTop) === 'undefined' ? false : docs[0].chatAlwaysOnTop
+          if (_self.top === true) {
+            _self.$electron.remote.getCurrentWindow().setAlwaysOnTop(true)
+          } else {
+            _self.$electron.remote.getCurrentWindow().setAlwaysOnTop(false)
+          }
         }
         if (err !== null) {
           console.info(err)
