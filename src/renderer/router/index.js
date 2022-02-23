@@ -7,8 +7,25 @@ export default new Router({
   routes: [
     {
       path: '/',
+      // name: 'landing-page',
+      redirect: '/home'
+      // component: require('@/components/Application').default
+    },
+    {
+      path: '/home',
       name: 'landing-page',
-      component: require('@/components/ChatDomPage').default
+      redirect: '/home/setting',
+      component: require('@/components/Application').default,
+      children:[{
+        path: '/home/setting',
+        name: 'setting',
+        meta: {
+          // 页面标题title
+          title: 'CatCatDM',
+          icon: '../../logo.png'
+        },
+        component: require('@/components/SettingWindowPage').default
+      }]
     },
     {
       path: '/settingWindow',
@@ -27,6 +44,15 @@ export default new Router({
         title: 'send'
       },
       component: require('@/components/ChatWindowPage').default
+    },
+    {
+      path: '/dmWindow',
+      name: 'dmWindow',
+      meta: {
+        // 页面标题title
+        title: '弹幕'
+      },
+      component: require('@/components/ChatDomPage').default
     },
     {
       path: '*',

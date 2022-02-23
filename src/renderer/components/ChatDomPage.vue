@@ -341,7 +341,7 @@ export default {
     },
     openSettingN () {
       console.info('come in openSetting windows')
-      this.$electron.ipcRenderer.send('createSettingWindow')
+      this.$electron.ipcRenderer.send('createWindow')
     },
     speakDanmu (gift) {
       if (muaConfig.tts) {

@@ -44,7 +44,7 @@
         TTS:<a-switch default-unchecked v-model="tts" checked-children="开" un-checked-children="关" @change="setTTS" />
     </div>
     <p class="line"/>
-    当前版本:dom-v-1.0.5<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
+    当前版本:dom-v-1.0.6<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
     <p class="line"/>
     SESSDATA:<input type='text' v-model = SESSDATA name= "SESSDATA" /><a-button class="left-margin" type="default" @click="setSESSDATA" >设置</a-button>
     <p class="line"/>
@@ -110,6 +110,7 @@ export default {
         if (docs !== null && docs.length !== 0) {
           console.info(docs)
           _self.roomid = docs[0].roomid
+          Window.roomid = _self.roomid
           _self.scaleX = docs[0].scaleX
           _self.dmf = docs[0].dmf
           _self.tts = docs[0].tts

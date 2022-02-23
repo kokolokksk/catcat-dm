@@ -1,6 +1,6 @@
 {
   "name": "mua",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": "loveloliii <loli@loli.monster>",
   "description": "bilibili live mua",
   "license": "MIT",
@@ -61,6 +61,7 @@
     "bilibili-live-ws": "^5.1.1",
     "bufferutil": "^4.0.3",
     "electron-log": "^4.4.1",
+    "electron-referer": "^0.3.0",
     "iconv-lite": "^0.6.3",
     "isomorphic-ws": "^4.0.1",
     "less": "^4.1.1",

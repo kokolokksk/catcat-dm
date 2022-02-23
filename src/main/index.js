@@ -2,7 +2,7 @@
 
 import { app, BrowserWindow, ipcMain, ipcRenderer } from 'electron'
 import '../renderer/store'
-
+require('electron-referer')('http://www.bilibili.com/')
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -11,7 +11,7 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
-let mainWindow, chatWindow
+let mainWindow, chatWindow, dmWindow, settingWindow
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
@@ -24,14 +24,35 @@ function createWindow () {
     height: 500,
     useContentSize: false,
     width: 500,
+    frame: true,
+    webPreferences: {webSecurity: false},
+    transparent: true
+  })
+  mainWindow.setMenuBarVisibility(false)
+  mainWindow.loadURL(winURL)
+  mainWindow.on('closed', () => {
+    mainWindow = null
+  })
+}
+const dmPath = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:9080/#/dmWindow'
+  : `file://${__dirname}/index.html#dmWindow`
+function createDmWindow () {
+  /**
+   * Initial window options
+   */
+  dmWindow = new BrowserWindow({
+    height: 500,
+    useContentSize: false,
+    width: 500,
     frame: false,
     transparent: true
   })
 
-  mainWindow.loadURL(winURL)
+  dmWindow.loadURL(dmPath)
 
-  mainWindow.on('closed', () => {
-    mainWindow = null
+  dmWindow.on('closed', () => {
+    dmWindow = null
   })
 }
 function createChatWindow () {
@@ -55,13 +76,28 @@ function createChatWindow () {
     chatWindow = null
   })
 }
-
+ipcMain.on('createWindow', function (arg) {
+  if (mainWindow == null) {
+    createWindow()
+  }
+})
+ipcMain.on('createChatWindow', function (arg) {
+  if (chatWindow == null) {
+    createChatWindow()
+  }
+})
 ipcMain.on('createSettingWindow', function (arg) {
-  createSettingWindow()
+  if (settingWindow == null) {
+    createSettingWindow()
+  }
+})
+ipcMain.on('createDmWindow', function (arg) {
+  if (dmWindow == null) {
+    createDmWindow()
+  }
 })
 function createSettingWindow () {
   // Menu.setApplicationMenu(null) // 关闭子窗口菜单栏
-  let settingWindow
   const modalPath = process.env.NODE_ENV === 'development'
     ? 'http://localhost:9080/#/settingWindow'
     : `file://${__dirname}/index.html#settingWindow`
@@ -87,7 +123,6 @@ function createSettingWindow () {
 }
 app.on('ready', () => {
   createWindow()
-  createChatWindow()
 })
 
 app.on('window-all-closed', () => {
