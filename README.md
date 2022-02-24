@@ -9,7 +9,7 @@
 
 >dom版
  - ![界面截图](desc/2021-9-29_11-25-05.gif)
- - ![设置界面](desc/20211009171802.png)
+ - ![主程序界面](desc/application.png)
 
 - [下载地址](https://github.com/kokolokksk/mua/releases/latest)
 
@@ -27,12 +27,14 @@
 - [x] 礼物(基本显示)
 - [x] 发送弹幕
 - [ ] 发送弹幕更多选项
+- [ ] [弹幕统计](https://github.com/kokolokksk/catcat-dm-data)
 
 
 #### 下一步
 - 美化UI
 
 ### 感谢（Thanks）
+- npm module [electron-referer](https://github.com/akameco/electron-referer)
 - npm module bilibili-live-ws
 - npm module [bilibili-live-danmaku-api](https://github.com/simon300000/bilibili-live-danmaku-api)
 - [background image](https://codepen.io/plavookac/pen/QMwObb)
