@@ -28,6 +28,7 @@
 - [x] 发送弹幕
 - [ ] 发送弹幕更多选项
 - [ ] [弹幕统计](https://github.com/kokolokksk/catcat-dm-data)
+- [ ] [增量更新](https://github.com/kokolokksk/lolidate)
 
 
 #### 下一步
