@@ -29,6 +29,7 @@
 - [ ] 发送弹幕更多选项
 - [ ] [弹幕统计](https://github.com/kokolokksk/catcat-dm-data)
 - [ ] [增量更新](https://github.com/kokolokksk/lolidate)
+- [ ] [使用更加好听的TTS](https://github.com/kokolokksl/catcat-tts)
 
 
 #### 下一步
