@@ -55,6 +55,15 @@ export default new Router({
       component: require('@/components/ChatDomPage').default
     },
     {
+      path: '/settingTTS',
+      name: 'settingTTSWindow',
+      meta: {
+        // 页面标题title
+        title: 'TTS'
+      },
+      component: require('@/components/TTSSettingPage').default
+    },
+    {
       path: '*',
       redirect: '/'
     }

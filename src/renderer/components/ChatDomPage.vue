@@ -22,14 +22,14 @@
     <div class="comeinLastMinute">
     <span>进入/分钟：{{muaConfig.comeinLastMinute}}</span>
     </div>
-    <div class="left-cat-ear"></div>
+    <!-- <div class="left-cat-ear"></div>
     <div class="left-cat-ear-large"></div>
     <div class="right-cat-ear"></div>
-    <div class="right-cat-ear-large"></div>
+    <div class="right-cat-ear-large"></div> -->
     <!-- background -->
     <!-- base backgroup bg-->
     <div id="c-bg">
-    </div>
+    
     <!-- danmu -->
     <div class="danmu-container"  v-bind:style="{ fontSize:'11pt', backgroundImage: 'linear-gradient(0deg, rgba(241, 147, 156,0.1), '+ muaConfig.danmuAreaColor+ ')'}">
       <transition-group appear name="list" tag="div" mode="out-in">
@@ -79,14 +79,15 @@
     </div>
     <div class="comein-container"> 
       <transition-group name="listc" tag="div" mode="out-in">
-      <div v-for="(item) in comeInList" class="comein" :key="item.time">
+      <div v-for="(item) in comeInList" class="comein" :key="item.uuid">
         <div class="dm-name">{{item.uname}}进入了房间。</div>
       </div>
       </transition-group>
     </div>
+    </div>
     <div class="gift-container"> 
       <transition-group name="listg" tag="div" mode="out-in">
-      <div v-for="(item) in giftList" class="gift" :key="item.time">
+      <div v-for="(item) in giftList" class="gift" :key="item.uuid">
         <div class="dm-name">{{item.uname}}赠送了{{item.giftName}}</div>
       </div>
       </transition-group>
@@ -94,8 +95,11 @@
   </div>
 </template>
 <script>
+import {AudioConfig, SpeechSynthesizer} from 'microsoft-cognitiveservices-speech-sdk'
 const { LiveWS } = require('bilibili-live-ws')
 const { remote } = require('electron')
+const sdk = require('microsoft-cognitiveservices-speech-sdk')
+let speechConfig = null
 require('electron').ipcRenderer.on('did-close-fresh', (event, message) => {
   live.close()
   location.reload()
@@ -108,13 +112,14 @@ let dispalyDmList = []
 let comeInList = []
 let giftList = []
 let speakList = []
+let speakDMList = []
 let speakStatus = false
 const Say = require('say').Say
 const say = new Say('win32')
 let muaConfig = {
   roomid: 6,
   windowWidth: 500, // 窗口宽度
-  windowHeight: 500, // 窗口高度
+  windowHeight: 650, // 窗口高度
   y: 300, // dm初始高度
   speed: 0.5, // 滚动速度
   comeInColor: 'rgba(125,127,125,1)', // 进入颜色
@@ -127,7 +132,9 @@ let muaConfig = {
   comeinLastMinute: 0,
   speakStatus:false, // 发言状态
   tts:false, // tts开关
-  alwaysOnTop:true // 置顶
+  alwaysOnTop:true, // 置顶
+  v1: '',
+  v2: ''
 
 }
 export default {
@@ -147,6 +154,7 @@ export default {
     this.class1 = 1
     // make on top
     // this.$electron.remote.getCurrentWindow().setAlwaysOnTop(true)
+    // audioConfig.setProperty('MediaDurationPlaceholderSeconds', '0')
     this.loadConfig()
   },
   methods: {
@@ -170,6 +178,15 @@ export default {
           log.info(docs[0].scaleX)
           muaConfig.scale = typeof (docs[0].scaleX) === 'undefined' ? muaConfig.scale : docs[0].scaleX
           muaConfig.tts = typeof (docs[0].tts) === 'undefined' ? muaConfig.tts : docs[0].tts
+          muaConfig.v1 = typeof (docs[0].v1) === 'undefined' ? muaConfig.v1 : docs[0].v1
+          muaConfig.v2 = typeof (docs[0].v2) === 'undefined' ? muaConfig.v2 : docs[0].v2
+          if (!muaConfig.v1 || !muaConfig.v2 || muaConfig.v1 === '' || muaConfig.v2 === '') {
+            muaConfig.tts = false
+          } else {
+            speechConfig = sdk.SpeechConfig.fromSubscription(muaConfig.v1, muaConfig.v2)
+            speechConfig.speechSynthesisLanguage = 'zh-cn'
+            speechConfig.speechSynthesisVoiceName = 'zh-cn-XiaoxiaoNeural'
+          }
           muaConfig.alwaysOnTop = typeof (docs[0].alwaysOnTop) === 'undefined' ? true : docs[0].alwaysOnTop
           if (muaConfig.alwaysOnTop === true) {
             _self.$electron.remote.getCurrentWindow().setAlwaysOnTop(true)
@@ -187,9 +204,12 @@ export default {
         setInterval(() => {
           this.updateDanmuList()
         }, 500)
+        // setInterval(() => {
+        //   this.speakDanmu(null)
+        // }, 800)
         setInterval(() => {
-          this.speakDanmu(null)
-        }, 500)
+          this.speakDanmuReal(null)
+        }, 1000)
       })
     },
     updateDanmuList () {
@@ -213,13 +233,15 @@ export default {
       // let roomid = 2808861
       live = new LiveWS(Number(muaConfig.roomid))
       live.on('open', () => {
-        console.log('连接已建立 · · ·')
-        let sysInfo = {userid: '', // user id
-          nickname: '系统信息', // user nickname
+        console.log('正在尝试连接到弹幕服务器······')
+        let sysInfo = {userid: '1001', // user id
+          uuid: 1001,
+          nickname: 'CATCAT', // user nickname
           avatar: '', // avatar address
           live_level: '', // live level
           xz_level: '', // xz level
-          danmu: '连接已建立 · · ·', // dm
+          xz_name: '',
+          danmu: '正在尝试连接到弹幕服务器······', // dm
           time: 0, // send time
           use_state: 0, // use state
           type: 1
@@ -227,6 +249,19 @@ export default {
         dispalyDmList.push(sysInfo)
       })
       live.on('live', () => {
+        let sysInfo = {userid: '1001', // user id
+          uuid: 1002,
+          nickname: 'CATCAT', // user nickname
+          avatar: '', // avatar address
+          live_level: '', // live level
+          xz_level: '', // xz level
+          xz_name: '',
+          danmu: '成功连接到弹幕服务器', // dm
+          time: 0, // send time
+          use_state: 0, // use state
+          type: 1
+        }
+        dispalyDmList.push(sysInfo)
         live.on('heartbeat', (online) => {
           _self.muaConfig.onlineCount = online
         })
@@ -239,6 +274,7 @@ export default {
               if (data[index].type === 'message') {
                 if (data[index].data.cmd === 'DANMU_MSG') {
                   let danmuStore = {userid: '', // user id
+                    uuid: 0,
                     nickname: '', // user nickname
                     avatar: '', // avatar address
                     live_level: '', // live level
@@ -255,7 +291,7 @@ export default {
                   const xzInfo = info[3]
                   // add danmu to nedb
                   // let danmuInfo = g.danmu
-                  danmuStore.uuid = Math.random(1000000)
+                  danmuStore.uuid = Math.random(100000000)
                   danmuStore.danmu = danmu
                   danmuStore.userid = userInfo[0]
                   danmuStore.nickname = userInfo[1]
@@ -270,6 +306,7 @@ export default {
                     waitUpdateDmList.push(danmuStore)
                   }
                   // speakList.push(danmuStore)
+                  _self.speakDanmuReal(danmuStore)
                   // do repeat check
                   this.$db.find({time: danmuStore.time}, (err, docs) => {
                     if (docs.length === 0) {
@@ -285,6 +322,7 @@ export default {
                   })
                 } else if (data[index].data.cmd === 'INTERACT_WORD') {
                   let comeInStore = {
+                    uuid: 0,
                     userid: '',
                     uname: '',
                     uname_color: '',
@@ -293,6 +331,7 @@ export default {
                     type: 3
                   }
                   // console.info(data[index].data.data)
+                  comeInStore.uuid = Math.random(100000000)
                   comeInStore.userid = data[index].data.data.uid
                   comeInStore.uname = data[index].data.data.uname
                   comeInStore.uname_color = data[index].data.data.uname_color
@@ -309,6 +348,7 @@ export default {
                   // })
                 } else if (data[index].data.cmd === 'SEND_GIFT') {
                   let giftStore = {
+                    uuid: 0,
                     giftName:'',
                     userid: '',
                     uname: '',
@@ -318,13 +358,14 @@ export default {
                     use_state: 0,
                     type: 4
                   }
+                  giftStore.uuid = Math.random(100000000)
                   giftStore.giftName = data[index].data.data.giftName
                   giftStore.userid = data[index].data.data.userid
                   giftStore.uname = data[index].data.data.uname
                   giftStore.uname_color = data[index].data.data.uname_color
                   giftStore.time = data[index].data.data.timestamp
                   giftList.push(giftStore)
-                  _self.speakDanmu(giftStore)
+                  // _self.speakDanmu(giftStore)
                   if (giftList.length >= 4) {
                     giftList.shift()
                   }
@@ -369,15 +410,84 @@ export default {
         }
       }
     },
+    speakDanmuReal (dm) {
+      if (muaConfig.tts) {
+      // 判断是否在阅读
+        if (speakStatus) {
+          // 不阅读 把其加入阅读list
+          if (dm !== null) {
+            speakDMList.push(dm)
+          }
+        } else {
+          if (speakDMList.length !== 0) {
+            speakStatus = true
+            if (dm !== null) {
+              speakDMList.push(dm)
+            }
+            let tempText = speakDMList.pop()
+            this.speakDM(tempText)
+          } else {
+            if (dm !== null) {
+              speakStatus = true
+              let tempText = dm
+              this.speakDM(tempText)
+            }
+          }
+        }
+      }
+    },
     speak (tempText) {
       if (typeof tempText !== 'undefined' && tempText.giftName !== '小心心' && tempText.giftName !== '辣条') {
-        say.speak('感谢' + tempText.uname + '赠送的' + tempText.giftName, null, 1.0, (err) => {
-          if (err) {
-            return console.error(err)
-          }
-          speakStatus = false
-          console.log('Text has been spoken.')
-        })
+        // say.speak('感谢' + tempText.uname + '赠送的' + tempText.giftName, null, 1.0, (err) => {
+        //   if (err) {
+        //     return console.error(err)
+        //   }
+        //   speakStatus = false
+        //   console.log('Text has been spoken.')
+        // })
+        this.synthesizeToSpeaker('感谢' + tempText.uname + '赠送的' + tempText.giftName)
+      }
+    },
+    speakDM (tempText) {
+      if (typeof tempText !== 'undefined' && tempText.danmu !== '') {
+        // say.speak('感谢' + tempText.uname + '赠送的' + tempText.giftName, null, 1.0, (err) => {
+        //   if (err) {
+        //     return console.error(err)
+        //   }
+        //   speakStatus = false
+        //   console.log('Text has been spoken.')
+        // })
+        this.synthesizeToSpeaker(tempText.danmu)
+      }
+    },
+    synthesizeToSpeaker (text) {
+      const player = new sdk.SpeakerAudioDestination()
+      player.onAudioEnd = function (s) {
+        console.info(s)
+      }
+      const synthesizer = new sdk.SpeechSynthesizer(speechConfig, sdk.AudioConfig.fromDefaultSpeakerOutput(player))
+      console.info('come in ss')
+      console.info(synthesizer)
+      try {
+        synthesizer.speakTextAsync(
+          text,
+          result => {
+            speakStatus = false
+            synthesizer.close()
+            if (result) {
+              console.log(JSON.stringify(result))
+              speakStatus = false
+            }
+            // synthesizer.close()
+          },
+          error => {
+            console.log(error)
+            speakStatus = false
+            synthesizer.close()
+          })
+      } catch (e) {
+        console.info(e)
+        speakStatus = false
       }
     }
   }
@@ -399,9 +509,9 @@ export default {
     overflow: hidden;
     position: absolute;
     left: 0;
-    right: 20%;
-    bottom: 10%;
-    top: 20%;
+    right: 1%;
+    bottom: 0%;
+    top: 0%;
     margin: auto;
 }
 .waveWrapperInner {
@@ -460,7 +570,7 @@ export default {
 .online {
   left: 5%;
   position:fixed;
-  top:23%;
+  top:3%;
   background-color: transparent;
   color: #ffffff;
   z-index: 5;
@@ -468,7 +578,7 @@ export default {
 .comeinLastMinute {
   left: 5%;
   position:fixed;
-  top:26%;
+  top:6%;
   background-color: transparent;
   color: #ffffff;
   z-index: 5;
@@ -478,6 +588,7 @@ export default {
   width: 10px;
   height: 10px; 
   position: fixed;
+  top:0%;
   border-radius: 50%;
   z-index: 2;
 }
@@ -980,7 +1091,7 @@ export default {
   }
   .danmu {
     display: inline-block;
-    margin-bottom: 1px;
+    margin-bottom: 10px;
     align-items: center;
     /* display: inline-block; */
     align-content: center;
@@ -1023,29 +1134,29 @@ export default {
     padding: 5px;
     align-content: center;
     position: fixed;
-    height: 50%;
-    width: 70%;
-    left: 5%;
-    top: 30%;
+    height: 70%;
+    width: 80%;
+    left: 10%;
+    top: 10%;
     background-image:  linear-gradient(0deg, rgba(241, 147, 156,0.1), rgba(234, 81, 127,0.9));
   }
   .comein-container {
     align-content: center;
     position: fixed;
     height: 5%;
-    width: 70%;
-    left: 5%;
+    width: 80%;
+    left: 10%;
     top: 80%;
     /* background-color: #cc88b2; */
     background-color: transparent;
     z-index: 2;
   } 
   .gift-container {
-    background-color: #FFFFFF;
+    background-color: transparent;
     align-content: center;
     position: fixed;
-    padding-left: 5%;
-    width: 80%;
+    padding-left: 10%;
+    width: 99%;
     top: 85%;
     z-index: 2;
   } 
@@ -1116,19 +1227,18 @@ export default {
     animation-duration: 2s;  
   } */
   #root{
-    width: 500px;
-    height: 500px;
+    width: 455px;
+    height: 600px;
     background-color: #85b3b300;
   }
   body {
     background-color: transparent;
   }
   #c-bg{
+    height: 100%;
     z-index: 1;
     -webkit-app-region: drag;
-    width: 80%;
-    height: 70%;
-    bottom: 10%;
+    width: 99%;
     position: fixed;
     border-radius:1%;
     -webkit-background-size: 50px 50px;

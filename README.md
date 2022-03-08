@@ -22,7 +22,7 @@
 - [x] 背景颜色自定义
 - [x] 弹幕颜色
 - [x] 人气
-- [x] TTS欢迎礼物
+- [ ] TTS欢迎礼物
 - [x] 进入直播间 
 - [x] 礼物(基本显示)
 - [x] 发送弹幕
@@ -40,6 +40,7 @@
 - npm module bilibili-live-ws
 - npm module [bilibili-live-danmaku-api](https://github.com/simon300000/bilibili-live-danmaku-api)
 - [background image](https://codepen.io/plavookac/pen/QMwObb)
+- [tts间隔问题](https://stackoverflow.com/questions/62564402/microsoft-cognitive-tts-onaudioend-event-not-working)
 - This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
 
 ### 交流

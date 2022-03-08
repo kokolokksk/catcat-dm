@@ -21,7 +21,7 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 500,
+    height: 650,
     useContentSize: false,
     width: 500,
     frame: true,
@@ -42,9 +42,9 @@ function createDmWindow () {
    * Initial window options
    */
   dmWindow = new BrowserWindow({
-    height: 500,
+    height: 600,
     useContentSize: false,
-    width: 500,
+    width: 455,
     frame: false,
     transparent: true
   })
@@ -60,7 +60,7 @@ function createChatWindow () {
    * Initial window options
    */
   chatWindow = new BrowserWindow({
-    height: 20,
+    height: 30,
     useContentSize: true,
     width: 260,
     frame: true,

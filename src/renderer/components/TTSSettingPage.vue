@@ -10,23 +10,10 @@
       </li>
     </ul>   -->
     <p class="line"/>
-    房间号:<input type='text' v-model = roomid name= "roomid" /><a-button class="left-margin" type="default" @click="setRoomId" >设置</a-button>
+    Ocp-Apim-Subscription-Key:<input type='text' v-model = v1 name= "v1" /><a-button class="left-margin" type="default" @click="setV1" >设置</a-button>
     <p class="line"/>
-    <div id="demo-content">
-      <div id="demo-app">
-        <p>
-      背景颜色:
-      <input id="bgc" data-jscolor="{value:'rgba(192,160,255,0.5)'}" onInput="update(this.jscolor)"><a-button class="left-margin" @click="setBackgroundColor" type='default'>设置</a-button>
-      </p>
-      <em id="pr2" style="display:inline-block; padding:1em;">background</em>
-      <em id="pr3" style="display:inline-block; padding:1em;">background color</em>
-      <br>
-       <p class="line"/>
-      弹幕颜色(非呐卷用户):
-      <input id="dmc" data-jscolor="{value:'rgba(192,160,255,0.5)'}" onInput="updateDanmu(this.jscolor)"><a-button class="left-margin" @click="setDanmuColor" type='default'>设置</a-button>
-       <p class="line"/>
-      </div> 
-		</div> 
+    REGION_IDENTIFIER:<input type='text' v-model = v2 name= "roomid" /><a-button class="left-margin" type="default" @click="setV2" >设置</a-button>
+    <p class="line"/>
     <p class="line"/>
     置顶:<a-switch default-checked v-model="alwaysOnTop" checked-children="开" un-checked-children="关" @change="setAlwaysOnTop" />
     <p class="line"/>
@@ -44,70 +31,37 @@
         TTS:<a-switch default-unchecked v-model="tts" checked-children="开" un-checked-children="关" @change="setTTS" />
     </div>
     <p class="line"/>
-    当前版本:dom-v-1.1.0<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
+    当前版本:dom-v-1.0.6<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
     <p class="line"/>
     SESSDATA:<input type='text' v-model = SESSDATA name= "SESSDATA" /><a-button class="left-margin" type="default" @click="setSESSDATA" >设置</a-button>
     <p class="line"/>
     csrf:<input type='text' v-model = csrf name= "csrf" /><a-button class="left-margin" type="default" @click="setCsrf" >设置</a-button>
-    <p class="line"/>
-    Ocp-Apim-Subscription-Key:<input type='text' v-model = v1 name= "v1" /><a-button class="left-margin" type="default" @click="setV1" >设置</a-button>
-    <p class="line"/>
-    REGION_IDENTIFIER:<input type='text' v-model = v2 name= "roomid" /><a-button class="left-margin" type="default" @click="setV2" >设置</a-button>
   </div> 
 </template>
 <script>
-let jscolor = window.jscolor
-window.update = function update (picker) {
-  document.getElementById('pr2').style.background = picker.toBackground()
-  document.getElementById('pr3').style.background = picker.toRGBAString()
-}
-window.updateDanmu = function updateDanmu (picker) {
-  document.getElementById('pr2').style.color = picker.toRGBAString()
-  document.getElementById('pr3').style.color = picker.toRGBAString()
-}
-jscolor.trigger('input')
-let roomid
 export default {
   data () {
     return {
-      menuList: [{
-        id: 1,
-        name: '基本设置',
-        status:0
-      }, {
-        id: 2,
-        name: '关于',
-        status:0
-      }],
+      // Ocp-Apim-Subscription-Key
+      v1: '',
+      // REGION_IDENTIFIER
+      v2: '',
       menuIndex:-1,
       roomid:0,
       waveD:true,
       scaleX:1,
       fc:'Consolas',
       dmf:'1',
-      fontList:[{id: 1, title: '字心坊韵圆体', value: 'zxfyyt', class: 'zxfyyt'},
-        {id: 2, title: '微软雅黑', value: 'Microsoft YaHei', class: 'yahei'},
-        {id: 4, title: 'Consolas', value: 'Consolas', class: 'consolas'},
-        {id: 4, title: 'Fira Code', value: 'Fira Code', class: 'FiraCode'},
-        {id: 5, title: '宋体', value: 'SimSun', class: 'SimSun'},
-        {id: 6, title: '黑体', value: 'SimHei', class: 'SimHei'},
-        {id: 7, title: '微软正黑体', value: 'Microsoft JhengHei', class: 'JhengHei'},
-        {id: 8, title: '幼圆', value: 'YouYuan', class: 'YouYuan'},
-        {id: 9, title: '苹方', value: 'PingFang SC', class: 'PingFangSC'},
-        {id: 10, title: '华文彩云', value: 'STCaiyun', class: 'STCaiyun'},
-        {id: 11, title: '华文琥珀', value: 'STHupo', class: 'STHupo'},
-        {id: 12, title: '冬青黑体简', value: 'Hiragino Sans GB', class: 'HiraginoSansGB'}],
       tts:false,
       alwaysOnTop: true,
       chatAlwaysOnTop: false,
       SESSDATA:'',
-      csrf:'',
-      v1: '',
-      v2: ''
+      csrf:''
     }
   },
   mounted () {
-    this.initData()
+    this.synthesizeToSpeaker()
+    // this.initData()
   },
   methods: {
     initData () {
@@ -232,7 +186,33 @@ export default {
         }
       })
     },
-    setRoomId () {
+    setV1 () {
+      // console.info('?')
+      let _self = this
+      this.$db.find({ type: 2 }, (err, docs) => {
+        console.info(docs)
+        if (docs !== null && docs.length !== 0) {
+          console.info(_self.roomid)
+          _self.$db.update({ _id: docs[0]._id }, { $set: { roomid: _self.roomid } }, {}, function () {
+            console.info('update success')
+          })
+        } else {
+          let roomStore = {
+            roomid: _self.roomid, // user id
+            type: 2
+          }
+          _self.$db.insert(roomStore, (err, ret) => {
+            if (err !== null) {
+              console.info(err)
+            }
+          })
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
+    },
+    setV2 () {
       // console.info('?')
       let _self = this
       this.$db.find({ type: 2 }, (err, docs) => {
@@ -392,58 +372,6 @@ export default {
         } else {
           let csrfStore = {
             csrf: _self.csrf, // user id
-            type: 2
-          }
-          _self.$db.insert(csrfStore, (err, ret) => {
-            if (err !== null) {
-              console.info(err)
-            }
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
-    },
-    setV1 () {
-      // console.info('?')
-      let _self = this
-      this.$db.find({ type: 2 }, (err, docs) => {
-        console.info(docs)
-        if (docs !== null && docs.length !== 0) {
-          console.info(_self.v1)
-          _self.$db.update({ _id: docs[0]._id }, { $set: { v1: _self.v1 } }, {}, function () {
-            console.info('update success')
-          })
-        } else {
-          let csrfStore = {
-            csrf: _self.v1, // user id
-            type: 2
-          }
-          _self.$db.insert(csrfStore, (err, ret) => {
-            if (err !== null) {
-              console.info(err)
-            }
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
-    },
-    setV2 () {
-      // console.info('?')
-      let _self = this
-      this.$db.find({ type: 2 }, (err, docs) => {
-        console.info(docs)
-        if (docs !== null && docs.length !== 0) {
-          console.info(_self.v2)
-          _self.$db.update({ _id: docs[0]._id }, { $set: { v2: _self.v2 } }, {}, function () {
-            console.info('update success')
-          })
-        } else {
-          let csrfStore = {
-            csrf: _self.v2, // user id
             type: 2
           }
           _self.$db.insert(csrfStore, (err, ret) => {
