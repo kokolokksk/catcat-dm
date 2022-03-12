@@ -520,7 +520,7 @@ export default {
     overflow: hidden;
     height: 100%;
     bottom: -1px;
-    background-image: linear-gradient(to top, #967b92 20%, #e2bfd8 80%);
+    background-image: linear-gradient(to top, #f0b7cf 20%, #8f3979 80%);
 }
 .bgTop {
     z-index: 15;
@@ -568,18 +568,20 @@ export default {
     animation: move_wave 15s linear infinite;
 }
 .online {
-  left: 5%;
+  left: 10%;
   position:fixed;
   top:3%;
   background-color: transparent;
   color: #ffffff;
+  font-family:  'Consolas','zxfyyt','YouYuan';
   z-index: 5;
 }
 .comeinLastMinute {
-  left: 5%;
+  left: 10%;
   position:fixed;
   top:6%;
   background-color: transparent;
+  font-family:  'Consolas','zxfyyt','YouYuan';
   color: #ffffff;
   z-index: 5;
 }
@@ -1119,13 +1121,15 @@ export default {
   .gift {
     font-family: 'Consolas';
     font-size: 10pt;
-    color: rgb(248, 156, 113);
+    color: rgb(8, 51, 4);
     display: flex;
     margin-bottom: 5px;
     align-items: center;
     display: inline-block;
     align-content: center;
     /* background-color: teal; */
+    font-family:  'Consolas','zxfyyt','YouYuan';
+    font-size: 1rem;
     height: 15%;
     width: 100%;
     z-index: 3;
