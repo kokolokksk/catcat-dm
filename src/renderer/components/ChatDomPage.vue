@@ -134,7 +134,8 @@ let muaConfig = {
   tts:false, // tts开关
   alwaysOnTop:true, // 置顶
   v1: '',
-  v2: ''
+  v2: '',
+  voice: 'zh-CN-XiaoxiaoNeural'
 
 }
 export default {
@@ -178,14 +179,15 @@ export default {
           log.info(docs[0].scaleX)
           muaConfig.scale = typeof (docs[0].scaleX) === 'undefined' ? muaConfig.scale : docs[0].scaleX
           muaConfig.tts = typeof (docs[0].tts) === 'undefined' ? muaConfig.tts : docs[0].tts
-          muaConfig.v1 = typeof (docs[0].v1) === 'undefined' ? muaConfig.v1 : docs[0].v1
-          muaConfig.v2 = typeof (docs[0].v2) === 'undefined' ? muaConfig.v2 : docs[0].v2
+          muaConfig.v1 = (typeof (docs[0].v1) === 'undefined' || docs[0].v1 === '') ? muaConfig.v1 : docs[0].v1
+          muaConfig.v2 = (typeof (docs[0].v2) === 'undefined' || docs[0].v2 === '') ? muaConfig.v2 : docs[0].v2
+          muaConfig.voice = (typeof (docs[0].voice) === 'undefined' || docs[0].voice === '') ? muaConfig.voice : docs[0].voice
           if (!muaConfig.v1 || !muaConfig.v2 || muaConfig.v1 === '' || muaConfig.v2 === '') {
             muaConfig.tts = false
           } else {
             speechConfig = sdk.SpeechConfig.fromSubscription(muaConfig.v1, muaConfig.v2)
             speechConfig.speechSynthesisLanguage = 'zh-cn'
-            speechConfig.speechSynthesisVoiceName = 'zh-cn-XiaoxiaoNeural'
+            speechConfig.speechSynthesisVoiceName = muaConfig.voice
           }
           muaConfig.alwaysOnTop = typeof (docs[0].alwaysOnTop) === 'undefined' ? true : docs[0].alwaysOnTop
           if (muaConfig.alwaysOnTop === true) {

@@ -40,11 +40,22 @@
                  <option v-for="(item,index) in fontList" :key="index" :value='item.value' :class='item.class'>{{item.title}}</option>  
             </select><a-button @click="setDmf" class="left-margin" type='default'>设置</a-button> -->
     <p class="line"/>
+    <!-- 风格选择:<select v-model =  voiceStyle name= "voiceStyle" >
+                 <option v-for="(item,index) in speechSynthesisVoiceNameList" :key="index" :value='item.value' :class='item.class'>{{item.title}}</option>  
+            </select><a-button @click="setDmf" class="left-margin" type='default'>设置</a-button>
+    <p class="line"/> -->
     <div>
         TTS:<a-switch default-unchecked v-model="tts" checked-children="开" un-checked-children="关" @change="setTTS" />
     </div>
     <p class="line"/>
-    当前版本:dom-v-1.1.1<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
+    语音选择:<select v-model =  voice name= "voice"  >
+                 <option v-for="(item,index) in speechSynthesisVoiceNameList" :key="index" :value='item.voiceValue' >{{item.voiceName}}</option>  
+            </select>
+            <input type='text' v-model = testVoiceText name= "testVoiceText"  style="width: 20vw" maxlength="5" /> 
+            <a-button @click="testVoice" class="left-margin" type='default'>试听</a-button>
+            <a-button @click="setVoice" class="left-margin" type='default'>设置</a-button>
+    <p class="line"/>
+    当前版本:dom-v-1.1.2<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
     <p class="line"/>
     SESSDATA:<input type='text' v-model = SESSDATA name= "SESSDATA" /><a-button class="left-margin" type="default" @click="setSESSDATA" >设置</a-button>
     <p class="line"/>
@@ -56,6 +67,9 @@
   </div> 
 </template>
 <script>
+import { dialog } from 'electron'
+const sdk = require('microsoft-cognitiveservices-speech-sdk')
+let speechConfig = null
 let jscolor = window.jscolor
 window.update = function update (picker) {
   document.getElementById('pr2').style.background = picker.toBackground()
@@ -97,13 +111,30 @@ export default {
         {id: 10, title: '华文彩云', value: 'STCaiyun', class: 'STCaiyun'},
         {id: 11, title: '华文琥珀', value: 'STHupo', class: 'STHupo'},
         {id: 12, title: '冬青黑体简', value: 'Hiragino Sans GB', class: 'HiraginoSansGB'}],
+      speechSynthesisVoiceNameList:[
+        {id: 1, voiceName: '晓辰', voiceValue: 'zh-CN-XiaochenNeural', locale: 'zh-CN', sex: 'female', description: '针对自发对话进行了优化'},
+        {id: 2, voiceName: '晓涵', voiceValue: 'zh-CN-XiaohanNeural', locale: 'zh-CN', sex: 'female', description: '常规，使用 SSML 提供多种风格'},
+        {id: 3, voiceName: '晓墨', voiceValue: 'zh-CN-XiaomoNeural', locale: 'zh-CN', sex: 'female', description: '常规，使用 SSML 提供多种角色扮演和风格'},
+        {id: 4, voiceName: '晓秋', voiceValue: 'zh-CN-XiaoqiuNeural', locale: 'zh-CN', sex: 'female', description: '针对叙事进行了优化'},
+        {id: 5, voiceName: '晓睿', voiceValue: 'zh-CN-XiaoruiNeural', locale: 'zh-CN', sex: 'female', description: '高级语音，使用 SSML 提供多种风格'},
+        {id: 5, voiceName: '晓双', voiceValue: 'zh-CN-XiaoshuangNeural', locale: 'zh-CN', sex: 'female', description: '儿童语音，针对儿童故事和聊天进行了优化；使用 SSML 提供多种语音风格'},
+        {id: 5, voiceName: '晓晓', voiceValue: 'zh-CN-XiaoxiaoNeural', locale: 'zh-CN', sex: 'female', description: '常规，使用 SSML 提供多种语音风格'},
+        {id: 5, voiceName: '晓萱', voiceValue: 'zh-CN-XiaoxuanNeural', locale: 'zh-CN', sex: 'female', description: '常规，使用 SSML 提供多种角色扮演和风格'},
+        {id: 5, voiceName: '晓颜', voiceValue: 'zh-CN-XiaoyanNeural', locale: 'zh-CN', sex: 'female', description: '针对客户服务进行了优化'},
+        {id: 5, voiceName: '晓悠', voiceValue: 'zh-CN-XiaoyouNeural', locale: 'zh-CN', sex: 'female', description: '儿童语音，针对讲故事进行了优化'},
+        {id: 5, voiceName: '云希', voiceValue: 'zh-CN-YunxiNeural', locale: 'zh-CN', sex: 'male', description: '常规，使用 SSML 提供多种风格'},
+        {id: 5, voiceName: '云扬', voiceValue: 'zh-CN-YunyangNeural', locale: 'zh-CN', sex: 'male', description: '针对新闻阅读进行了优化，使用 SSML 提供多种语音风格'},
+        {id: 5, voiceName: '云野', voiceValue: 'zh-CN-YunyeNeural', locale: 'zh-CN', sex: 'male', description: '针对使用 SSML 提供的故事讲述、多种角色扮演和风格进行了优化'}
+      ],
       tts:false,
       alwaysOnTop: true,
       chatAlwaysOnTop: false,
       SESSDATA:'',
       csrf:'',
       v1: '',
-      v2: ''
+      v2: '',
+      voice: '',
+      testVoiceText: ''
     }
   },
   mounted () {
@@ -122,7 +153,10 @@ export default {
           _self.tts = docs[0].tts
           _self.alwaysOnTop = docs[0].alwaysOnTop
           _self.chatAlwaysOnTop = docs[0].chatAlwaysOnTop
-          _self.waveD = docs[0].waveD
+          _self.waveD = (typeof (docs[0].waveD) === 'undefined' || docs[0].waveD === '') ? true : docs[0].waveD
+          _self.voice = docs[0].voice
+          _self.v1 = docs[0].v1
+          _self.v2 = docs[0].v2
           // fixme load color
           document.getElementById('bgc').nodeValue = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
           document.getElementById('dmc').nodeValue = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
@@ -339,6 +373,31 @@ export default {
         }
       })
     },
+    setVoice () {
+      let _self = this
+      this.$db.find({ type: 2 }, (err, docs) => {
+        console.info(docs)
+        if (docs !== null && docs.length !== 0) {
+          console.info(_self.voice)
+          _self.$db.update({ _id: docs[0]._id }, { $set: { voice: _self.voice } }, {}, function () {
+            console.info('update success')
+          })
+        } else {
+          let voiceStore = {
+            voice: _self.voice, // user id
+            type: 2
+          }
+          _self.$db.insert(voiceStore, (err, ret) => {
+            if (err !== null) {
+              console.info(err)
+            }
+          })
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
+    },
     checkUpdate () {
       let _self = this
       let a = this.$http
@@ -456,6 +515,42 @@ export default {
           console.info(err)
         }
       })
+    },
+    testVoice () {
+      if (this.v1 !== '') {
+        speechConfig = sdk.SpeechConfig.fromSubscription(this.v1, this.v2)
+        speechConfig.speechSynthesisLanguage = 'zh-cn'
+        speechConfig.speechSynthesisVoiceName = this.voice
+        this.synthesizeToSpeaker(this.testVoiceText)
+      } else {
+        console.error('no key')
+      }
+    },
+    synthesizeToSpeaker (text) {
+      const player = new sdk.SpeakerAudioDestination()
+      player.onAudioEnd = function (s) {
+        console.info(s)
+      }
+      const synthesizer = new sdk.SpeechSynthesizer(speechConfig, sdk.AudioConfig.fromDefaultSpeakerOutput(player))
+      console.info('come in ss')
+      console.info(synthesizer)
+      try {
+        synthesizer.speakTextAsync(
+          text,
+          result => {
+            synthesizer.close()
+            if (result) {
+              console.log(JSON.stringify(result))
+            }
+            // synthesizer.close()
+          },
+          error => {
+            console.log(error)
+            synthesizer.close()
+          })
+      } catch (e) {
+        console.info(e)
+      }
     }
   }
 }
