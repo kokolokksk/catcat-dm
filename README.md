@@ -1,17 +1,25 @@
-# catcatDM
+# CatCatDM
 
-> catcatDm! The meta-electron-catcat-bilibili-danmu application!
+> CatCatDM! 
+> >The meta-electron-catcat-bilibili-danmu application!
 
 ### 说明
-喵喵酱牌 哔哩哔哩 直播弹幕姬（没有直播功能 只能看弹幕！）
+ 哔哩哔哩 直播弹幕姬
 
-- 发送弹幕需要设置 SESSDATA(SESSDATA) 与 csrf(bili_jct)，登陆哔哩哔哩后 F12 复制cookies中的 SESSDATA 与 bili_jct 对应键值
+- 发送弹幕需要设置 ```SESSDATA```(```SESSDATA```) 与 ```csrf```(```bili_jct```)，登陆哔哩哔哩后 F12 复制cookies中的 ```SESSDATA``` 与 ```bili_jct``` 对应键值
 
 >dom版
  - ![界面截图](desc/2021-9-29_11-25-05.gif)
  - ![主程序界面](desc/application.png)
 
 - [下载地址](https://github.com/kokolokksk/mua/releases/latest)
+## Windows
+- 在Windows 10 上测试
+- 直接运行CatCatDM.exe
+## Linux
+- 在Ubuntu 20.04 版本上测试。
+- 进入目录 ```chmod +x CatCatDM```
+- 若提示  ```libgconf-2.so.4: cannot open shared object file: No such file or directory``` 则 ```apt-get update``` 再```apt-get install libgconf-2-4``` 然后执行 ```./CatCatDM```
 
 #### 待做列表
 - [x] 显示一条文字
@@ -29,7 +37,7 @@
 - [ ] 发送弹幕更多选项
 - [ ] [弹幕统计](https://github.com/kokolokksk/catcat-dm-data)
 - [ ] [增量更新](https://github.com/kokolokksk/lolidate)
-- [ ] [使用更加好听的TTS](https://github.com/kokolokksk/catcat-tts)
+- [x] [使用更加好听的TTS](https://github.com/kokolokksk/catcat-tts)
 
 
 #### 下一步
