@@ -57,7 +57,7 @@ jobs:
         id: create_release
         uses: actions/create-release@latest
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.github_token }}
         with:
           tag_name: v${{steps.version.outputs.value}}
           release_name: v${{steps.version.outputs.value}}
