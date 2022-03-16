@@ -11,22 +11,31 @@
     </ul>   -->
     <p class="line"/>
     房间号:<input type='text' v-model = roomid name= "roomid" /><a-button class="left-margin" type="default" @click="setRoomId" >设置</a-button>
-    <p class="line"/>
-    <div id="demo-content">
-      <div id="demo-app">
+    <p class="line"/> 
+    <div id="color-container" style="display:flex">
+      <div id="color-back" style="padding-left:5vw;padding-right:5vw">
         <p>
-      背景颜色:
-      <input id="bgc" data-jscolor="{value:'rgba(192,160,255,0.5)'}" onInput="update(this.jscolor)"><a-button class="left-margin" @click="setBackgroundColor" type='default'>设置</a-button>
-      </p>
-      <em id="pr2" style="display:inline-block; padding:1em;">background</em>
-      <em id="pr3" style="display:inline-block; padding:1em;">background color</em>
-      <br>
-       <p class="line"/>
-      弹幕颜色(非呐卷用户):
-      <input id="dmc" data-jscolor="{value:'rgba(192,160,255,0.5)'}" onInput="updateDanmu(this.jscolor)"><a-button class="left-margin" @click="setDanmuColor" type='default'>设置</a-button>
-       <p class="line"/>
-      </div> 
-		</div> 
+          背景颜色:
+        <div id="pc" style="display: inline-flex;">
+        </div>
+        <a-button style="top: 0.6vh;" class="left-margin" @click="setBackgroundColor" type='default'>设置</a-button>
+      </div>
+      <div id="color-dm" style="padding-left:5vw;padding-right:5vw">
+        <p>
+          弹幕颜色:
+        <div id="pc2" style="display: inline-flex;">
+        </div>
+        <a-button style="top: 0.6vh;" class="left-margin" @click="setDanmuColor" type='default'>设置</a-button>
+      </div>
+      <div id="color-preview" style="padding-left:5vw;padding-right:5vw">
+        <p>
+          预览:
+        <div id="pc3"  :style="backColorPreview" >
+            <p  id="pc4" :style="danmuColorPreview">文字</p>
+        </div>
+      </div>
+    </div>
+    
     <p class="line"/>
     置顶:<a-switch default-checked v-model="alwaysOnTop" checked-children="开" un-checked-children="关" @change="setAlwaysOnTop" />
     <p class="line"/>
@@ -67,19 +76,11 @@
   </div> 
 </template>
 <script>
-import { dialog } from 'electron'
+import '@simonwep/pickr/dist/themes/nano.min.css'
+import Pickr from '@simonwep/pickr'
 const sdk = require('microsoft-cognitiveservices-speech-sdk')
+// Simple example, see optional options for more configuration.
 let speechConfig = null
-let jscolor = window.jscolor
-window.update = function update (picker) {
-  document.getElementById('pr2').style.background = picker.toBackground()
-  document.getElementById('pr3').style.background = picker.toRGBAString()
-}
-window.updateDanmu = function updateDanmu (picker) {
-  document.getElementById('pr2').style.color = picker.toRGBAString()
-  document.getElementById('pr3').style.color = picker.toRGBAString()
-}
-jscolor.trigger('input')
 let roomid
 export default {
   data () {
@@ -134,7 +135,15 @@ export default {
       v1: '',
       v2: '',
       voice: '',
-      testVoiceText: ''
+      dmc: '',
+      bgc: '',
+      testVoiceText: '',
+      backColorPreview: {
+        backgroundColor: '#fff'
+      },
+      danmuColorPreview: {
+        color: '#000'
+      }
     }
   },
   mounted () {
@@ -157,13 +166,115 @@ export default {
           _self.voice = docs[0].voice
           _self.v1 = docs[0].v1
           _self.v2 = docs[0].v2
+          _self.bgc = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
+          _self.dmc = docs[0].dmc === null ? 'rgba(255,255,255,1)' : docs[0].dmc
           // fixme load color
-          document.getElementById('bgc').nodeValue = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
-          document.getElementById('dmc').nodeValue = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
+          document.getElementById('pc3').style.backgroundColor = _self.bgc
+          document.getElementById('pc4').style.color = _self.dmc
         }
         if (err !== null) {
           console.info(err)
         }
+        _self.creatPickColor()
+      })
+    },
+    creatPickColor () {
+      let _self = this
+      const pickr = Pickr.create({
+        el: '#pc',
+        default: _self.bgc === null ? 'rgba(255,255,255,1)' : _self.bgc,
+        theme: 'nano', // or 'monolith', or 'nano'
+        swatches: [
+          'rgb(244, 67, 54)',
+          'rgb(233, 30, 99)',
+          'rgb(156, 39, 176)',
+          'rgb(103, 58, 183)',
+          'rgb(63, 81, 181)',
+          'rgb(33, 150, 243)',
+          'rgb(3, 169, 244)',
+          'rgb(0, 188, 212)',
+          'rgb(0, 150, 136)',
+          'rgb(76, 175, 80)',
+          'rgb(139, 195, 74)',
+          'rgb(205, 220, 57)',
+          'rgb(255, 235, 59)',
+          'rgb(255, 193, 7)'
+        ],
+        components: {
+        // Main components
+          preview: true,
+          opacity: false,
+          hue: true,
+          // Input / output Options
+          interaction: {
+            hex: false,
+            rgba: false,
+            hsla: false,
+            hsva: false,
+            cmyk: false,
+            input: true,
+            clear: false,
+            save: true
+          }
+        },
+        i18n: {
+          'btn:save': '选中',
+          'btn:clear': '清空'
+        }
+      })
+      pickr.on('save', (color, instance) => {
+        console.log('Event: "save"', color, instance)
+        pickr.hide()
+        _self.backColorPreview.backgroundColor = color.toHEXA().toString()
+        console.info(_self.backColorPreview)
+      })
+      const pickr2 = Pickr.create({
+        el: '#pc2',
+        theme: 'nano', // or 'monolith', or 'nano'
+        default: _self.dmc === null ? 'rgba(255,255,255,1)' : _self.dmc,
+        swatches: [
+          'rgb(244, 67, 54)',
+          'rgb(233, 30, 99)',
+          'rgb(156, 39, 176)',
+          'rgb(103, 58, 183)',
+          'rgb(63, 81, 181)',
+          'rgb(33, 150, 243)',
+          'rgb(3, 169, 244)',
+          'rgb(0, 188, 212)',
+          'rgb(0, 150, 136)',
+          'rgb(76, 175, 80)',
+          'rgb(139, 195, 74)',
+          'rgb(205, 220, 57)',
+          'rgb(255, 235, 59)',
+          'rgb(255, 193, 7)'
+        ],
+        components: {
+        // Main components
+          preview: true,
+          opacity: false,
+          hue: true,
+          // Input / output Options
+          interaction: {
+            hex: false,
+            rgba: false,
+            hsla: false,
+            hsva: false,
+            cmyk: false,
+            input: true,
+            clear: false,
+            save: true
+          }
+        },
+        i18n: {
+          'btn:save': '选中',
+          'btn:clear': '清空'
+        }
+      })
+      pickr2.on('save', (color, instance) => {
+        console.log('Event: "save"', color, instance)
+        pickr2.hide()
+        _self.danmuColorPreview.color = color.toHEXA().toString()
+        _self.$forceUpdate()
       })
     },
     setTTS () {
@@ -320,7 +431,7 @@ export default {
     },
     setBackgroundColor () {
       let _self = this
-      let color = document.getElementById('bgc').getAttribute('data-current-color')
+      let color = document.getElementById('pc3').style.backgroundColor
       console.info(color)
       _self.$db.find({ type: 2 }, (err, docs) => {
         if (docs !== null && docs.length !== 0) {
@@ -335,7 +446,7 @@ export default {
     },
     setDanmuColor () {
       let _self = this
-      let color = document.getElementById('dmc').getAttribute('data-current-color')
+      let color = document.getElementById('pc4').style.color
       console.info(color)
       _self.$db.find({ type: 2 }, (err, docs) => {
         if (docs !== null && docs.length !== 0) {
@@ -556,6 +667,9 @@ export default {
 }
 </script>
 <style>
+    .pickr {
+      left: 4vw;
+    }
     .FiraCode{
       font-family: "Fira Code",sans-serif;
     }

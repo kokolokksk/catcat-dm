@@ -54,6 +54,7 @@
   },
   "dependencies": {
     "@eastdesire/jscolor": "^2.4.6",
+    "@simonwep/pickr": "^1.8.2",
     "animate.css": "^4.1.1",
     "ant-design-vue": "^1.7.8",
     "axios": "^0.18.0",
