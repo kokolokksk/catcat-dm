@@ -1,29 +1,68 @@
-# This workflow will do a clean install of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
-name: Node.js CI
+name: Node.js Package
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
-  build:
-
+  publish-npm:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+        node-version: [12.x]
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm run build --if-present
+      # check it to your workflow can access it
+      # from: https://github.com/actions/checkout
+      - name: 1. 检查master分支
+        uses: actions/checkout@master
+
+      # from: https://github.com/actions/setup-node
+      - name: 2. 设置Node.js
+        uses: actions/setup-node@master
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 3. 缓存
+        uses: actions/cache@v2
+        id: cache-dependencies
+        with:
+          path: node_modules
+          key: ${{runner.OS}}-${{hashFiles('**/yarn.lock')}}
+
+      - name: 4. 安装插件
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        run: |
+          export TZ='Asia/Shanghai'
+          npm install
+
+      - name: 5. 生成文件
+        run: |
+          export TZ='Asia/Shanghai'
+          npm run build
+
+      - name: 6. 读取当前版本号
+        id: version
+        uses: ashley-taylor/read-json-property-action@v1.0
+        with:
+          path: ./package.json
+          property: version
+
+      - name: 7. 读取描述文件
+        id: description
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./description.txt
+
+      - name: 9. 创建GitHub Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{steps.version.outputs.value}}
+          release_name: v${{steps.version.outputs.value}}
+          body: ${{steps.description.outputs.content}}
+          draft: false
+          prerelease: false
