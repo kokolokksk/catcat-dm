@@ -46,7 +46,8 @@
       "icon": "build/icons/icon.icns"
     },
     "win": {
-      "icon": "build/icons/logo.ico"
+      "icon": "build/icons/logo.ico",
+      "target": "portable,7z,AppX"
     },
     "linux": {
       "icon": "build/icons"
