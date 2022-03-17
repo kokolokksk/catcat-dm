@@ -1,6 +1,6 @@
 {
   "name": "CatCatDM",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "author": "loveloliii <loli@loli.monster>",
   "description": "bilibili live mua",
   "license": "MIT",
@@ -47,7 +47,29 @@
     },
     "win": {
       "icon": "build/icons/logo.ico",
-      "target": "portable,7z,AppX"
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "7z",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
     },
     "linux": {
       "icon": "build/icons"
