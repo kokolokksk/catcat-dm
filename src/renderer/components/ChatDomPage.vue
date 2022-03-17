@@ -176,7 +176,6 @@ export default {
           _self.waveDisplay = typeof (docs[0].waveD) === 'undefined' ? _self.waveDisplay : docs[0].waveD
           muaConfig.danmuAreaColor = typeof (docs[0].bgc) === 'undefined' ? muaConfig.danmuAreaColor : docs[0].bgc
           muaConfig.danmuFont = typeof (docs[0].dmf) === 'undefined' ? muaConfig.danmuFont : docs[0].dmf
-          log.info(docs[0].scaleX)
           muaConfig.scale = typeof (docs[0].scaleX) === 'undefined' ? muaConfig.scale : docs[0].scaleX
           muaConfig.tts = typeof (docs[0].tts) === 'undefined' ? muaConfig.tts : docs[0].tts
           muaConfig.v1 = (typeof (docs[0].v1) === 'undefined' || docs[0].v1 === '') ? muaConfig.v1 : docs[0].v1
@@ -235,7 +234,7 @@ export default {
       // let roomid = 2808861
       live = new LiveWS(Number(muaConfig.roomid))
       live.on('open', () => {
-        console.log('正在尝试连接到弹幕服务器······')
+        log.info('正在尝试连接到弹幕服务器······')
         let sysInfo = {userid: '1001', // user id
           uuid: 1001,
           nickname: 'CATCAT', // user nickname
@@ -251,6 +250,7 @@ export default {
         dispalyDmList.push(sysInfo)
       })
       live.on('live', () => {
+        log.info('成功连接到弹幕服务器')
         let sysInfo = {userid: '1001', // user id
           uuid: 1002,
           nickname: 'CATCAT', // user nickname
@@ -265,6 +265,7 @@ export default {
         }
         dispalyDmList.push(sysInfo)
         live.on('heartbeat', (online) => {
+          log.info('···heartbeat···')
           _self.muaConfig.onlineCount = online
         })
         live.on('msg', (data) => {

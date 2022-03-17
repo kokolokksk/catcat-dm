@@ -92,6 +92,7 @@ export default {
           this.$electron.ipcRenderer.send('createChatWindow')
           break
         case 3:
+          this.$electron.ipcRenderer.send('debug')
           break
         default:
           break

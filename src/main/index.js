@@ -55,6 +55,11 @@ function createDmWindow () {
     dmWindow = null
   })
 }
+ipcMain.on('debug', function (arg) {
+  if (dmWindow != null) {
+    dmWindow.webContents.openDevTools()
+  }
+})
 function createChatWindow () {
   /**
    * Initial window options
