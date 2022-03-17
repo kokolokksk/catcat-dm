@@ -45,7 +45,7 @@
 
 ### 感谢（Thanks）
 - npm module [electron-referer](https://github.com/akameco/electron-referer)
-- npm module bilibili-live-ws
+- npm module [bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws/)
 - npm module [bilibili-live-danmaku-api](https://github.com/simon300000/bilibili-live-danmaku-api)
 - [background image](https://codepen.io/plavookac/pen/QMwObb)
 - [tts间隔问题](https://stackoverflow.com/questions/62564402/microsoft-cognitive-tts-onaudioend-event-not-working)
