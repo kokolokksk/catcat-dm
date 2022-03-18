@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, BrowserWindow, ipcMain, ipcRenderer } from 'electron'
+import { app, BrowserWindow, ipcMain, ipcRenderer, globalShortcut } from 'electron'
 import '../renderer/store'
 require('electron-referer')('http://www.bilibili.com/')
 /**
@@ -128,6 +128,15 @@ function createSettingWindow () {
 }
 app.on('ready', () => {
   createWindow()
+  globalShortcut.register('CommandOrControl+X', () => {
+    console.log('CommandOrControl+X is pressed')
+    if (mainWindow != null) {
+      mainWindow.webContents.openDevTools()
+    }
+    if (dmWindow != null) {
+      dmWindow.webContents.openDevTools()
+    }
+  })
 })
 
 app.on('window-all-closed', () => {

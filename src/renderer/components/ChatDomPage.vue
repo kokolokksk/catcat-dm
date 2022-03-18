@@ -96,7 +96,7 @@
 </template>
 <script>
 import {AudioConfig, SpeechSynthesizer} from 'microsoft-cognitiveservices-speech-sdk'
-const { LiveWS } = require('bilibili-live-ws')
+const { LiveWS } = require('bilibili-live-ws-fixed')
 const { remote } = require('electron')
 const sdk = require('microsoft-cognitiveservices-speech-sdk')
 let speechConfig = null
@@ -114,8 +114,6 @@ let giftList = []
 let speakList = []
 let speakDMList = []
 let speakStatus = false
-const Say = require('say').Say
-const say = new Say('win32')
 let muaConfig = {
   roomid: 6,
   windowWidth: 500, // 窗口宽度
