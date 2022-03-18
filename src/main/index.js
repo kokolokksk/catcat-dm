@@ -128,8 +128,8 @@ function createSettingWindow () {
 }
 app.on('ready', () => {
   createWindow()
-  globalShortcut.register('CommandOrControl+X', () => {
-    console.log('CommandOrControl+X is pressed')
+  globalShortcut.register('CommandOrControl+M', () => {
+    console.log('CommandOrControl+M is pressed')
     if (mainWindow != null) {
       mainWindow.webContents.openDevTools()
     }
