@@ -64,7 +64,7 @@
             <a-button @click="testVoice" class="left-margin" type='default'>试听</a-button>
             <a-button @click="setVoice" class="left-margin" type='default'>设置</a-button>
     <p class="line"/>
-    当前版本:dom-v-1.2.6<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
+    当前版本:dom-v-1.2.7<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
     <p class="line"/>
     SESSDATA:<input type='text' v-model = SESSDATA name= "SESSDATA" /><a-button class="left-margin" type="default" @click="setSESSDATA" >设置</a-button>
     <p class="line"/>

@@ -96,7 +96,7 @@
 </template>
 <script>
 import {AudioConfig, SpeechSynthesizer} from 'microsoft-cognitiveservices-speech-sdk'
-const { LiveWS } = require('bilibili-live-ws-fixed')
+const { LiveWS } = require('bilibili-live-ws/browser')
 const { remote } = require('electron')
 const sdk = require('microsoft-cognitiveservices-speech-sdk')
 let speechConfig = null
