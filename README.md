@@ -1,4 +1,4 @@
-[![Build/release](https://github.com/kokolokksk/catcat-dm/actions/workflows/build.yml/badge.svg?branch=dom)](https://github.com/kokolokksk/catcat-dm/actions/workflows/build.yml)
+[![Build/release](https://github.com/kokolokksk/catcat-dm/actions/workflows/build.yml/badge.svg?branch=v1.2.5)](https://github.com/kokolokksk/catcat-dm/actions/workflows/build.yml)
 # CatCatDM
 
 > CatCatDM! 
