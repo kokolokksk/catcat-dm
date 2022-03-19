@@ -95,10 +95,16 @@
   </div>
 </template>
 <script>
+import Datastore from 'nedb'
+import path from 'path'
 import {AudioConfig, SpeechSynthesizer} from 'microsoft-cognitiveservices-speech-sdk'
-const { LiveWS } = require('bilibili-live-ws/browser')
+const { LiveWS } = require('bilibili-live-ws-fixed')
 const { remote } = require('electron')
 const sdk = require('microsoft-cognitiveservices-speech-sdk')
+const db = new Datastore({
+  autoload: true,
+  filename: path.join(remote.app.getPath('userData'), '/data.db')
+})
 let speechConfig = null
 require('electron').ipcRenderer.on('did-close-fresh', (event, message) => {
   live.close()
@@ -163,7 +169,7 @@ export default {
       }, 1000)
       log.info('try load config')
       let _self = this
-      this.$db.find({ type: 2 }, (err, docs) => {
+      db.find({ type: 2 }, (err, docs) => {
         if (docs !== null && docs.length !== 0) {
           console.info(docs)
           log.info('have local config')
@@ -309,9 +315,9 @@ export default {
                   // speakList.push(danmuStore)
                   _self.speakDanmuReal(danmuStore)
                   // do repeat check
-                  this.$db.find({time: danmuStore.time}, (err, docs) => {
+                  db.find({time: danmuStore.time}, (err, docs) => {
                     if (docs.length === 0) {
-                      this.$db.insert(danmuStore, (err, ret) => {
+                      db.insert(danmuStore, (err, ret) => {
                         if (err !== null) {
                           console.info(err)
                         }

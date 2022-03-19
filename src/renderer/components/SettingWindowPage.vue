@@ -64,7 +64,7 @@
             <a-button @click="testVoice" class="left-margin" type='default'>试听</a-button>
             <a-button @click="setVoice" class="left-margin" type='default'>设置</a-button>
     <p class="line"/>
-    当前版本:dom-v-1.2.7<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
+    当前版本:dom-v-1.2.8<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
     <p class="line"/>
     SESSDATA:<input type='text' v-model = SESSDATA name= "SESSDATA" /><a-button class="left-margin" type="default" @click="setSESSDATA" >设置</a-button>
     <p class="line"/>
@@ -78,10 +78,17 @@
 <script>
 import '@simonwep/pickr/dist/themes/nano.min.css'
 import Pickr from '@simonwep/pickr'
+import Datastore from 'nedb'
+import path from 'path'
+const { remote } = require('electron')
 const sdk = require('microsoft-cognitiveservices-speech-sdk')
 // Simple example, see optional options for more configuration.
 let speechConfig = null
 let roomid
+const db = new Datastore({
+  autoload: true,
+  filename: path.join(remote.app.getPath('userData'), '/data.db')
+})
 export default {
   data () {
     return {
@@ -152,7 +159,7 @@ export default {
   methods: {
     initData () {
       let _self = this
-      this.$db.find({ type: 2 }, (err, docs) => {
+      db.find({ type: 2 }, (err, docs) => {
         if (docs !== null && docs.length !== 0) {
           console.info(docs)
           _self.roomid = docs[0].roomid
@@ -279,7 +286,7 @@ export default {
     },
     setTTS () {
       let _self = this
-      this.$db.find({ type: 2 }, (err, docs) => {
+      db.find({ type: 2 }, (err, docs) => {
         console.info(docs)
         if (docs !== null && docs.length !== 0) {
           console.info(_self.tts)
@@ -304,7 +311,7 @@ export default {
     },
     setWaveD () {
       let _self = this
-      this.$db.find({ type: 2 }, (err, docs) => {
+      db.find({ type: 2 }, (err, docs) => {
         console.info(docs)
         if (docs !== null && docs.length !== 0) {
           console.info(_self.waveD)
@@ -329,7 +336,7 @@ export default {
     },
     setAlwaysOnTop () {
       let _self = this
-      this.$db.find({ type: 2 }, (err, docs) => {
+      db.find({ type: 2 }, (err, docs) => {
         console.info(docs)
         if (docs !== null && docs.length !== 0) {
           console.info(_self.alwaysOnTop)
@@ -354,7 +361,7 @@ export default {
     },
     setChatAlwaysOnTop () {
       let _self = this
-      this.$db.find({ type: 2 }, (err, docs) => {
+      db.find({ type: 2 }, (err, docs) => {
         console.info(docs)
         if (docs !== null && docs.length !== 0) {
           console.info(_self.chatAlwaysOnTop)
@@ -380,7 +387,7 @@ export default {
     setRoomId () {
       // console.info('?')
       let _self = this
-      this.$db.find({ type: 2 }, (err, docs) => {
+      db.find({ type: 2 }, (err, docs) => {
         console.info(docs)
         if (docs !== null && docs.length !== 0) {
           console.info(_self.roomid)
@@ -406,7 +413,7 @@ export default {
     setScaleX () {
       // console.info('?')
       let _self = this
-      this.$db.find({ type: 2 }, (err, docs) => {
+      db.find({ type: 2 }, (err, docs) => {
         console.info(docs)
         if (docs !== null && docs.length !== 0) {
           console.info(_self.scaleX)
@@ -461,7 +468,7 @@ export default {
     },
     setDmf () {
       let _self = this
-      this.$db.find({ type: 2 }, (err, docs) => {
+      db.find({ type: 2 }, (err, docs) => {
         console.info(docs)
         if (docs !== null && docs.length !== 0) {
           console.info(_self.dmf)
@@ -486,7 +493,7 @@ export default {
     },
     setVoice () {
       let _self = this
-      this.$db.find({ type: 2 }, (err, docs) => {
+      db.find({ type: 2 }, (err, docs) => {
         console.info(docs)
         if (docs !== null && docs.length !== 0) {
           console.info(_self.voice)
@@ -526,7 +533,7 @@ export default {
     setSESSDATA () {
       // console.info('?')
       let _self = this
-      this.$db.find({ type: 2 }, (err, docs) => {
+      db.find({ type: 2 }, (err, docs) => {
         console.info(docs)
         if (docs !== null && docs.length !== 0) {
           console.info(_self.SESSDATA)
@@ -552,7 +559,7 @@ export default {
     setCsrf () {
       // console.info('?')
       let _self = this
-      this.$db.find({ type: 2 }, (err, docs) => {
+      db.find({ type: 2 }, (err, docs) => {
         console.info(docs)
         if (docs !== null && docs.length !== 0) {
           console.info(_self.csrf)
@@ -578,7 +585,7 @@ export default {
     setV1 () {
       // console.info('?')
       let _self = this
-      this.$db.find({ type: 2 }, (err, docs) => {
+      db.find({ type: 2 }, (err, docs) => {
         console.info(docs)
         if (docs !== null && docs.length !== 0) {
           console.info(_self.v1)
@@ -604,7 +611,7 @@ export default {
     setV2 () {
       // console.info('?')
       let _self = this
-      this.$db.find({ type: 2 }, (err, docs) => {
+      db.find({ type: 2 }, (err, docs) => {
         console.info(docs)
         if (docs !== null && docs.length !== 0) {
           console.info(_self.v2)

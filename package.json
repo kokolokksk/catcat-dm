@@ -1,6 +1,6 @@
 {
   "name": "catcatdm",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "author": "loveloliii <loli@loli.monster>",
   "description": "bilibili live mua",
   "license": "MIT",
@@ -74,7 +74,7 @@
     "ant-design-vue": "^1.7.8",
     "axios": "^0.18.0",
     "bilibili-live-danmaku-api": "^1.1.0",
-    "bilibili-live-ws": "6.1.0",
+    "bilibili-live-ws-fixed": "5.1.1",
     "bufferutil": "^4.0.3",
     "electron-log": "^4.4.1",
     "electron-referer": "^0.3.0",
