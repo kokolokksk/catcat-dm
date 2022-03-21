@@ -11,7 +11,7 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
-let mainWindow, chatWindow, dmWindow, settingWindow
+let mainWindow, chatWindow, dmWindow, settingWindow, aboutWindow
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
@@ -101,6 +101,32 @@ ipcMain.on('createDmWindow', function (arg) {
     createDmWindow()
   }
 })
+ipcMain.on('createAboutWindow', function (arg) {
+  if (aboutWindow == null) {
+    createAboutWindow()
+  }
+})
+function createAboutWindow () {
+  // Menu.setApplicationMenu(null) // 关闭子窗口菜单栏
+  const aboutPath = process.env.NODE_ENV === 'development'
+    ? 'http://localhost:9080/#/aboutWindow'
+    : `file://${__dirname}/index.html#aboutWindow`
+  // 使用hash对子页面跳转，这是vue的路由思想
+  aboutWindow = new BrowserWindow({
+    height: 250,
+    useContentSize: true,
+    width: 455,
+    frame: true,
+    transparent: false,
+    parent: mainWindow // mainWindow是主窗口
+  })
+  aboutWindow.setMenuBarVisibility(false)
+  aboutWindow.loadURL(aboutPath)
+
+  aboutWindow.on('closed', () => {
+    aboutWindow = null
+  })
+}
 function createSettingWindow () {
   // Menu.setApplicationMenu(null) // 关闭子窗口菜单栏
   const modalPath = process.env.NODE_ENV === 'development'

@@ -64,7 +64,7 @@
             <a-button @click="testVoice" class="left-margin" type='default'>试听</a-button>
             <a-button @click="setVoice" class="left-margin" type='default'>设置</a-button>
     <p class="line"/>
-    当前版本:dom-v-1.2.8<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
+    当前版本:{{packageS.version}}<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
     <p class="line"/>
     SESSDATA:<input type='text' v-model = SESSDATA name= "SESSDATA" /><a-button class="left-margin" type="default" @click="setSESSDATA" >设置</a-button>
     <p class="line"/>
@@ -80,6 +80,7 @@ import '@simonwep/pickr/dist/themes/nano.min.css'
 import Pickr from '@simonwep/pickr'
 import Datastore from 'nedb'
 import path from 'path'
+let packageS = require('../../../package.json')
 const { remote } = require('electron')
 const sdk = require('microsoft-cognitiveservices-speech-sdk')
 // Simple example, see optional options for more configuration.
@@ -92,6 +93,7 @@ const db = new Datastore({
 export default {
   data () {
     return {
+      packageS: packageS,
       menuList: [{
         id: 1,
         name: '基本设置',

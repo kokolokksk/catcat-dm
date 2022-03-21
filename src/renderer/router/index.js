@@ -55,6 +55,15 @@ export default new Router({
       component: require('@/components/ChatDomPage').default
     },
     {
+      path: '/aboutWindow',
+      name: 'aboutWindow',
+      meta: {
+        // 页面标题title
+        title: '关于'
+      },
+      component: require('@/components/AboutPage').default
+    },
+    {
       path: '/settingTTS',
       name: 'settingTTSWindow',
       meta: {
