@@ -139,7 +139,9 @@ let muaConfig = {
   alwaysOnTop:true, // 置顶
   v1: '',
   v2: '',
-  voice: 'zh-CN-XiaoxiaoNeural'
+  voice: 'zh-CN-XiaoxiaoNeural',
+  clientId: '',
+  catdb: false
 
 }
 export default {
@@ -185,6 +187,8 @@ export default {
           muaConfig.v1 = (typeof (docs[0].v1) === 'undefined' || docs[0].v1 === '') ? muaConfig.v1 : docs[0].v1
           muaConfig.v2 = (typeof (docs[0].v2) === 'undefined' || docs[0].v2 === '') ? muaConfig.v2 : docs[0].v2
           muaConfig.voice = (typeof (docs[0].voice) === 'undefined' || docs[0].voice === '') ? muaConfig.voice : docs[0].voice
+          muaConfig.clientId = (typeof (docs[0].clientId) === 'undefined' || docs[0].clientId === '') ? muaConfig.clientId : docs[0].clientId
+          muaConfig.catdb = docs[0].catdb
           if (!muaConfig.v1 || !muaConfig.v2 || muaConfig.v1 === '' || muaConfig.v2 === '') {
             muaConfig.tts = false
           } else {
@@ -307,6 +311,19 @@ export default {
                   danmuStore.xz_name = (xzInfo[1] === null || xzInfo[1] === undefined) ? '' : xzInfo[1]
                   // add to list
                   console.info(danmuStore)
+                  if (_self.muaConfig.catdb) {
+                    _self.$http({
+                      url: 'https://db.loli.monster/cat/dm/addDanMu?clientId='+_self.muaConfig.clientId,
+                      data: danmuStore
+                    }).then(function (response) {
+                      // handle success
+                      console.log(response)
+                      alert('最新版本为：' + response.data.version)
+                    }).catch(function (error) {
+                      // handle error
+                      console.log(error)
+                    })
+                  }
                   if (dispalyDmList.length < 7) {
                     dispalyDmList.push(danmuStore)
                   } else {

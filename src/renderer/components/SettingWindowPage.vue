@@ -39,6 +39,8 @@
     <p class="line"/>
     置顶:<a-switch default-checked v-model="alwaysOnTop" checked-children="开" un-checked-children="关" @change="setAlwaysOnTop" />
     <p class="line"/>
+    弹幕上传:<a-switch default-checked v-model="catdb" checked-children="开" un-checked-children="关" @change="setCatdb" />
+    <p class="line"/>
     chat置顶:<a-switch default-checked v-model="chatAlwaysOnTop" checked-children="开" un-checked-children="关" @change="setChatAlwaysOnTop" />
     <p class="line"/>
     波浪:<a-switch default-checked v-model="waveD" checked-children="开" un-checked-children="关" @change="setWaveD" />
@@ -138,6 +140,7 @@ export default {
       ],
       tts:false,
       alwaysOnTop: true,
+      catdb: false,
       chatAlwaysOnTop: false,
       SESSDATA:'',
       csrf:'',
@@ -147,6 +150,7 @@ export default {
       dmc: '',
       bgc: '',
       testVoiceText: '',
+      clientId: '',
       backColorPreview: {
         backgroundColor: '#fff'
       },
@@ -177,6 +181,21 @@ export default {
           _self.v2 = docs[0].v2
           _self.bgc = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
           _self.dmc = docs[0].dmc === null ? 'rgba(255,255,255,1)' : docs[0].dmc
+          if (!docs[0].clientId) {
+            this.$http.get('http://db.loli.monster/cat/client/generateClientId')
+              .then(function (response) {
+                // handle success
+                console.log(response)
+                _self.clientId = response.data.data
+              })
+              .catch(function (error) {
+                // handle error
+                console.log(error)
+              })
+          } else {
+            _self.clientId = docs[0].clientId
+          }
+          _self.catdb = docs[0].catdb
           // fixme load color
           document.getElementById('pc3').style.backgroundColor = _self.bgc
           document.getElementById('pc4').style.color = _self.dmc
