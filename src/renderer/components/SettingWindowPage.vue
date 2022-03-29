@@ -405,6 +405,31 @@ export default {
         }
       })
     },
+    setCatdb () {
+      let _self = this
+      db.find({ type: 2 }, (err, docs) => {
+        console.info(docs)
+        if (docs !== null && docs.length !== 0) {
+          console.info(_self.catdb)
+          _self.$db.update({ _id: docs[0]._id }, { $set: { catdb: _self.catdb } }, {}, function () {
+            console.info('update success')
+          })
+        } else {
+          let catdbStore = {
+            catdb: _self.catdb, // user id
+            type: 2
+          }
+          _self.$db.insert(catdbStore, (err, ret) => {
+            if (err !== null) {
+              console.info(err)
+            }
+          })
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
+    },
     setRoomId () {
       // console.info('?')
       let _self = this

@@ -46,7 +46,11 @@ function createDmWindow () {
     useContentSize: false,
     width: 455,
     frame: false,
-    transparent: true
+    transparent: true,
+    webPreferences: {
+      nodeIntegration: true,
+      webSecurity: false
+    }
   })
 
   dmWindow.loadURL(dmPath)

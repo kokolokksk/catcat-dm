@@ -14,8 +14,8 @@
         </div>
       </div>
     </div>
-    <div class="settingClass"  @click="openSettingN"   >
-    </div> 
+    <!-- <div class="settingClass"  @click="openSettingN"   >
+    </div>  -->
     <div class="online">
     <span>人气：{{muaConfig.onlineCount}}</span>
     </div>
@@ -141,7 +141,8 @@ let muaConfig = {
   v2: '',
   voice: 'zh-CN-XiaoxiaoNeural',
   clientId: '',
-  catdb: false
+  catdb: false,
+  sessionId: ''
 
 }
 export default {
@@ -163,9 +164,15 @@ export default {
     // this.$electron.remote.getCurrentWindow().setAlwaysOnTop(true)
     // audioConfig.setProperty('MediaDurationPlaceholderSeconds', '0')
     this.loadConfig()
+    setTimeout(() => {
+      if (muaConfig.onlineCount === '人气') {
+        location.reload()
+      }
+    }, 10000)
   },
   methods: {
     loadConfig () {
+      muaConfig.sessionId = this.getNewSessionId()
       setInterval(() => {
         this.count()
       }, 1000)
@@ -188,6 +195,19 @@ export default {
           muaConfig.v2 = (typeof (docs[0].v2) === 'undefined' || docs[0].v2 === '') ? muaConfig.v2 : docs[0].v2
           muaConfig.voice = (typeof (docs[0].voice) === 'undefined' || docs[0].voice === '') ? muaConfig.voice : docs[0].voice
           muaConfig.clientId = (typeof (docs[0].clientId) === 'undefined' || docs[0].clientId === '') ? muaConfig.clientId : docs[0].clientId
+          if (muaConfig.clientId == null || muaConfig.clientId === '' || !muaConfig.clientId) {
+            _self.$http({
+              url: 'https://db.loli.monster/cat/client/generateClientId'
+            }).then(function (response) {
+              // handle success
+              console.log(response)
+              muaConfig.clientId = response.data
+              _self.setClientId(muaConfig.clientId)
+            }).catch(function (error) {
+              // handle error
+              console.log(error)
+            })
+          }
           muaConfig.catdb = docs[0].catdb
           if (!muaConfig.v1 || !muaConfig.v2 || muaConfig.v1 === '' || muaConfig.v2 === '') {
             muaConfig.tts = false
@@ -220,6 +240,17 @@ export default {
           this.speakDanmuReal(null)
         }, 1000)
       })
+    },
+    getNewSessionId () {
+      var index = 0
+      var charArray = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', '1', '2', '9']
+      var stringBuilder = ''
+      while (index < 10) {
+        const randomIndex = Math.floor(Math.random() * 10) + 7
+        stringBuilder += charArray[randomIndex]
+        index++
+      }
+      return stringBuilder
     },
     updateDanmuList () {
       if (dispalyDmList.length > 7) {
@@ -294,7 +325,9 @@ export default {
                     danmu: '', // dm
                     time: 0, // send time
                     use_state: 0, // use state
-                    type: 1
+                    roomId: 0,
+                    type: 1,
+                    sessionId: ''
                   }
                   let info = data[index].data.info
                   const danmu = info[1]
@@ -309,21 +342,11 @@ export default {
                   danmuStore.time = (info[9].ts === null || info[9].ts === undefined) ? info[0][4] : info[9].ts
                   danmuStore.xz_level = (xzInfo[0] === null || xzInfo[0] === undefined) ? '' : xzInfo[0]
                   danmuStore.xz_name = (xzInfo[1] === null || xzInfo[1] === undefined) ? '' : xzInfo[1]
+                  danmuStore.roomId = parseInt(muaConfig.roomid)
+                  danmuStore.sessionId = muaConfig.sessionId
                   // add to list
                   console.info(danmuStore)
-                  if (_self.muaConfig.catdb) {
-                    _self.$http({
-                      url: 'https://db.loli.monster/cat/dm/addDanMu?clientId='+_self.muaConfig.clientId,
-                      data: danmuStore
-                    }).then(function (response) {
-                      // handle success
-                      console.log(response)
-                      alert('最新版本为：' + response.data.version)
-                    }).catch(function (error) {
-                      // handle error
-                      console.log(error)
-                    })
-                  }
+                  _self.uploadDm(danmuStore)
                   if (dispalyDmList.length < 7) {
                     dispalyDmList.push(danmuStore)
                   } else {
@@ -407,6 +430,46 @@ export default {
     openSettingN () {
       console.info('come in openSetting windows')
       this.$electron.ipcRenderer.send('createWindow')
+    },
+    uploadDm (danmuStore) {
+      if (this.muaConfig.catdb) {
+        this.$http({
+          method: 'post',
+          url: 'https://db.loli.monster/cat/dm/addDanMu?clientId=' + this.muaConfig.clientId + '&roomId=' + muaConfig.roomid,
+          data: danmuStore,
+          headers: {'content-type': 'application/json'}
+        }).then(function (response) {
+          // handle success
+          console.log(response)
+        }).catch(function (error) {
+          // handle error
+          console.log(error)
+        })
+      }
+    },
+    setClientId (cid) {
+      let _self = this
+      db.find({ type: 2 }, (err, docs) => {
+        console.info(docs)
+        if (docs !== null && docs.length !== 0) {
+          _self.$db.update({ _id: docs[0]._id }, { $set: { clientId: cid } }, {}, function () {
+            console.info('update success')
+          })
+        } else {
+          let cidStore = {
+            clientId: _self.cid, // user id
+            type: 2
+          }
+          _self.$db.insert(cidStore, (err, ret) => {
+            if (err !== null) {
+              console.info(err)
+            }
+          })
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
     },
     speakDanmu (gift) {
       if (muaConfig.tts) {
