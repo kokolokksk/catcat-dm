@@ -227,8 +227,16 @@ export default {
           // fixme load color
           document.getElementById('pc3').style.backgroundColor = _self.bgc
           document.getElementById('pc4').style.color = _self.dmc
-          document.getElementById('pc44').style.backgroundColor = _self.btc.replace(' 20%', '')
-          document.getElementById('pc55').style.backgroundColor = _self.bbc.replace(' 80%', '')
+          if (_self.btc) {
+            document.getElementById('pc44').style.backgroundColor = _self.btc.replace(' 20%', '')
+          } esle {
+            document.getElementById('pc44').style.backgroundColor = '#fff'
+          }
+          if (_self.bbc) {
+            document.getElementById('pc55').style.backgroundColor = _self.bbc.replace(' 80%', '')
+          } esle {
+            document.getElementById('pc55').style.backgroundColor = '#fff'
+          }
         }
         if (err !== null) {
           console.info(err)
