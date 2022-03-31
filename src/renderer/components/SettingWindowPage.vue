@@ -229,12 +229,12 @@ export default {
           document.getElementById('pc4').style.color = _self.dmc
           if (_self.btc) {
             document.getElementById('pc44').style.backgroundColor = _self.btc.replace(' 20%', '')
-          } esle {
+          } else {
             document.getElementById('pc44').style.backgroundColor = '#fff'
           }
           if (_self.bbc) {
             document.getElementById('pc55').style.backgroundColor = _self.bbc.replace(' 80%', '')
-          } esle {
+          } else {
             document.getElementById('pc55').style.backgroundColor = '#fff'
           }
         }
