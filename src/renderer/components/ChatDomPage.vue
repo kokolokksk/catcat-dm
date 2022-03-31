@@ -3,13 +3,13 @@
     <!-- dm top bg : use animition -->
     <div class = "dm-bg-top">
       <div class="waveWrapper waveAnimation">
-        <div class="waveWrapperInner bgTop">
+        <div class="waveWrapperInner bgTop" v-bind:style="{backgroundImage: 'linear-gradient(to top, ' + muaConfig.borderAreaTopColor+', '+muaConfig.borderAreaBotColor + ')'}">
           <div class="wave waveTop" style="background-image: url('static/wave-top.png')"></div>
         </div>
-        <div class="waveWrapperInner bgMiddle"  >
+        <div class="waveWrapperInner bgMiddle" v-bind:style="{backgroundImage: 'linear-gradient(to top, ' + muaConfig.borderAreaTopColor+', '+muaConfig.borderAreaBotColor + ')'}" >
           <div class="wave waveMiddle" style="background-image: url('static/wave-mid.png')"></div>
         </div>
-        <div class="waveWrapperInner bgBottom" >
+        <div class="waveWrapperInner bgBottom"  v-bind:style="{backgroundImage: 'linear-gradient(to top, ' + muaConfig.borderAreaTopColor+', '+muaConfig.borderAreaBotColor + ')'}">
           <div class="wave waveBottom" :style="{display:waveDisplay === true ? 'bloack' : 'none'}"  style="background-image: url('static/wave-bot.png')"></div>
         </div>
       </div>
@@ -130,6 +130,8 @@ let muaConfig = {
   danmuColor: 'rgba(255,255,255,1)', // dm颜色
   scale: 1.0, // 缩放倍率
   danmuAreaColor: 'rgba(192,160,255,1)', // 背景色
+  borderAreaTopColor:'#f0b7cf 20%',
+  borderAreaBotColor:'#8f3979 80%',
   danmuFont: 'zxfyyt', // dm字体家族
   danmuSize: '18px ', // dm字体大小
   onlineCount: '人气',
@@ -186,6 +188,8 @@ export default {
           muaConfig.roomid = typeof (docs[0].roomid) === 'undefined' ? muaConfig.roomid : docs[0].roomid
           // fixme load color
           muaConfig.danmuColor = typeof (docs[0].dmc) === 'undefined' ? muaConfig.danmuColor : docs[0].dmc
+          muaConfig.borderAreaTopColor = typeof (docs[0].btc) === 'undefined' ? muaConfig.borderAreaTopColor : docs[0].btc
+          muaConfig.borderAreaBotColor = typeof (docs[0].bbc) === 'undefined' ? muaConfig.borderAreaBotColor : docs[0].bbc
           _self.waveDisplay = typeof (docs[0].waveD) === 'undefined' ? _self.waveDisplay : docs[0].waveD
           muaConfig.danmuAreaColor = typeof (docs[0].bgc) === 'undefined' ? muaConfig.danmuAreaColor : docs[0].bgc
           muaConfig.danmuFont = typeof (docs[0].dmf) === 'undefined' ? muaConfig.danmuFont : docs[0].dmf
@@ -607,7 +611,7 @@ export default {
     overflow: hidden;
     height: 100%;
     bottom: -1px;
-    background-image: linear-gradient(to top, #f0b7cf 20%, #8f3979 80%);
+    
 }
 .bgTop {
     z-index: 15;
@@ -1242,6 +1246,10 @@ export default {
     background-color: transparent;
     z-index: 2;
   } 
+  /*** 元素定位改变时动画 ***/
+  .comein-move {
+    transition: transform 1s;
+  }
   .gift-container {
     background-color: transparent;
     align-content: center;

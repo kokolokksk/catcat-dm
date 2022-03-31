@@ -13,25 +13,43 @@
     房间号:<input type='text' v-model = roomid name= "roomid" /><a-button class="left-margin" type="default" @click="setRoomId" >设置</a-button>
     <p class="line"/> 
     <div id="color-container" style="display:flex">
-      <div id="color-back" style="padding-left:5vw;padding-right:5vw">
+      <div id="color-back" style="padding-left:2vw;padding-right:2vw">
         <p>
           背景颜色:
         <div id="pc" style="display: inline-flex;">
         </div>
         <a-button style="top: 0.6vh;" class="left-margin" @click="setBackgroundColor" type='default'>设置</a-button>
       </div>
-      <div id="color-dm" style="padding-left:5vw;padding-right:5vw">
+      <div id="color-dm" style="padding-left:2vw;padding-right:2vw">
         <p>
           弹幕颜色:
         <div id="pc2" style="display: inline-flex;">
         </div>
         <a-button style="top: 0.6vh;" class="left-margin" @click="setDanmuColor" type='default'>设置</a-button>
       </div>
-      <div id="color-preview" style="padding-left:5vw;padding-right:5vw">
+      <div id="color-btc" style="padding-left:2vw;padding-right:2vw">
+        <p>
+          边框上色:
+        <div id="pc44" style="display: inline-flex;">
+        </div>
+        <a-button style="top: 0.6vh;" class="left-margin" @click="setBorderAreaTopColor" type='default'>设置</a-button>
+      </div>
+      <div id="color-bbc" style="padding-left:2vw;padding-right:2vw">
+        <p>
+          边框下色:
+        <div id="pc55" style="display: inline-flex;">
+        </div>
+        <a-button style="top: 0.6vh;" class="left-margin" @click="setBorderAreaBotColor" type='default'>设置</a-button>
+      </div>
+      <div id="color-preview" style="padding-left:2vw;padding-right:2vw">
         <p>
           预览:
         <div id="pc3"  :style="backColorPreview" >
             <p  id="pc4" :style="danmuColorPreview">文字</p>
+        </div>
+        <div id="pc444" :style="borderAreaTopColor">
+        </div>
+        <div id="pc555" :style="borderAreaBotColor">
         </div>
       </div>
     </div>
@@ -149,9 +167,17 @@ export default {
       voice: '',
       dmc: '',
       bgc: '',
+      btc: '',
+      bbc: '',
       testVoiceText: '',
       clientId: '',
       backColorPreview: {
+        backgroundColor: '#fff'
+      },
+      borderAreaTopColor: {
+        backgroundColor: '#fff'
+      },
+      borderAreaBotColor: {
         backgroundColor: '#fff'
       },
       danmuColorPreview: {
@@ -181,6 +207,8 @@ export default {
           _self.v2 = docs[0].v2
           _self.bgc = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
           _self.dmc = docs[0].dmc === null ? 'rgba(255,255,255,1)' : docs[0].dmc
+          _self.btc = docs[0].btc === null ? 'rgb(255,255,255) 20%' : docs[0].btc
+          _self.bbc = docs[0].bbc === null ? 'rgb(255,255,255) 80%' : docs[0].bbc
           if (!docs[0].clientId) {
             this.$http.get('http://db.loli.monster/cat/client/generateClientId')
               .then(function (response) {
@@ -199,6 +227,8 @@ export default {
           // fixme load color
           document.getElementById('pc3').style.backgroundColor = _self.bgc
           document.getElementById('pc4').style.color = _self.dmc
+          document.getElementById('pc44').style.backgroundColor = _self.btc.replace(' 20%', '')
+          document.getElementById('pc55').style.backgroundColor = _self.bbc.replace(' 80%', '')
         }
         if (err !== null) {
           console.info(err)
@@ -303,6 +333,102 @@ export default {
         pickr2.hide()
         _self.danmuColorPreview.color = color.toHEXA().toString()
         _self.$forceUpdate()
+      })
+      const pickr44 = Pickr.create({
+        el: '#pc44',
+        default: _self.btc.replace(' 20%', ''),
+        theme: 'nano', // or 'monolith', or 'nano'
+        swatches: [
+          'rgb(244, 67, 54)',
+          'rgb(233, 30, 99)',
+          'rgb(156, 39, 176)',
+          'rgb(103, 58, 183)',
+          'rgb(63, 81, 181)',
+          'rgb(33, 150, 243)',
+          'rgb(3, 169, 244)',
+          'rgb(0, 188, 212)',
+          'rgb(0, 150, 136)',
+          'rgb(76, 175, 80)',
+          'rgb(139, 195, 74)',
+          'rgb(205, 220, 57)',
+          'rgb(255, 235, 59)',
+          'rgb(255, 193, 7)'
+        ],
+        components: {
+        // Main components
+          preview: true,
+          opacity: false,
+          hue: true,
+          // Input / output Options
+          interaction: {
+            hex: false,
+            rgba: false,
+            hsla: false,
+            hsva: false,
+            cmyk: false,
+            input: true,
+            clear: false,
+            save: true
+          }
+        },
+        i18n: {
+          'btn:save': '选中',
+          'btn:clear': '清空'
+        }
+      })
+      pickr44.on('save', (color, instance) => {
+        console.log('Event: "save"', color, instance)
+        pickr44.hide()
+        _self.borderAreaTopColor.backgroundColor = color.toHEXA().toString()
+        console.info(_self.borderAreaTopColor)
+      })
+      const pickr55 = Pickr.create({
+        el: '#pc55',
+        default: _self.bbc.replace(' 80%', ''),
+        theme: 'nano', // or 'monolith', or 'nano'
+        swatches: [
+          'rgb(244, 67, 54)',
+          'rgb(233, 30, 99)',
+          'rgb(156, 39, 176)',
+          'rgb(103, 58, 183)',
+          'rgb(63, 81, 181)',
+          'rgb(33, 150, 243)',
+          'rgb(3, 169, 244)',
+          'rgb(0, 188, 212)',
+          'rgb(0, 150, 136)',
+          'rgb(76, 175, 80)',
+          'rgb(139, 195, 74)',
+          'rgb(205, 220, 57)',
+          'rgb(255, 235, 59)',
+          'rgb(255, 193, 7)'
+        ],
+        components: {
+        // Main components
+          preview: true,
+          opacity: false,
+          hue: true,
+          // Input / output Options
+          interaction: {
+            hex: false,
+            rgba: false,
+            hsla: false,
+            hsva: false,
+            cmyk: false,
+            input: true,
+            clear: false,
+            save: true
+          }
+        },
+        i18n: {
+          'btn:save': '选中',
+          'btn:clear': '清空'
+        }
+      })
+      pickr55.on('save', (color, instance) => {
+        console.log('Event: "save"', color, instance)
+        pickr55.hide()
+        _self.borderAreaBotColor.backgroundColor = color.toHEXA().toString()
+        console.info(_self.borderAreaBotColor)
       })
     },
     setTTS () {
@@ -489,6 +615,36 @@ export default {
       _self.$db.find({ type: 2 }, (err, docs) => {
         if (docs !== null && docs.length !== 0) {
           _self.$db.update({ _id: docs[0]._id }, { $set: { bgc: color } }, {}, function () {
+            console.info('update success')
+          })
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
+    },
+    setBorderAreaTopColor () {
+      let _self = this
+      let color = document.getElementById('pc444').style.backgroundColor
+      console.info(color)
+      _self.$db.find({ type: 2 }, (err, docs) => {
+        if (docs !== null && docs.length !== 0) {
+          _self.$db.update({ _id: docs[0]._id }, { $set: { btc: color + ' 20%' } }, {}, function () {
+            console.info('update success')
+          })
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
+    },
+    setBorderAreaBotColor () {
+      let _self = this
+      let color = document.getElementById('pc555').style.backgroundColor
+      console.info(color)
+      _self.$db.find({ type: 2 }, (err, docs) => {
+        if (docs !== null && docs.length !== 0) {
+          _self.$db.update({ _id: docs[0]._id }, { $set: { bbc: color + ' 80%' } }, {}, function () {
             console.info('update success')
           })
         }

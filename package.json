@@ -1,8 +1,8 @@
 {
   "name": "catcatdm",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "author": "loveloliii <loli@loli.monster>",
-  "description": "bilibili live mua",
+  "description": "catcat danmu for bilibili",
   "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
