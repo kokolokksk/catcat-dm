@@ -42,7 +42,7 @@
 
 
 #### 下一步
-- TTS service
+- miku
 
 ### 感谢（Thanks）
 - npm module [electron-referer](https://github.com/akameco/electron-referer)
