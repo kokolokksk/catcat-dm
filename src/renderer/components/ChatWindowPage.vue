@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <input type='text' v-model = danmu name= "danmu" @keyup.enter="sendDm" /><a-button class="left-margin" type="default" @click="sendDm" >发送</a-button>
+  <div id="chat-w">
+    <input style="width: 70%;" type='text' v-model = danmu name= "danmu" @keyup.enter="sendDm" /><a-button class="left-margin" type="default" @click="sendDm" >发送</a-button>
   </div>
 </template>
 <script>
@@ -66,3 +66,8 @@ export default {
   }
 }
 </script>
+<style>
+ #chat-w{
+   width: 99%;
+ }
+</style>

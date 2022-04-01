@@ -11,7 +11,7 @@
     </ul>   -->
     <p class="line"/>
     房间号:<input type='text' v-model = roomid name= "roomid" /><a-button class="left-margin" type="default" @click="setRoomId" >设置</a-button>
-    <p class="line"/> 
+    <a-divider />
     <div id="color-container" style="display:flex">
       <div id="color-back" style="padding-left:2vw;padding-right:2vw">
         <p>
@@ -54,14 +54,14 @@
       </div>
     </div>
     
+    <a-divider />
+    置顶:<a-switch default-checked v-model="alwaysOnTop" checked-children="开" un-checked-children="关" @change="setAlwaysOnTop" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a-badge color="#f50" text="#f50" />将弹幕窗口进行置顶
     <p class="line"/>
-    置顶:<a-switch default-checked v-model="alwaysOnTop" checked-children="开" un-checked-children="关" @change="setAlwaysOnTop" />
+    弹幕上传:<a-switch default-checked v-model="catdb" checked-children="开" un-checked-children="关" @change="setCatdb" />&nbsp;&nbsp;<a-badge color="#2db7f5" text="#2db7f5" />将弹幕上传至远程服务器
     <p class="line"/>
-    弹幕上传:<a-switch default-checked v-model="catdb" checked-children="开" un-checked-children="关" @change="setCatdb" />
-    <p class="line"/>
-    chat置顶:<a-switch default-checked v-model="chatAlwaysOnTop" checked-children="开" un-checked-children="关" @change="setChatAlwaysOnTop" />
-    <p class="line"/>
-    波浪:<a-switch default-checked v-model="waveD" checked-children="开" un-checked-children="关" @change="setWaveD" />
+    <!-- chat置顶:<a-switch default-checked v-model="chatAlwaysOnTop" checked-children="开" un-checked-children="关" @change="setChatAlwaysOnTop" />
+    <p class="line"/> -->
+    波浪:<a-switch default-checked v-model="waveD" checked-children="开" un-checked-children="关" @change="setWaveD" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a-badge color="#87d068" text="#87d068" />将弹幕中的波浪动画开启
     <!-- <p class="line"/>
     缩放倍率:<input type='text' v-model = scaleX name= "scaleX" /><a-button class="left-margin" @click="setScaleX" type='default'>设置</a-button>
     <p class="line"/>
@@ -74,17 +74,15 @@
             </select><a-button @click="setDmf" class="left-margin" type='default'>设置</a-button>
     <p class="line"/> -->
     <div>
-        TTS:<a-switch default-unchecked v-model="tts" checked-children="开" un-checked-children="关" @change="setTTS" />
+        TTS:<a-switch default-unchecked v-model="tts" checked-children="开" un-checked-children="关" @change="setTTS" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a-badge color="orange" text="#108ee9" />阅读收到的弹幕
     </div>
-    <p class="line"/>
+     <a-divider />
     语音选择:<select v-model =  voice name= "voice"  >
                  <option v-for="(item,index) in speechSynthesisVoiceNameList" :key="index" :value='item.voiceValue' >{{item.voiceName}}</option>  
             </select>
             <input type='text' v-model = testVoiceText name= "testVoiceText"  style="width: 20vw" maxlength="5" /> 
             <a-button @click="testVoice" class="left-margin" type='default'>试听</a-button>
             <a-button @click="setVoice" class="left-margin" type='default'>设置</a-button>
-    <p class="line"/>
-    当前版本:{{packageS.version}}<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
     <p class="line"/>
     SESSDATA:<input type='text' v-model = SESSDATA name= "SESSDATA" /><a-button class="left-margin" type="default" @click="setSESSDATA" >设置</a-button>
     <p class="line"/>
@@ -93,6 +91,9 @@
     Ocp-Apim-Subscription-Key:<input type='text' v-model = v1 name= "v1" /><a-button class="left-margin" type="default" @click="setV1" >设置</a-button>
     <p class="line"/>
     REGION_IDENTIFIER:<input type='text' v-model = v2 name= "roomid" /><a-button class="left-margin" type="default" @click="setV2" >设置</a-button>
+    <a-divider />
+    当前版本:{{packageS.version}}<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
+    <p class="line"/>
   </div> 
 </template>
 <script>

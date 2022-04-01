@@ -90,7 +90,7 @@ export default {
         case 2:
           console.info('come in createDmWindow windows')
           this.$electron.ipcRenderer.send('createDmWindow')
-          this.$electron.ipcRenderer.send('createChatWindow')
+          // this.$electron.ipcRenderer.send('createChatWindow')
           break
         case 3:
           this.$electron.ipcRenderer.send('createAboutWindow')

@@ -32,6 +32,18 @@ function createWindow () {
   mainWindow.loadURL(winURL)
   mainWindow.on('closed', () => {
     mainWindow = null
+    if (chatWindow != null) {
+      chatWindow.close()
+    }
+    if (dmWindow != null) {
+      dmWindow.close()
+    }
+    if (settingWindow != null) {
+      settingWindow.close()
+    }
+    if (aboutWindow != null) {
+      aboutWindow.close()
+    }
   })
 }
 const dmPath = process.env.NODE_ENV === 'development'

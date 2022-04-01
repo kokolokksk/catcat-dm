@@ -29,68 +29,70 @@
     <!-- background -->
     <!-- base backgroup bg-->
     <div id="c-bg">
-    
     <!-- danmu -->
-    <div class="danmu-container"  v-bind:style="{ fontSize:'11pt', backgroundImage: 'linear-gradient(0deg, rgba(241, 147, 156,0.1), '+ muaConfig.danmuAreaColor+ ')'}">
-      <transition-group appear name="list" tag="div" mode="out-in">
-      <div v-for="(item) in dispalyDmList" class="danmu" :style="{ color : muaConfig.danmuColor}" :key="item.uuid">
-        <div class="fans" >
-          <div v-if="item.xz_name" 
-        :class="{
-        xzn_1:item.xz_level>=1 && item.xz_level<=4,
-        xzn_2:item.xz_level>=5 && item.xz_level<=8,
-        xzn_3:item.xz_level>=9 && item.xz_level<=12,
-        xzn_4:item.xz_level>=13 && item.xz_level<=16,
-        xzn_5:item.xz_level>=17 && item.xz_level<=20,
-        xzn_6:item.xz_level>=21 && item.xz_level<=24,
-        xzn_7:item.xz_level>=25 && item.xz_level<=28,
-        xzn_8:item.xz_level>=29 && item.xz_level<=32,
-        xzn_9:item.xz_level>=33 && item.xz_level<=36,
-        xzn_10:item.xz_level>=37 && item.xz_level<=40}">{{item.xz_name}}</div>
-        <div v-if="item.xz_level" 
-        :class="{
-        xzl_1:item.xz_level>=1 && item.xz_level<=4,
-        xzl_2:item.xz_level>=5 && item.xz_level<=8,
-        xzl_3:item.xz_level>=9 && item.xz_level<=12,
-        xzl_4:item.xz_level>=13 && item.xz_level<=16,
-        xzl_5:item.xz_level>=17 && item.xz_level<=20,
-        xzl_6:item.xz_level>=21 && item.xz_level<=24,
-        xzl_7:item.xz_level>=25 && item.xz_level<=28,
-        xzl_8:item.xz_level>=29 && item.xz_level<=32,
-        xzl_9:item.xz_level>=33 && item.xz_level<=36,
-        xzl_10:item.xz_level>=37 && item.xz_level<=40  
-        }">&nbsp;{{item.xz_level}}&nbsp;</div>
+      <div class="danmu-container"  v-bind:style="{ fontSize:'11pt', backgroundImage: 'linear-gradient(0deg, rgba(241, 147, 156,0.1), '+ muaConfig.danmuAreaColor+ ')'}">
+        <transition-group appear name="list" tag="div" mode="out-in">
+        <div v-for="(item) in dispalyDmList" class="danmu" :style="{ color : muaConfig.danmuColor}" :key="item.uuid">
+          <div class="fans" >
+            <div v-if="item.xz_name" 
+          :class="{
+          xzn_1:item.xz_level>=1 && item.xz_level<=4,
+          xzn_2:item.xz_level>=5 && item.xz_level<=8,
+          xzn_3:item.xz_level>=9 && item.xz_level<=12,
+          xzn_4:item.xz_level>=13 && item.xz_level<=16,
+          xzn_5:item.xz_level>=17 && item.xz_level<=20,
+          xzn_6:item.xz_level>=21 && item.xz_level<=24,
+          xzn_7:item.xz_level>=25 && item.xz_level<=28,
+          xzn_8:item.xz_level>=29 && item.xz_level<=32,
+          xzn_9:item.xz_level>=33 && item.xz_level<=36,
+          xzn_10:item.xz_level>=37 && item.xz_level<=40}">{{item.xz_name}}</div>
+          <div v-if="item.xz_level" 
+          :class="{
+          xzl_1:item.xz_level>=1 && item.xz_level<=4,
+          xzl_2:item.xz_level>=5 && item.xz_level<=8,
+          xzl_3:item.xz_level>=9 && item.xz_level<=12,
+          xzl_4:item.xz_level>=13 && item.xz_level<=16,
+          xzl_5:item.xz_level>=17 && item.xz_level<=20,
+          xzl_6:item.xz_level>=21 && item.xz_level<=24,
+          xzl_7:item.xz_level>=25 && item.xz_level<=28,
+          xzl_8:item.xz_level>=29 && item.xz_level<=32,
+          xzl_9:item.xz_level>=33 && item.xz_level<=36,
+          xzl_10:item.xz_level>=37 && item.xz_level<=40  
+          }">&nbsp;{{item.xz_level}}&nbsp;</div>
+          </div>
+          <div class="dm-name">&nbsp;{{item.nickname}}:</div>
+          <div class="dm-c" :class="{
+          xzl_dm_1:item.xz_level>=1 && item.xz_level<=4 && item.xz_name === '呐卷',
+          xzl_dm_2:item.xz_level>=5 && item.xz_level<=8 && item.xz_name === '呐卷',
+          xzl_dm_3:item.xz_level>=9 && item.xz_level<=12 && item.xz_name === '呐卷',
+          xzl_dm_4:item.xz_level>=13 && item.xz_level<=16 && item.xz_name === '呐卷',
+          xzl_dm_5:item.xz_level>=17 && item.xz_level<=20 && item.xz_name === '呐卷',
+          xzl_dm_6:item.xz_level>=21 && item.xz_level<=24 && item.xz_name === '呐卷',
+          xzl_dm_7:item.xz_level>=25 && item.xz_level<=28 && item.xz_name === '呐卷',
+          xzl_dm_8:item.xz_level>=29 && item.xz_level<=32 && item.xz_name === '呐卷',
+          xzl_dm_9:item.xz_level>=33 && item.xz_level<=36 && item.xz_name === '呐卷',
+          xzl_dm_10:item.xz_level>=37 && item.xz_level<=40 && item.xz_name === '呐卷' 
+          }">{{item.danmu}}</div>
         </div>
-        <div class="dm-name">&nbsp;{{item.nickname}}:</div>
-        <div class="dm-c" :class="{
-        xzl_dm_1:item.xz_level>=1 && item.xz_level<=4 && item.xz_name === '呐卷',
-        xzl_dm_2:item.xz_level>=5 && item.xz_level<=8 && item.xz_name === '呐卷',
-        xzl_dm_3:item.xz_level>=9 && item.xz_level<=12 && item.xz_name === '呐卷',
-        xzl_dm_4:item.xz_level>=13 && item.xz_level<=16 && item.xz_name === '呐卷',
-        xzl_dm_5:item.xz_level>=17 && item.xz_level<=20 && item.xz_name === '呐卷',
-        xzl_dm_6:item.xz_level>=21 && item.xz_level<=24 && item.xz_name === '呐卷',
-        xzl_dm_7:item.xz_level>=25 && item.xz_level<=28 && item.xz_name === '呐卷',
-        xzl_dm_8:item.xz_level>=29 && item.xz_level<=32 && item.xz_name === '呐卷',
-        xzl_dm_9:item.xz_level>=33 && item.xz_level<=36 && item.xz_name === '呐卷',
-        xzl_dm_10:item.xz_level>=37 && item.xz_level<=40 && item.xz_name === '呐卷' 
-        }">{{item.danmu}}</div>
+        </transition-group>
       </div>
-      </transition-group>
-    </div>
-    <div class="comein-container"> 
-      <transition-group name="listc" tag="div" mode="out-in">
-      <div v-for="(item) in comeInList" class="comein" :key="item.uuid">
-        <div class="dm-name">{{item.uname}}进入了房间。</div>
+      <div class="comein-container"> 
+        <transition-group name="listc" tag="div" mode="out-in">
+        <div v-for="(item) in comeInList" class="comein" :key="item.uuid">
+          <div class="dm-name">{{item.uname}}进入了房间。</div>
+        </div>
+        </transition-group>
       </div>
-      </transition-group>
-    </div>
-    </div>
-    <div class="gift-container"> 
-      <transition-group name="listg" tag="div" mode="out-in">
-      <div v-for="(item) in giftList" class="gift" :key="item.uuid">
-        <div class="dm-name">{{item.uname}}赠送了{{item.giftName}}</div>
+      <div class="gift-container"> 
+        <transition-group name="listg" tag="div" mode="out-in">
+        <div v-for="(item) in giftList" class="gift" :key="item.uuid">
+          <div class="dm-name">{{item.uname}}赠送了{{item.giftName}}</div>
+        </div>
+        </transition-group>
       </div>
-      </transition-group>
+      <div class="chat-container">
+        <chat-window-page/>
+      </div>
     </div>
   </div>
 </template>
@@ -98,6 +100,7 @@
 import Datastore from 'nedb'
 import path from 'path'
 import {AudioConfig, SpeechSynthesizer} from 'microsoft-cognitiveservices-speech-sdk'
+import ChatWindowPage from './ChatWindowPage.vue'
 const { LiveWS } = require('bilibili-live-ws-fixed')
 const { remote } = require('electron')
 const sdk = require('microsoft-cognitiveservices-speech-sdk')
@@ -148,6 +151,7 @@ let muaConfig = {
 
 }
 export default {
+  components: { ChatWindowPage },
   data () {
     return {
       dispalyDmList,
@@ -404,7 +408,7 @@ export default {
                   giftStore.time = data[index].data.data.timestamp
                   giftList.push(giftStore)
                   // _self.speakDanmu(giftStore)
-                  if (giftList.length >= 4) {
+                  if (giftList.length >= 3) {
                     giftList.shift()
                   }
                   console.info('in gift')
@@ -1246,6 +1250,16 @@ export default {
     padding-left: 10%;
     width: 99%;
     top: 85%;
+    z-index: 2;
+  } 
+  .chat-container {
+    -webkit-app-region: no-drag;
+    background-color: transparent;
+    align-content: center;
+    position: fixed;
+    padding-left: 10%;
+    width: 99%;
+    top: 95%;
     z-index: 2;
   } 
   .left-cat-ear-large {

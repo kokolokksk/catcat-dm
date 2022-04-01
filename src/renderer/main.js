@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import axios from 'axios'
-import {Switch, Button} from 'ant-design-vue'
+import {Switch, Button, Divider, Badge} from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
 
 import App from './App'
@@ -15,6 +15,8 @@ if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.use(VueElectron)
 Vue.component(Button.name, Button)
 Vue.component(Switch.name, Switch)
+Vue.component(Divider.name, Divider)
+Vue.component(Badge.name, Badge)
 Vue.config.productionTip = false
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
