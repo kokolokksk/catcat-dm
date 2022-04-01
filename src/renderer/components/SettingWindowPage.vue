@@ -209,19 +209,23 @@ export default {
           _self.dmc = docs[0].dmc === null ? 'rgba(255,255,255,1)' : docs[0].dmc
           _self.btc = docs[0].btc === null ? 'rgb(255,255,255) 20%' : docs[0].btc
           _self.bbc = docs[0].bbc === null ? 'rgb(255,255,255) 80%' : docs[0].bbc
-          if (!docs[0].clientId) {
-            this.$http.get('http://db.loli.monster/cat/client/generateClientId')
-              .then(function (response) {
+          try {
+            if (!docs[0].clientId) {
+              this.$http.get('http://db.loli.monster/cat/client/generateClientId')
+                .then(function (response) {
                 // handle success
-                console.log(response)
-                _self.clientId = response.data.data
-              })
-              .catch(function (error) {
-                // handle error
-                console.log(error)
-              })
-          } else {
-            _self.clientId = docs[0].clientId
+                  console.log(response)
+                  _self.clientId = response.data.data
+                })
+                .catch(function (error) {
+                  // handle error
+                  console.log(error)
+                })
+            } else {
+              _self.clientId = docs[0].clientId
+            }
+          } catch (e) {
+            _self.clientId = 'NetworkError'
           }
           _self.catdb = docs[0].catdb
           // fixme load color
