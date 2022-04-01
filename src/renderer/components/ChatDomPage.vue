@@ -199,19 +199,6 @@ export default {
           muaConfig.v2 = (typeof (docs[0].v2) === 'undefined' || docs[0].v2 === '') ? muaConfig.v2 : docs[0].v2
           muaConfig.voice = (typeof (docs[0].voice) === 'undefined' || docs[0].voice === '') ? muaConfig.voice : docs[0].voice
           muaConfig.clientId = (typeof (docs[0].clientId) === 'undefined' || docs[0].clientId === '') ? muaConfig.clientId : docs[0].clientId
-          if (muaConfig.clientId == null || muaConfig.clientId === '' || !muaConfig.clientId) {
-            _self.$http({
-              url: 'https://db.loli.monster/cat/client/generateClientId'
-            }).then(function (response) {
-              // handle success
-              console.log(response)
-              muaConfig.clientId = response.data
-              _self.setClientId(muaConfig.clientId)
-            }).catch(function (error) {
-              // handle error
-              console.log(error)
-            })
-          }
           muaConfig.catdb = docs[0].catdb
           if (!muaConfig.v1 || !muaConfig.v2 || muaConfig.v1 === '' || muaConfig.v2 === '') {
             muaConfig.tts = false
@@ -437,18 +424,20 @@ export default {
     },
     uploadDm (danmuStore) {
       if (this.muaConfig.catdb) {
-        this.$http({
-          method: 'post',
-          url: 'https://db.loli.monster/cat/dm/addDanMu?clientId=' + this.muaConfig.clientId + '&roomId=' + muaConfig.roomid,
-          data: danmuStore,
-          headers: {'content-type': 'application/json'}
-        }).then(function (response) {
-          // handle success
-          console.log(response)
-        }).catch(function (error) {
-          // handle error
-          console.log(error)
-        })
+        if (this.muaConfig.clientId) {
+          this.$http({
+            method: 'post',
+            url: 'https://db.loli.monster/cat/dm/addDanMu?clientId=' + this.muaConfig.clientId + '&roomId=' + muaConfig.roomid,
+            data: danmuStore,
+            headers: {'content-type': 'application/json'}
+          }).then(function (response) {
+            // handle success
+            console.log(response)
+          }).catch(function (error) {
+            // handle error
+            console.log(error)
+          })
+        }
       }
     },
     setClientId (cid) {

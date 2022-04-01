@@ -207,8 +207,18 @@ export default {
           _self.v2 = docs[0].v2
           _self.bgc = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
           _self.dmc = docs[0].dmc === null ? 'rgba(255,255,255,1)' : docs[0].dmc
-          _self.btc = docs[0].btc === null ? 'rgb(255,255,255) 20%' : docs[0].btc
-          _self.bbc = docs[0].bbc === null ? 'rgb(255,255,255) 80%' : docs[0].bbc
+          if (docs[0].btc) {
+            _self.btc = docs[0].btc
+          } else {
+            _self.btc = 'rgb(255,255,255) 20%'
+          }
+          if (docs[0].btc) {
+            _self.bbc = docs[0].bbc
+          } else {
+            _self.bbc = 'rgb(255,255,255) 80%'
+          }
+          // _self.btc = docs[0].btc === null ? 'rgb(255,255,255) 20%' : docs[0].btc
+          // _self.bbc = docs[0].bbc === null ? 'rgb(255,255,255) 80%' : docs[0].bbc
           try {
             if (!docs[0].clientId) {
               this.$http.get('http://db.loli.monster/cat/client/generateClientId')
@@ -216,6 +226,7 @@ export default {
                 // handle success
                   console.log(response)
                   _self.clientId = response.data.data
+                  _self.setClientId()
                 })
                 .catch(function (error) {
                   // handle error
@@ -348,7 +359,7 @@ export default {
       })
       const pickr44 = Pickr.create({
         el: '#pc44',
-        default: _self.btc.replace(' 20%', ''),
+        default: _self.btc === null ? 'rgb(255,255,255)' : _self.btc.replace(' 20%', ''),
         theme: 'nano', // or 'monolith', or 'nano'
         swatches: [
           'rgb(244, 67, 54)',
@@ -396,7 +407,7 @@ export default {
       })
       const pickr55 = Pickr.create({
         el: '#pc55',
-        default: _self.bbc.replace(' 80%', ''),
+        default: _self.bbc === null ? 'rgb(255,255,255)' : _self.bbc.replace(' 80%', ''),
         theme: 'nano', // or 'monolith', or 'nano'
         swatches: [
           'rgb(244, 67, 54)',
@@ -610,6 +621,32 @@ export default {
             type: 2
           }
           _self.$db.insert(roomStore, (err, ret) => {
+            if (err !== null) {
+              console.info(err)
+            }
+          })
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
+    },
+    setClientId () {
+      // console.info('?')
+      let _self = this
+      db.find({ type: 2 }, (err, docs) => {
+        console.info(docs)
+        if (docs !== null && docs.length !== 0) {
+          console.info(_self.scaleX)
+          _self.$db.update({ _id: docs[0]._id }, { $set: { clientId: _self.clientId } }, {}, function () {
+            console.info('update success')
+          })
+        } else {
+          let clientIdStore = {
+            clientId: _self.clientId, // user id
+            type: 2
+          }
+          _self.$db.insert(clientIdStore, (err, ret) => {
             if (err !== null) {
               console.info(err)
             }
