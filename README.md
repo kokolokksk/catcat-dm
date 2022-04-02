@@ -46,6 +46,7 @@
 - 摸鱼
 
 ### 感谢（Thanks）
+- [MistEO](https://github.com/MistEO)提出的bug
 - npm module [electron-referer](https://github.com/akameco/electron-referer)
 - npm module [bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws/)
 - npm module [bilibili-live-danmaku-api](https://github.com/simon300000/bilibili-live-danmaku-api)
