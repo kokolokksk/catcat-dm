@@ -8,10 +8,11 @@
  哔哩哔哩 直播弹幕姬
 
 - 发送弹幕需要设置 ```SESSDATA```(```SESSDATA```) 与 ```csrf```(```bili_jct```)，登陆哔哩哔哩后 F12 复制cookies中的 ```SESSDATA``` 与 ```bili_jct``` 对应键值
+- tts 需要Azure平台相应key
 
 >dom版
- - ![界面截图](https://db.loli.monster/danmu2.png)
- - ![主程序界面](https://db.loli.monster/application.png)
+ - [界面截图](https://db.loli.monster/danmu2.png)
+ - [主程序界面](https://db.loli.monster/application.png)
 
 - [下载地址](https://github.com/kokolokksk/mua/releases/latest)
 ## Windows
@@ -37,12 +38,12 @@
 - [x] 发送弹幕
 - [ ] 发送弹幕更多选项
 - [ ] [弹幕统计](https://github.com/kokolokksk/catcat-dm-data)
-- [ ] [增量更新](https://github.com/kokolokksk/lolidate)
-- [x] [使用更加好听的TTS](https://github.com/kokolokksk/catcat-tts)
+- [ ] ~[增量更新](https://github.com/kokolokksk/lolidate)~
+- [x] 使用更加好听的TTS
 
 
 #### 下一步
-- miku
+- 摸鱼
 
 ### 感谢（Thanks）
 - npm module [electron-referer](https://github.com/akameco/electron-referer)
