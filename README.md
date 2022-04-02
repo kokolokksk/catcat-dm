@@ -10,8 +10,8 @@
 - 发送弹幕需要设置 ```SESSDATA```(```SESSDATA```) 与 ```csrf```(```bili_jct```)，登陆哔哩哔哩后 F12 复制cookies中的 ```SESSDATA``` 与 ```bili_jct``` 对应键值
 
 >dom版
- - ![界面截图](desc/2021-9-29_11-25-05.gif)
- - ![主程序界面](desc/application.png)
+ - ![界面截图](https://db.loli.monster/danmu2.png)
+ - ![主程序界面](https://db.loli.monster/application.png)
 
 - [下载地址](https://github.com/kokolokksk/mua/releases/latest)
 ## Windows
