@@ -1,4 +1,7 @@
 [![Build/release](https://github.com/kokolokksk/catcat-dm/actions/workflows/build.yml/badge.svg?branch=v1.2.5)](https://github.com/kokolokksk/catcat-dm/actions/workflows/build.yml)
+[![HitCount](http://hits.dwyl.com/kokolokksk/catcat-dm.svg)](http://hits.dwyl.com/kokolokksk/catcat-dm)
+![](https://img.shields.io/github/stars/kokolokksk/catcat-dm?color=green&style=flat-square)
+
 # CatCatDM
 
 > CatCatDM! 
