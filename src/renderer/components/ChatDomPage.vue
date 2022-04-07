@@ -77,11 +77,11 @@
         </transition-group>
       </div>
       <div class="comein-container"> 
-        <transition-group name="listc" tag="div" mode="out-in">
-        <div v-for="(item) in comeInList" class="comein" :key="item.uuid">
+        
+        <div v-for="(item) in comeInList" class="comein"  :key="item.uuid">
           <div class="dm-name">{{item.uname}}进入了房间。</div>
         </div>
-        </transition-group>
+         
       </div>
       <div class="gift-container"> 
         <transition-group name="listg" tag="div" mode="out-in">
@@ -1201,20 +1201,22 @@ export default {
     height: 15%;
     width: 100%;
     z-index: 3;
+    transition: all 1s ease-in 0;
+    transform: translateY(2vh);
   }
   .gift {
     font-family: 'Consolas';
     font-size: 10pt;
     color: rgb(8, 51, 4);
     display: flex;
-    margin-bottom: 5px;
+    /* margin-bottom: 5px; */
     align-items: center;
     display: inline-block;
     align-content: center;
     /* background-color: teal; */
     font-family:  'Consolas','zxfyyt','YouYuan';
     font-size: 1rem;
-    height: 15%;
+    height: 2vh;
     width: 100%;
     z-index: 3;
   }
