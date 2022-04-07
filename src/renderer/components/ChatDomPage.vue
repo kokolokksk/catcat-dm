@@ -31,50 +31,50 @@
     <div id="c-bg">
     <!-- danmu -->
       <div class="danmu-container"  v-bind:style="{ fontSize:'11pt', backgroundImage: 'linear-gradient(0deg, rgba(241, 147, 156,0.1), '+ muaConfig.danmuAreaColor+ ')'}">
-        <transition-group appear name="list" tag="div" mode="out-in">
-        <div v-for="(item) in dispalyDmList" class="danmu" :style="{ color : muaConfig.danmuColor}" :key="item.uuid">
-          <div class="fans" >
-            <div v-if="item.xz_name" 
-          :class="{
-          xzn_1:item.xz_level>=1 && item.xz_level<=4,
-          xzn_2:item.xz_level>=5 && item.xz_level<=8,
-          xzn_3:item.xz_level>=9 && item.xz_level<=12,
-          xzn_4:item.xz_level>=13 && item.xz_level<=16,
-          xzn_5:item.xz_level>=17 && item.xz_level<=20,
-          xzn_6:item.xz_level>=21 && item.xz_level<=24,
-          xzn_7:item.xz_level>=25 && item.xz_level<=28,
-          xzn_8:item.xz_level>=29 && item.xz_level<=32,
-          xzn_9:item.xz_level>=33 && item.xz_level<=36,
-          xzn_10:item.xz_level>=37 && item.xz_level<=40}">{{item.xz_name}}</div>
-          <div v-if="item.xz_level" 
-          :class="{
-          xzl_1:item.xz_level>=1 && item.xz_level<=4,
-          xzl_2:item.xz_level>=5 && item.xz_level<=8,
-          xzl_3:item.xz_level>=9 && item.xz_level<=12,
-          xzl_4:item.xz_level>=13 && item.xz_level<=16,
-          xzl_5:item.xz_level>=17 && item.xz_level<=20,
-          xzl_6:item.xz_level>=21 && item.xz_level<=24,
-          xzl_7:item.xz_level>=25 && item.xz_level<=28,
-          xzl_8:item.xz_level>=29 && item.xz_level<=32,
-          xzl_9:item.xz_level>=33 && item.xz_level<=36,
-          xzl_10:item.xz_level>=37 && item.xz_level<=40  
-          }">&nbsp;{{item.xz_level}}&nbsp;</div>
+        <div :style="'transform: translateY('+(28-allDmList.length*4)+'vh)'">
+          <div v-for="(item) in allDmList" class="danmu" :style="{ color : muaConfig.danmuColor}" :key="item.uuid">
+            <div class="fans" >
+              <div v-if="item.xz_name" 
+            :class="{
+            xzn_1:item.xz_level>=1 && item.xz_level<=4,
+            xzn_2:item.xz_level>=5 && item.xz_level<=8,
+            xzn_3:item.xz_level>=9 && item.xz_level<=12,
+            xzn_4:item.xz_level>=13 && item.xz_level<=16,
+            xzn_5:item.xz_level>=17 && item.xz_level<=20,
+            xzn_6:item.xz_level>=21 && item.xz_level<=24,
+            xzn_7:item.xz_level>=25 && item.xz_level<=28,
+            xzn_8:item.xz_level>=29 && item.xz_level<=32,
+            xzn_9:item.xz_level>=33 && item.xz_level<=36,
+            xzn_10:item.xz_level>=37 && item.xz_level<=40}">{{item.xz_name}}</div>
+            <div v-if="item.xz_level" 
+            :class="{
+            xzl_1:item.xz_level>=1 && item.xz_level<=4,
+            xzl_2:item.xz_level>=5 && item.xz_level<=8,
+            xzl_3:item.xz_level>=9 && item.xz_level<=12,
+            xzl_4:item.xz_level>=13 && item.xz_level<=16,
+            xzl_5:item.xz_level>=17 && item.xz_level<=20,
+            xzl_6:item.xz_level>=21 && item.xz_level<=24,
+            xzl_7:item.xz_level>=25 && item.xz_level<=28,
+            xzl_8:item.xz_level>=29 && item.xz_level<=32,
+            xzl_9:item.xz_level>=33 && item.xz_level<=36,
+            xzl_10:item.xz_level>=37 && item.xz_level<=40  
+            }">&nbsp;{{item.xz_level}}&nbsp;</div>
+            </div>
+            <div class="dm-name">&nbsp;{{item.nickname}}:</div>
+            <div class="dm-c" :class="{
+            xzl_dm_1:item.xz_level>=1 && item.xz_level<=4 && item.xz_name === '呐卷',
+            xzl_dm_2:item.xz_level>=5 && item.xz_level<=8 && item.xz_name === '呐卷',
+            xzl_dm_3:item.xz_level>=9 && item.xz_level<=12 && item.xz_name === '呐卷',
+            xzl_dm_4:item.xz_level>=13 && item.xz_level<=16 && item.xz_name === '呐卷',
+            xzl_dm_5:item.xz_level>=17 && item.xz_level<=20 && item.xz_name === '呐卷',
+            xzl_dm_6:item.xz_level>=21 && item.xz_level<=24 && item.xz_name === '呐卷',
+            xzl_dm_7:item.xz_level>=25 && item.xz_level<=28 && item.xz_name === '呐卷',
+            xzl_dm_8:item.xz_level>=29 && item.xz_level<=32 && item.xz_name === '呐卷',
+            xzl_dm_9:item.xz_level>=33 && item.xz_level<=36 && item.xz_name === '呐卷',
+            xzl_dm_10:item.xz_level>=37 && item.xz_level<=40 && item.xz_name === '呐卷' 
+            }">{{item.danmu}}</div>
           </div>
-          <div class="dm-name">&nbsp;{{item.nickname}}:</div>
-          <div class="dm-c" :class="{
-          xzl_dm_1:item.xz_level>=1 && item.xz_level<=4 && item.xz_name === '呐卷',
-          xzl_dm_2:item.xz_level>=5 && item.xz_level<=8 && item.xz_name === '呐卷',
-          xzl_dm_3:item.xz_level>=9 && item.xz_level<=12 && item.xz_name === '呐卷',
-          xzl_dm_4:item.xz_level>=13 && item.xz_level<=16 && item.xz_name === '呐卷',
-          xzl_dm_5:item.xz_level>=17 && item.xz_level<=20 && item.xz_name === '呐卷',
-          xzl_dm_6:item.xz_level>=21 && item.xz_level<=24 && item.xz_name === '呐卷',
-          xzl_dm_7:item.xz_level>=25 && item.xz_level<=28 && item.xz_name === '呐卷',
-          xzl_dm_8:item.xz_level>=29 && item.xz_level<=32 && item.xz_name === '呐卷',
-          xzl_dm_9:item.xz_level>=33 && item.xz_level<=36 && item.xz_name === '呐卷',
-          xzl_dm_10:item.xz_level>=37 && item.xz_level<=40 && item.xz_name === '呐卷' 
-          }">{{item.danmu}}</div>
         </div>
-        </transition-group>
       </div>
       <div class="comein-container"> 
         
@@ -84,11 +84,11 @@
          
       </div>
       <div class="gift-container"> 
-        <transition-group name="listg" tag="div" mode="out-in">
-        <div v-for="(item) in giftList" class="gift" :key="item.uuid">
-          <div class="dm-name">{{item.uname}}赠送了{{item.giftName}}</div>
+        <div :style="'transform: translateY('+(8-giftList.length*4)+'vh)'">
+          <div v-for="item in giftList" class="gift" :key="item.uuid">
+            <div class="dm-name">{{item.uname}}赠送了{{item.giftName}}</div>
+          </div>
         </div>
-        </transition-group>
       </div>
       <div class="chat-container">
         <chat-window-page/>
@@ -118,6 +118,7 @@ let live
 let waveDisplay = true
 let waitUpdateDmList = []
 let dispalyDmList = []
+let allDmList = []
 let comeInList = []
 let giftList = []
 let speakList = []
@@ -155,6 +156,7 @@ export default {
   data () {
     return {
       dispalyDmList,
+      allDmList,
       waitUpdateDmList,
       comeInList,
       giftList,
@@ -282,6 +284,7 @@ export default {
           type: 1
         }
         dispalyDmList.push(sysInfo)
+        allDmList.push(sysInfo)
       })
       live.on('live', () => {
         log.info('成功连接到弹幕服务器')
@@ -298,6 +301,7 @@ export default {
           type: 1
         }
         dispalyDmList.push(sysInfo)
+        allDmList.push(sysInfo)
         live.on('heartbeat', (online) => {
           log.info('···heartbeat···')
           _self.muaConfig.onlineCount = online
@@ -342,6 +346,7 @@ export default {
                   // add to list
                   console.info(danmuStore)
                   _self.uploadDm(danmuStore)
+                  allDmList.push(danmuStore)
                   if (dispalyDmList.length < 7) {
                     dispalyDmList.push(danmuStore)
                   } else {
@@ -407,10 +412,13 @@ export default {
                   giftStore.uname_color = data[index].data.data.uname_color
                   giftStore.time = data[index].data.data.timestamp
                   giftList.push(giftStore)
-                  // _self.speakDanmu(giftStore)
-                  if (giftList.length >= 3) {
-                    giftList.shift()
+                  if (giftList.length >= 99999) {
+                    giftList.splice(0, giftList.length - 3)
                   }
+                  // _self.speakDanmu(giftStore)
+                  // if (giftList.length >= 3) {
+                  //   giftList.shift()
+                  // }
                   console.info('in gift')
                 } else {
                   console.info('other')
@@ -1157,7 +1165,7 @@ export default {
   .fans {
     z-index: 4;
     float: left;
-    height: 100%;
+    height: 20px;
     width: auto;
     display: inline-flex;
   }
@@ -1182,7 +1190,8 @@ export default {
     /* display: inline-block; */
     align-content: center;
     /* background-color: teal; */
-    height: 10%;
+    height: auto;
+    line-height: 4vh;
     width: 100%;
     z-index: 3;
     color: #000;
@@ -1216,9 +1225,11 @@ export default {
     /* background-color: teal; */
     font-family:  'Consolas','zxfyyt','YouYuan';
     font-size: 1rem;
-    height: 2vh;
+    height: 4vh;
+    line-height: 4vh;
     width: 100%;
     z-index: 3;
+    transition: all 1s ease 0s;
   }
   .danmu-container {
     padding: 5px;
@@ -1228,6 +1239,8 @@ export default {
     width: 80%;
     left: 10%;
     top: 10%;
+    z-index: 2;
+    overflow: hidden;
     background-image:  linear-gradient(0deg, rgba(241, 147, 156,0.1), rgba(234, 81, 127,0.9));
   }
   .comein-container {
@@ -1251,9 +1264,21 @@ export default {
     position: fixed;
     padding-left: 10%;
     width: 99%;
-    top: 85%;
+    top: 86vh;
     z-index: 2;
+    height: 8vh;
+    overflow: hidden;
   } 
+  .gift-container>div{
+    transition: all 1s ease 0s;
+    display: flex;
+    flex-direction: column;
+  }
+  .danmu-container>div{
+    transition: all 1s ease 0s;
+    display: flex;
+    flex-direction: column;
+  }
   .chat-container {
     -webkit-app-region: no-drag;
     background-color: transparent;
