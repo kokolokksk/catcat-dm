@@ -2,7 +2,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import {Switch, Button, Divider, Badge} from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
-
+import Toasted from 'vue-toasted'
 import App from './App'
 import router from './router'
 import store from './store'
@@ -13,6 +13,7 @@ import '@/assets/style/font.less'
 import {theme, themeSetup} from './assets/theme/index.js'
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.use(VueElectron)
+Vue.use(Toasted)
 Vue.component(Button.name, Button)
 Vue.component(Switch.name, Switch)
 Vue.component(Divider.name, Divider)

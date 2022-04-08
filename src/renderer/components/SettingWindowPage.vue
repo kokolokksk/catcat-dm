@@ -10,7 +10,7 @@
       </li>
     </ul>   -->
     <p class="line"/>
-    房间号:<input type='text' v-model = roomid name= "roomid" /><a-button class="left-margin" type="default" @click="setRoomId" >设置</a-button>
+    房间号:<input type='text' v-model = roomid name= "roomid" /><a-button class="left-margin" type="default" @click="setRoomId" >设置</a-button> <a-button class="left-margin" type="default" @click="copyClientId" >clientId</a-button> 
     <a-divider />
     <div id="color-container" style="display:flex">
       <div id="color-back" style="padding-left:2vw;padding-right:2vw">
@@ -102,7 +102,7 @@ import Pickr from '@simonwep/pickr'
 import Datastore from 'nedb'
 import path from 'path'
 let packageS = require('../../../package.json')
-const { remote } = require('electron')
+const { remote, clipboard } = require('electron')
 const sdk = require('microsoft-cognitiveservices-speech-sdk')
 // Simple example, see optional options for more configuration.
 let speechConfig = null
@@ -226,8 +226,8 @@ export default {
                 .then(function (response) {
                 // handle success
                   console.log(response)
-                  _self.clientId = response.data.data
-                  _self.setClientId()
+                  _self.clientId = response.data
+                  _self.setClientId(response.data)
                 })
                 .catch(function (error) {
                   // handle error
@@ -606,6 +606,16 @@ export default {
         }
       })
     },
+    copyClientId () {
+      // console.info('?')
+      let _self = this
+      let toast = this.$toasted.show('已复制', {
+        theme: 'toasted-primary',
+        position: 'top-center',
+        duration : 2000
+      })
+      clipboard.writeText(_self.clientId)
+    },
     setScaleX () {
       // console.info('?')
       let _self = this
@@ -632,19 +642,18 @@ export default {
         }
       })
     },
-    setClientId () {
+    setClientId (cid) {
       // console.info('?')
       let _self = this
       db.find({ type: 2 }, (err, docs) => {
         console.info(docs)
         if (docs !== null && docs.length !== 0) {
-          console.info(_self.scaleX)
-          _self.$db.update({ _id: docs[0]._id }, { $set: { clientId: _self.clientId } }, {}, function () {
+          _self.$db.update({ _id: docs[0]._id }, { $set: { clientId: cid } }, {}, function () {
             console.info('update success')
           })
         } else {
           let clientIdStore = {
-            clientId: _self.clientId, // user id
+            clientId: cid, // user id
             type: 2
           }
           _self.$db.insert(clientIdStore, (err, ret) => {
