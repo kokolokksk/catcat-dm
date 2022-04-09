@@ -45,7 +45,7 @@
         <p>
           预览:
         <div id="pc3"  :style="backColorPreview" >
-            <p  id="pc4" :style="danmuColorPreview">文字</p>
+            <p  id="pc4" :style="{color:danmuColorPreview.color,textShadow:dmTs}">文字</p>
         </div>
         <div id="pc444" :style="borderAreaTopColor">
         </div>
@@ -53,7 +53,8 @@
         </div>
       </div>
     </div>
-    
+    <p class="line"/>
+    弹幕阴影:<input type='text' v-model = dmTs name= "dmTs" /><a-button class="left-margin" type="default" @click="setDmTs" >设置</a-button>
     <a-divider />
     置顶:<a-switch default-checked v-model="alwaysOnTop" checked-children="开" un-checked-children="关" @change="setAlwaysOnTop" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a-badge color="#f50" text="将弹幕窗口进行置顶" />
     <p class="line"/>
@@ -76,6 +77,8 @@
     <div>
         TTS:<a-switch default-unchecked v-model="tts" checked-children="开" un-checked-children="关" @change="setTTS" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a-badge color="orange" text="阅读收到的弹幕" />
     </div>
+    <p class="line"/>
+    礼物感谢:<a-switch default-unchecked v-model="ttsGift" checked-children="开" un-checked-children="关" @change="setTTSGift" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a-badge color="orange" text="阅读收到的收费礼物" />
      <a-divider />
     语音选择:<select v-model =  voice name= "voice"  >
                  <option v-for="(item,index) in speechSynthesisVoiceNameList" :key="index" :value='item.voiceValue' >{{item.voiceName}}</option>  
@@ -158,6 +161,8 @@ export default {
         {id: 5, voiceName: '云野', voiceValue: 'zh-CN-YunyeNeural', locale: 'zh-CN', sex: 'male', description: '针对使用 SSML 提供的故事讲述、多种角色扮演和风格进行了优化'}
       ],
       tts:false,
+      ttsGift:false,
+      dmTs:'1px 1px 1px  #fff',
       alwaysOnTop: true,
       catdb: false,
       chatAlwaysOnTop: false,
@@ -200,6 +205,7 @@ export default {
           _self.scaleX = docs[0].scaleX
           _self.dmf = docs[0].dmf
           _self.tts = docs[0].tts
+          _self.ttsGift = docs[0].ttsGift
           _self.alwaysOnTop = docs[0].alwaysOnTop
           _self.chatAlwaysOnTop = docs[0].chatAlwaysOnTop
           _self.waveD = (typeof (docs[0].waveD) === 'undefined' || docs[0].waveD === '') ? true : docs[0].waveD
@@ -208,6 +214,9 @@ export default {
           _self.v2 = docs[0].v2
           _self.bgc = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
           _self.dmc = docs[0].dmc === null ? 'rgba(255,255,255,1)' : docs[0].dmc
+          if (docs[0].dmTs) {
+            _self.dmTs = docs[0].dmTs
+          }
           if (docs[0].btc) {
             _self.btc = docs[0].btc
           } else {
@@ -480,6 +489,31 @@ export default {
         }
       })
     },
+    setTTSGift () {
+      let _self = this
+      db.find({ type: 2 }, (err, docs) => {
+        console.info(docs)
+        if (docs !== null && docs.length !== 0) {
+          console.info(_self.ttsGift)
+          _self.$db.update({ _id: docs[0]._id }, { $set: { ttsGift: _self.ttsGift } }, {}, function () {
+            console.info('update success')
+          })
+        } else {
+          let ttsGiftStore = {
+            ttsGift: _self.ttsGift, // user id
+            type: 2
+          }
+          _self.$db.insert(ttsGiftStore, (err, ret) => {
+            if (err !== null) {
+              console.info(err)
+            }
+          })
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
+    },
     setWaveD () {
       let _self = this
       db.find({ type: 2 }, (err, docs) => {
@@ -596,6 +630,32 @@ export default {
             type: 2
           }
           _self.$db.insert(roomStore, (err, ret) => {
+            if (err !== null) {
+              console.info(err)
+            }
+          })
+        }
+        if (err !== null) {
+          console.info(err)
+        }
+      })
+    },
+    setDmTs () {
+      // console.info('?')
+      let _self = this
+      db.find({ type: 2 }, (err, docs) => {
+        console.info(docs)
+        if (docs !== null && docs.length !== 0) {
+          console.info(_self.dmTs)
+          _self.$db.update({ _id: docs[0]._id }, { $set: { dmTs: _self.dmTs } }, {}, function () {
+            console.info('update success')
+          })
+        } else {
+          let dmTsStore = {
+            dmTs: _self.dmTs, // user id
+            type: 2
+          }
+          _self.$db.insert(dmTsStore, (err, ret) => {
             if (err !== null) {
               console.info(err)
             }

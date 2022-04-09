@@ -61,17 +61,17 @@
             }">&nbsp;{{item.xz_level}}&nbsp;</div>
             </div>
             <div class="dm-name">&nbsp;{{item.nickname}}:</div>
-            <div class="dm-c" :class="{
-            xzl_dm_1:item.xz_level>=1 && item.xz_level<=4 && item.xz_name === '呐卷',
-            xzl_dm_2:item.xz_level>=5 && item.xz_level<=8 && item.xz_name === '呐卷',
-            xzl_dm_3:item.xz_level>=9 && item.xz_level<=12 && item.xz_name === '呐卷',
-            xzl_dm_4:item.xz_level>=13 && item.xz_level<=16 && item.xz_name === '呐卷',
-            xzl_dm_5:item.xz_level>=17 && item.xz_level<=20 && item.xz_name === '呐卷',
-            xzl_dm_6:item.xz_level>=21 && item.xz_level<=24 && item.xz_name === '呐卷',
-            xzl_dm_7:item.xz_level>=25 && item.xz_level<=28 && item.xz_name === '呐卷',
-            xzl_dm_8:item.xz_level>=29 && item.xz_level<=32 && item.xz_name === '呐卷',
-            xzl_dm_9:item.xz_level>=33 && item.xz_level<=36 && item.xz_name === '呐卷',
-            xzl_dm_10:item.xz_level>=37 && item.xz_level<=40 && item.xz_name === '呐卷' 
+            <div :style="{textShadow:muaConfig.dmTs}" class="dm-c" :class="{
+            xzl_dm_1:item.xz_level>=1 && item.xz_level<=4 && item.xz_name === '呐卷s',
+            xzl_dm_2:item.xz_level>=5 && item.xz_level<=8 && item.xz_name === '呐卷s',
+            xzl_dm_3:item.xz_level>=9 && item.xz_level<=12 && item.xz_name === '呐卷s',
+            xzl_dm_4:item.xz_level>=13 && item.xz_level<=16 && item.xz_name === '呐卷s',
+            xzl_dm_5:item.xz_level>=17 && item.xz_level<=20 && item.xz_name === '呐卷s',
+            xzl_dm_6:item.xz_level>=21 && item.xz_level<=24 && item.xz_name === '呐卷s',
+            xzl_dm_7:item.xz_level>=25 && item.xz_level<=28 && item.xz_name === '呐卷s',
+            xzl_dm_8:item.xz_level>=29 && item.xz_level<=32 && item.xz_name === '呐卷s',
+            xzl_dm_9:item.xz_level>=33 && item.xz_level<=36 && item.xz_name === '呐卷s',
+            xzl_dm_10:item.xz_level>=37 && item.xz_level<=40 && item.xz_name === '呐卷s' 
             }">{{item.danmu}}</div>
           </div>
         </div>
@@ -142,13 +142,15 @@ let muaConfig = {
   comeinLastMinute: 0,
   speakStatus:false, // 发言状态
   tts:false, // tts开关
+  ttsGift:false, // tts ggift开关
   alwaysOnTop:true, // 置顶
   v1: '',
   v2: '',
   voice: 'zh-CN-XiaoxiaoNeural',
   clientId: '',
   catdb: false,
-  sessionId: ''
+  sessionId: '',
+  dmTs: '1px 1px 1px  #fff'
 
 }
 export default {
@@ -194,6 +196,7 @@ export default {
           muaConfig.roomid = typeof (docs[0].roomid) === 'undefined' ? muaConfig.roomid : docs[0].roomid
           // fixme load color
           muaConfig.danmuColor = typeof (docs[0].dmc) === 'undefined' ? muaConfig.danmuColor : docs[0].dmc
+          muaConfig.dmTs = typeof (docs[0].dmTs) === 'undefined' ? muaConfig.dmTs : docs[0].dmTs
           muaConfig.borderAreaTopColor = typeof (docs[0].btc) === 'undefined' ? muaConfig.borderAreaTopColor : docs[0].btc
           muaConfig.borderAreaBotColor = typeof (docs[0].bbc) === 'undefined' ? muaConfig.borderAreaBotColor : docs[0].bbc
           _self.waveDisplay = typeof (docs[0].waveD) === 'undefined' ? _self.waveDisplay : docs[0].waveD
@@ -201,6 +204,7 @@ export default {
           muaConfig.danmuFont = typeof (docs[0].dmf) === 'undefined' ? muaConfig.danmuFont : docs[0].dmf
           muaConfig.scale = typeof (docs[0].scaleX) === 'undefined' ? muaConfig.scale : docs[0].scaleX
           muaConfig.tts = typeof (docs[0].tts) === 'undefined' ? muaConfig.tts : docs[0].tts
+          muaConfig.ttsGift = typeof (docs[0].ttsGift) === 'undefined' ? muaConfig.ttsGift : docs[0].ttsGift
           muaConfig.v1 = (typeof (docs[0].v1) === 'undefined' || docs[0].v1 === '') ? muaConfig.v1 : docs[0].v1
           muaConfig.v2 = (typeof (docs[0].v2) === 'undefined' || docs[0].v2 === '') ? muaConfig.v2 : docs[0].v2
           muaConfig.voice = (typeof (docs[0].voice) === 'undefined' || docs[0].voice === '') ? muaConfig.voice : docs[0].voice
@@ -208,6 +212,7 @@ export default {
           muaConfig.catdb = docs[0].catdb
           if (!muaConfig.v1 || !muaConfig.v2 || muaConfig.v1 === '' || muaConfig.v2 === '') {
             muaConfig.tts = false
+            muaConfig.ttsGift = false
           } else {
             speechConfig = sdk.SpeechConfig.fromSubscription(muaConfig.v1, muaConfig.v2)
             speechConfig.speechSynthesisLanguage = 'zh-cn'
@@ -419,7 +424,89 @@ export default {
                   // if (giftList.length >= 3) {
                   //   giftList.shift()
                   // }
+                  console.warn(data[index].data.data.giftName)
+                  console.warn(data[index].data.data)
                   console.info('in gift')
+                  if (data[index].data.data.price > 100) {
+                    console.error(data[index].data.data.giftName)
+                    console.error(data[index].data.data)
+                    _self.speakDanmu(giftStore)
+                  }
+                } else if (data[index].data.cmd === 'SUPER_CHAT_MESSAGE') {
+                  console.error('sc')
+                  console.error(data[index])
+                  let giftStore = {
+                    uuid: 0,
+                    giftName:'',
+                    userid: '',
+                    uname: '',
+                    num:0,
+                    uname_color: '',
+                    time: '',
+                    use_state: 0,
+                    type: 4
+                  }
+                  giftStore.uuid = Math.random(100000000)
+                  giftStore.uname = data[index].data.data.user_info.uname
+                  giftStore.giftName = data[index].data.data.gift.gift_name + ':' + data[index].data.data.message
+                  giftList.push(giftStore)
+                  if (giftList.length >= 99999) {
+                    giftList.splice(0, giftList.length - 3)
+                  }
+                  if (data[index].data.data.price !== 0) {
+                    _self.speakDanmu(giftStore)
+                  }
+                } else if (data[index].data.cmd === 'GUARD_BUY') {
+                  console.error('guard_buy')
+                  console.error(data[index])
+                  let giftStore = {
+                    uuid: 0,
+                    giftName:'',
+                    userid: '',
+                    uname: '',
+                    num:0,
+                    uname_color: '',
+                    time: '',
+                    use_state: 0,
+                    type: 4
+                  }
+                  giftStore.uuid = Math.random(100000000)
+                  giftStore.uname = data[index].data.data.username
+                  giftStore.giftName = '购买的' + data[index].data.data.role_name
+                  giftList.push(giftStore)
+                  if (giftList.length >= 99999) {
+                    giftList.splice(0, giftList.length - 3)
+                  }
+                  if (data[index].data.data.price !== 0) {
+                    _self.speakDanmu(giftStore)
+                  }
+                } else if (data[index].data.cmd === 'USER_TOAST_MSG') {
+                  console.error('USER_TOAST_MSG')
+                  console.error(data[index])
+                  let giftStore = {
+                    uuid: 0,
+                    giftName:'',
+                    userid: '',
+                    uname: '',
+                    num:0,
+                    uname_color: '',
+                    time: '',
+                    use_state: 0,
+                    type: 4
+                  }
+                  giftStore.uuid = Math.random(100000000)
+                  giftStore.uname = data[index].data.data.username
+                  giftStore.giftName = '续费的' + data[index].data.data.role_name
+                  giftList.push(giftStore)
+                  if (giftList.length >= 99999) {
+                    giftList.splice(0, giftList.length - 3)
+                  }
+                  if (data[index].data.data.price !== 0) {
+                    _self.speakDanmu(giftStore)
+                  }
+                } else if (data[index].data.cmd === 'NOTICE_MSG') {
+                  console.error('NOTICE_MSG')
+                  console.error(data[index])
                 } else {
                   console.info('other')
                 }
@@ -477,7 +564,7 @@ export default {
       })
     },
     speakDanmu (gift) {
-      if (muaConfig.tts) {
+      if (muaConfig.ttsGift) {
       // 判断是否在阅读
         if (speakStatus) {
           // 不阅读 把其加入阅读list
@@ -1046,6 +1133,15 @@ export default {
 
 /** dm color */
 /* 1234 */
+.xzl_dm_0 {
+  text-shadow: 1px 1px 1px  #0000;
+  align-items: left;
+  font-family: 'zxfyyt';
+  justify-content: center;
+  color: rgb(92, 150, 142);
+  z-index: 4;
+}
+/* 1234 */
 .xzl_dm_1 {
   text-shadow: 1px 1px 1px  #FFFFFF;
   align-items: left;
@@ -1176,7 +1272,6 @@ export default {
     width: auto;
   }
   .dm-c {
-    text-shadow: 2px 2px 2px  #FFFFFF;
     float: left;
     height: 100%;
     width: auto;
