@@ -50,6 +50,7 @@
 
 ### 感谢（Thanks）
 - [![MistEO](https://avatars.githubusercontent.com/u/18511905?s=70&v=4)](https://github.com/MistEO)提出的bug
+- [![hongyizs](https://avatars.githubusercontent.com/u/26345319?s=70&v=4)](https://github.com/hongyizs)
 - npm module [electron-referer](https://github.com/akameco/electron-referer)
 - npm module [bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws/)
 - npm module [bilibili-live-danmaku-api](https://github.com/simon300000/bilibili-live-danmaku-api)
