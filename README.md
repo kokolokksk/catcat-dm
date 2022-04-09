@@ -41,7 +41,7 @@
 - [x] 发送弹幕
 - [ ] 发送弹幕更多选项
 - [ ] [弹幕统计](https://github.com/kokolokksk/catcat-dm-data)
-- [ ] ~[增量更新](https://github.com/kokolokksk/lolidate)~
+- ~[增量更新](https://github.com/kokolokksk/lolidate)~
 - [x] 使用更加好听的TTS
 
 
@@ -50,6 +50,7 @@
 
 ### 感谢（Thanks）
 - [![MistEO](https://avatars.githubusercontent.com/u/18511905?s=70&v=4)](https://github.com/MistEO)提出的bug
+- [![hongyizs](https://avatars.githubusercontent.com/u/26345319?s=70&v=4)](https://github.com/hongyizs)
 - npm module [electron-referer](https://github.com/akameco/electron-referer)
 - npm module [bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws/)
 - npm module [bilibili-live-danmaku-api](https://github.com/simon300000/bilibili-live-danmaku-api)
