@@ -13,7 +13,7 @@
 - 发送弹幕需要设置 ```SESSDATA```(```SESSDATA```) 与 ```csrf```(```bili_jct```)，登陆哔哩哔哩后 F12 复制cookies中的 ```SESSDATA``` 与 ```bili_jct``` 对应键值
 - tts 需要Azure平台相应key
 - 弹幕阴影建议设置值```1px 1px 1px  #fff``` 或者 ```1px 1px 1px  #000```
-- 现已可以通过catcat-data-web查看历史弹幕！
+- 现已可以通过[catcat-data-web](https://db.loli.monster)查看历史弹幕！(需要开启弹幕上传。)
 >dom版
  - ![界面截图](./desc/danmu2.png)
  - ![主程序界面](./desc/application.png)
