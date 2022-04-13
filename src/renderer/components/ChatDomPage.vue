@@ -417,7 +417,7 @@ export default {
                   giftStore.uname_color = data[index].data.data.uname_color
                   giftStore.time = data[index].data.data.timestamp
                   giftList.push(giftStore)
-                  if (giftList.length >= 99999) {
+                  if (giftList.length >= 999) {
                     giftList.splice(0, giftList.length - 3)
                   }
                   // _self.speakDanmu(giftStore)
