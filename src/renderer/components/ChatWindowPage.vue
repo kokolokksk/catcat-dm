@@ -1,6 +1,6 @@
 <template>
   <div id="chat-w">
-    <input style="width: 70%;" type='text' v-model = danmu name= "danmu" @keyup.enter="sendDm" /><a-button class="left-margin" type="default" @click="sendDm" >发送</a-button>
+    <input style="width: 70%;"  class="chat-style" type='text' v-model = danmu name= "danmu" @keyup.enter="sendDm" /><a-button class="left-margin " type="default" @click="sendDm" >发送</a-button>
   </div>
 </template>
 <script>
@@ -16,7 +16,8 @@ export default {
       danmu:'',
       SESSDATA:'',
       csrf:'',
-      top: false
+      top: false,
+      borderAreaBotColor: ''
     }
   },
   mounted () {
@@ -32,6 +33,8 @@ export default {
           _self.SESSDATA = docs[0].SESSDATA
           _self.csrf = docs[0].csrf
           _self.top = typeof (docs[0].chatAlwaysOnTop) === 'undefined' ? false : docs[0].chatAlwaysOnTop
+          _self.borderAreaBotColor = typeof (docs[0].bbc) === 'undefined' ? _self.borderAreaBotColor : docs[0].bbc.replace(') 80%', ',0.8)').replace('rgb', 'rgba')
+          console.info(_self.borderAreaBotColor)
           if (_self.top === true) {
             _self.$electron.remote.getCurrentWindow().setAlwaysOnTop(true)
           } else {
@@ -70,4 +73,16 @@ export default {
  #chat-w{
    width: 99%;
  }
+ input {
+   border:0;
+   outline:0;
+   background-color: transparent;
+   border-bottom-width: 1px;
+   border-bottom-color: #AFECAB;
+   border:solid 1px rgb(145, 145, 145);
+ }
+ input:focus{
+       outline: 1px solid #ffa77e; 
+       
+  } 
 </style>

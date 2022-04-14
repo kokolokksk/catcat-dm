@@ -18,7 +18,7 @@
                 <span>{{menu_list[item-1]}}</span>
             </div>
          </div>
-         <div class="menu_swtich"  @click="menu_state=menu_state?1:0" >
+         <div class="menu_swtich"  @click="menu_state=menu_state?0:1" >
             <svg v-if="menu_state===1" t="1645597102996" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5859" width="25" height="25"><path d="M515.2 67.2c-246.4 0-448 201.6-448 448s201.6 448 448 448 448-201.6 448-448-201.6-448-448-448z m160 604.8h-320c-19.2 0-32-12.8-32-32s12.8-32 32-32h320c19.2 0 32 12.8 32 32s-16 32-32 32z m0-124.8h-320c-19.2 0-32-12.8-32-32s12.8-32 32-32h320c19.2 0 32 12.8 32 32s-16 32-32 32z m0-131.2h-320c-19.2 0-32-12.8-32-32s12.8-32 32-32h320c19.2 0 32 12.8 32 32s-16 32-32 32z" fill="#8a8a8a" p-id="5860"></path></svg>
             <svg  v-if="menu_state===0" t="1645601974397" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10285" width="25" height="25"><path d="M800 480H268.8l233.6-233.6c12.8-12.8 12.8-32 0-44.8-12.8-12.8-32-12.8-44.8 0l-284.8 288c-12.8 12.8-12.8 32 0 44.8h3.2l284.8 288c6.4 6.4 16 9.6 22.4 9.6 9.6 0 16-3.2 22.4-9.6 12.8-12.8 12.8-32 0-44.8L272 544H800c19.2 0 32-12.8 32-32s-16-32-32-32z" p-id="10286" fill="#707070"></path></svg>
          </div>
@@ -34,7 +34,7 @@ let aa, roomid, uid
 export default {
   data () {
     return {
-      menu_state: 1,
+      menu_state: 0,
       menu_list:['设置', '启动弹幕窗口', '关于'],
       faceImg: 'https://avatars.githubusercontent.com/u/12725100?v=4',
       nickname:''
