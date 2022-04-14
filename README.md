@@ -47,7 +47,7 @@
 
 
 #### 下一步
-- 摸鱼
+- 变革的时机已经到来！
 
 ### 感谢（Thanks）
 - [![MistEO](https://avatars.githubusercontent.com/u/18511905?s=70&v=4)](https://github.com/MistEO)提出的bug
