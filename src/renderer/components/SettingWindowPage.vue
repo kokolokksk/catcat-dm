@@ -58,7 +58,7 @@
     <a-divider />
     置顶:<a-switch default-checked v-model="alwaysOnTop" checked-children="开" un-checked-children="关" @change="setAlwaysOnTop" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a-badge color="#f50" text="将弹幕窗口进行置顶" />
     <p class="line"/>
-    弹幕上传:<a-switch default-checked v-model="catdb" checked-children="开" un-checked-children="关" @change="setCatdb" />&nbsp;&nbsp;<a-badge color="#2db7f5" text="将弹幕上传至远程服务器" />
+    弹幕上传:<a-switch default-checked v-model="catdb" checked-children="开" un-checked-children="关" @change="setCatdb" />&nbsp;&nbsp;<a-badge color="#2db7f5" text="上传至远程服务器(db.loli.monster)" />
     <p class="line"/>
     <!-- chat置顶:<a-switch default-checked v-model="chatAlwaysOnTop" checked-children="开" un-checked-children="关" @change="setChatAlwaysOnTop" />
     <p class="line"/> -->
@@ -102,18 +102,15 @@
 <script>
 import '@simonwep/pickr/dist/themes/nano.min.css'
 import Pickr from '@simonwep/pickr'
-import Datastore from 'nedb'
 import path from 'path'
+const Store = require('electron-store')
+const store = new Store()
 let packageS = require('../../../package.json')
 const { remote, clipboard } = require('electron')
 const sdk = require('microsoft-cognitiveservices-speech-sdk')
 // Simple example, see optional options for more configuration.
 let speechConfig = null
 let roomid
-const db = new Datastore({
-  autoload: true,
-  filename: path.join(remote.app.getPath('userData'), '/data.db')
-})
 export default {
   data () {
     return {
@@ -171,10 +168,10 @@ export default {
       v1: '',
       v2: '',
       voice: '',
-      dmc: '',
-      bgc: '',
-      btc: '',
-      bbc: '',
+      dmc: 'rgba(255,255,255,1)',
+      bgc: 'rgba(255,255,255,1)',
+      btc: 'rgb(255,255,255) 20%',
+      bbc: 'rgb(255,255,255) 80%',
       testVoiceText: '',
       clientId: '',
       backColorPreview: {
@@ -197,77 +194,39 @@ export default {
   methods: {
     initData () {
       let _self = this
-      db.find({ type: 2 }, (err, docs) => {
-        if (docs !== null && docs.length !== 0) {
-          console.info(docs)
-          _self.roomid = docs[0].roomid
-          Window.roomid = _self.roomid
-          _self.scaleX = docs[0].scaleX
-          _self.dmf = docs[0].dmf
-          _self.tts = docs[0].tts
-          _self.ttsGift = docs[0].ttsGift
-          _self.alwaysOnTop = docs[0].alwaysOnTop
-          _self.chatAlwaysOnTop = docs[0].chatAlwaysOnTop
-          _self.waveD = (typeof (docs[0].waveD) === 'undefined' || docs[0].waveD === '') ? true : docs[0].waveD
-          _self.voice = docs[0].voice
-          _self.v1 = docs[0].v1
-          _self.v2 = docs[0].v2
-          _self.bgc = docs[0].bgc === null ? 'rgba(255,255,255,1)' : docs[0].bgc
-          _self.dmc = docs[0].dmc === null ? 'rgba(255,255,255,1)' : docs[0].dmc
-          if (docs[0].dmTs) {
-            _self.dmTs = docs[0].dmTs
-          }
-          if (docs[0].btc) {
-            _self.btc = docs[0].btc
-          } else {
-            _self.btc = 'rgb(255,255,255) 20%'
-          }
-          if (docs[0].btc) {
-            _self.bbc = docs[0].bbc
-          } else {
-            _self.bbc = 'rgb(255,255,255) 80%'
-          }
-          // _self.btc = docs[0].btc === null ? 'rgb(255,255,255) 20%' : docs[0].btc
-          // _self.bbc = docs[0].bbc === null ? 'rgb(255,255,255) 80%' : docs[0].bbc
-          try {
-            if (!docs[0].clientId) {
-              this.$http.get('http://db.loli.monster/cat/client/generateClientId')
-                .then(function (response) {
-                // handle success
-                  console.log(response)
-                  _self.clientId = response.data
-                  _self.setClientId(response.data)
-                })
-                .catch(function (error) {
-                  // handle error
-                  console.log(error)
-                })
-            } else {
-              _self.clientId = docs[0].clientId
-            }
-          } catch (e) {
-            _self.clientId = 'NetworkError'
-          }
-          _self.catdb = docs[0].catdb
-          // fixme load color
-          document.getElementById('pc3').style.backgroundColor = _self.bgc
-          document.getElementById('pc4').style.color = _self.dmc
-          if (_self.btc) {
-            document.getElementById('pc44').style.backgroundColor = _self.btc.replace(' 20%', '')
-          } else {
-            document.getElementById('pc44').style.backgroundColor = '#fff'
-          }
-          if (_self.bbc) {
-            document.getElementById('pc55').style.backgroundColor = _self.bbc.replace(' 80%', '')
-          } else {
-            document.getElementById('pc55').style.backgroundColor = '#fff'
-          }
+      if (store.get('roomid')) Window.roomid = _self.roomid = store.get('roomid')
+      Object.assign(_self, store.store())
+      try {
+        if (_self.clientId) {
+          this.$http.get('http://db.loli.monster/cat/client/generateClientId')
+            .then(function (response) {
+              // handle success
+              console.log(response)
+              _self.clientId = response.data
+              _self.setClientId(response.data)
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error)
+            })
         }
-        if (err !== null) {
-          console.info(err)
-        }
-        _self.creatPickColor()
-      })
+      } catch (e) {
+        _self.clientId = 'NetworkError'
+      }
+      // fixme load color
+      document.getElementById('pc3').style.backgroundColor = _self.bgc
+      document.getElementById('pc4').style.color = _self.dmc
+      if (_self.btc) {
+        document.getElementById('pc44').style.backgroundColor = _self.btc.replace(' 20%', '')
+      } else {
+        document.getElementById('pc44').style.backgroundColor = '#fff'
+      }
+      if (_self.bbc) {
+        document.getElementById('pc55').style.backgroundColor = _self.bbc.replace(' 80%', '')
+      } else {
+        document.getElementById('pc55').style.backgroundColor = '#fff'
+      }
+      _self.creatPickColor()
     },
     creatPickColor () {
       let _self = this
@@ -466,205 +425,37 @@ export default {
     },
     setTTS () {
       let _self = this
-      db.find({ type: 2 }, (err, docs) => {
-        console.info(docs)
-        if (docs !== null && docs.length !== 0) {
-          console.info(_self.tts)
-          _self.$db.update({ _id: docs[0]._id }, { $set: { tts: _self.tts } }, {}, function () {
-            console.info('update success')
-          })
-        } else {
-          let ttsStore = {
-            tts: _self.tts, // user id
-            type: 2
-          }
-          _self.$db.insert(ttsStore, (err, ret) => {
-            if (err !== null) {
-              console.info(err)
-            }
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('tts', _self.tts)
     },
     setTTSGift () {
       let _self = this
-      db.find({ type: 2 }, (err, docs) => {
-        console.info(docs)
-        if (docs !== null && docs.length !== 0) {
-          console.info(_self.ttsGift)
-          _self.$db.update({ _id: docs[0]._id }, { $set: { ttsGift: _self.ttsGift } }, {}, function () {
-            console.info('update success')
-          })
-        } else {
-          let ttsGiftStore = {
-            ttsGift: _self.ttsGift, // user id
-            type: 2
-          }
-          _self.$db.insert(ttsGiftStore, (err, ret) => {
-            if (err !== null) {
-              console.info(err)
-            }
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('ttsGift', _self.ttsGift)
     },
     setWaveD () {
       let _self = this
-      db.find({ type: 2 }, (err, docs) => {
-        console.info(docs)
-        if (docs !== null && docs.length !== 0) {
-          console.info(_self.waveD)
-          _self.$db.update({ _id: docs[0]._id }, { $set: { waveD: _self.waveD } }, {}, function () {
-            console.info('update success')
-          })
-        } else {
-          let waveDStore = {
-            waveD: _self.waveD, // user id
-            type: 2
-          }
-          _self.$db.insert(waveDStore, (err, ret) => {
-            if (err !== null) {
-              console.info(err)
-            }
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('waveD', _self.waveD)
     },
     setAlwaysOnTop () {
       let _self = this
-      db.find({ type: 2 }, (err, docs) => {
-        console.info(docs)
-        if (docs !== null && docs.length !== 0) {
-          console.info(_self.alwaysOnTop)
-          _self.$db.update({ _id: docs[0]._id }, { $set: { alwaysOnTop: _self.alwaysOnTop } }, {}, function () {
-            console.info('update success')
-          })
-        } else {
-          let alwaysOnTopStore = {
-            alwaysOnTop: _self.alwaysOnTop, // user id
-            type: 2
-          }
-          _self.$db.insert(alwaysOnTopStore, (err, ret) => {
-            if (err !== null) {
-              console.info(err)
-            }
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('alwaysOnTop', _self.alwaysOnTop)
     },
     setChatAlwaysOnTop () {
       let _self = this
-      db.find({ type: 2 }, (err, docs) => {
-        console.info(docs)
-        if (docs !== null && docs.length !== 0) {
-          console.info(_self.chatAlwaysOnTop)
-          _self.$db.update({ _id: docs[0]._id }, { $set: { chatAlwaysOnTop: _self.chatAlwaysOnTop } }, {}, function () {
-            console.info('update success')
-          })
-        } else {
-          let chatAlwaysOnTopStore = {
-            chatAlwaysOnTop: _self.chatAlwaysOnTop, // user id
-            type: 2
-          }
-          _self.$db.insert(chatAlwaysOnTopStore, (err, ret) => {
-            if (err !== null) {
-              console.info(err)
-            }
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('chatAlwaysOnTop', _self.chatAlwaysOnTop)
     },
     setCatdb () {
       let _self = this
-      db.find({ type: 2 }, (err, docs) => {
-        console.info(docs)
-        if (docs !== null && docs.length !== 0) {
-          console.info(_self.catdb)
-          _self.$db.update({ _id: docs[0]._id }, { $set: { catdb: _self.catdb } }, {}, function () {
-            console.info('update success')
-          })
-        } else {
-          let catdbStore = {
-            catdb: _self.catdb, // user id
-            type: 2
-          }
-          _self.$db.insert(catdbStore, (err, ret) => {
-            if (err !== null) {
-              console.info(err)
-            }
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('catdb', _self.catdb)
     },
     setRoomId () {
       // console.info('?')
       let _self = this
-      db.find({ type: 2 }, (err, docs) => {
-        console.info(docs)
-        if (docs !== null && docs.length !== 0) {
-          console.info(_self.roomid)
-          _self.$db.update({ _id: docs[0]._id }, { $set: { roomid: _self.roomid } }, {}, function () {
-            console.info('update success')
-          })
-        } else {
-          let roomStore = {
-            roomid: _self.roomid, // user id
-            type: 2
-          }
-          _self.$db.insert(roomStore, (err, ret) => {
-            if (err !== null) {
-              console.info(err)
-            }
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('roomId', _self.roomid)
     },
     setDmTs () {
       // console.info('?')
       let _self = this
-      db.find({ type: 2 }, (err, docs) => {
-        console.info(docs)
-        if (docs !== null && docs.length !== 0) {
-          console.info(_self.dmTs)
-          _self.$db.update({ _id: docs[0]._id }, { $set: { dmTs: _self.dmTs } }, {}, function () {
-            console.info('update success')
-          })
-        } else {
-          let dmTsStore = {
-            dmTs: _self.dmTs, // user id
-            type: 2
-          }
-          _self.$db.insert(dmTsStore, (err, ret) => {
-            if (err !== null) {
-              console.info(err)
-            }
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('dmTs', _self.dmTs)
     },
     copyClientId () {
       // console.info('?')
@@ -679,166 +470,41 @@ export default {
     setScaleX () {
       // console.info('?')
       let _self = this
-      db.find({ type: 2 }, (err, docs) => {
-        console.info(docs)
-        if (docs !== null && docs.length !== 0) {
-          console.info(_self.scaleX)
-          _self.$db.update({ _id: docs[0]._id }, { $set: { scaleX: _self.scaleX } }, {}, function () {
-            console.info('update success')
-          })
-        } else {
-          let roomStore = {
-            scaleX: _self.scaleX, // user id
-            type: 2
-          }
-          _self.$db.insert(roomStore, (err, ret) => {
-            if (err !== null) {
-              console.info(err)
-            }
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('scaleX', _self.scaleX)
     },
     setClientId (cid) {
       // console.info('?')
-      let _self = this
-      db.find({ type: 2 }, (err, docs) => {
-        console.info(docs)
-        if (docs !== null && docs.length !== 0) {
-          _self.$db.update({ _id: docs[0]._id }, { $set: { clientId: cid } }, {}, function () {
-            console.info('update success')
-          })
-        } else {
-          let clientIdStore = {
-            clientId: cid, // user id
-            type: 2
-          }
-          _self.$db.insert(clientIdStore, (err, ret) => {
-            if (err !== null) {
-              console.info(err)
-            }
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('clientId', cid)
     },
     setBackgroundColor () {
-      let _self = this
       let color = document.getElementById('pc3').style.backgroundColor
       console.info(color)
-      _self.$db.find({ type: 2 }, (err, docs) => {
-        if (docs !== null && docs.length !== 0) {
-          _self.$db.update({ _id: docs[0]._id }, { $set: { bgc: color } }, {}, function () {
-            console.info('update success')
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('bgc', color)
     },
     setBorderAreaTopColor () {
-      let _self = this
       let color = document.getElementById('pc444').style.backgroundColor
       console.info(color)
-      _self.$db.find({ type: 2 }, (err, docs) => {
-        if (docs !== null && docs.length !== 0) {
-          _self.$db.update({ _id: docs[0]._id }, { $set: { btc: color + ' 20%' } }, {}, function () {
-            console.info('update success')
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('btc', color + ' 20%')
     },
     setBorderAreaBotColor () {
-      let _self = this
       let color = document.getElementById('pc555').style.backgroundColor
       console.info(color)
-      _self.$db.find({ type: 2 }, (err, docs) => {
-        if (docs !== null && docs.length !== 0) {
-          _self.$db.update({ _id: docs[0]._id }, { $set: { bbc: color + ' 80%' } }, {}, function () {
-            console.info('update success')
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('bbc', color + ' 80%')
     },
     setDanmuColor () {
-      let _self = this
       let color = document.getElementById('pc4').style.color
       console.info(color)
-      _self.$db.find({ type: 2 }, (err, docs) => {
-        if (docs !== null && docs.length !== 0) {
-          _self.$db.update({ _id: docs[0]._id }, { $set: { dmc: color } }, {}, function () {
-            console.info('update success')
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('dmc', color)
     },
     setDmf () {
       let _self = this
-      db.find({ type: 2 }, (err, docs) => {
-        console.info(docs)
-        if (docs !== null && docs.length !== 0) {
-          console.info(_self.dmf)
-          _self.$db.update({ _id: docs[0]._id }, { $set: { dmf: _self.dmf } }, {}, function () {
-            console.info('update success')
-          })
-        } else {
-          let dmfStore = {
-            dmf: _self.dmf, // user id
-            type: 2
-          }
-          _self.$db.insert(dmfStore, (err, ret) => {
-            if (err !== null) {
-              console.info(err)
-            }
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('dmf', _self.dmf)
     },
     setVoice () {
       let _self = this
-      db.find({ type: 2 }, (err, docs) => {
-        console.info(docs)
-        if (docs !== null && docs.length !== 0) {
-          console.info(_self.voice)
-          _self.$db.update({ _id: docs[0]._id }, { $set: { voice: _self.voice } }, {}, function () {
-            console.info('update success')
-          })
-        } else {
-          let voiceStore = {
-            voice: _self.voice, // user id
-            type: 2
-          }
-          _self.$db.insert(voiceStore, (err, ret) => {
-            if (err !== null) {
-              console.info(err)
-            }
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('voice', _self.voice)
     },
     checkUpdate () {
-      let _self = this
       let a = this.$http
       a.get('https://raw.githubusercontent.com/kokolokksk/catcat-dm/dom/version.json')
         .then(function (response) {
@@ -854,106 +520,22 @@ export default {
     setSESSDATA () {
       // console.info('?')
       let _self = this
-      db.find({ type: 2 }, (err, docs) => {
-        console.info(docs)
-        if (docs !== null && docs.length !== 0) {
-          console.info(_self.SESSDATA)
-          _self.$db.update({ _id: docs[0]._id }, { $set: { SESSDATA: _self.SESSDATA } }, {}, function () {
-            console.info('update success')
-          })
-        } else {
-          let SESSDATAStore = {
-            SESSDATA: _self.SESSDATA, // user id
-            type: 2
-          }
-          _self.$db.insert(SESSDATAStore, (err, ret) => {
-            if (err !== null) {
-              console.info(err)
-            }
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('SESSDATA', _self.SESSDATA)
     },
     setCsrf () {
       // console.info('?')
       let _self = this
-      db.find({ type: 2 }, (err, docs) => {
-        console.info(docs)
-        if (docs !== null && docs.length !== 0) {
-          console.info(_self.csrf)
-          _self.$db.update({ _id: docs[0]._id }, { $set: { csrf: _self.csrf } }, {}, function () {
-            console.info('update success')
-          })
-        } else {
-          let csrfStore = {
-            csrf: _self.csrf, // user id
-            type: 2
-          }
-          _self.$db.insert(csrfStore, (err, ret) => {
-            if (err !== null) {
-              console.info(err)
-            }
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('csrf', _self.csrf)
     },
     setV1 () {
       // console.info('?')
       let _self = this
-      db.find({ type: 2 }, (err, docs) => {
-        console.info(docs)
-        if (docs !== null && docs.length !== 0) {
-          console.info(_self.v1)
-          _self.$db.update({ _id: docs[0]._id }, { $set: { v1: _self.v1 } }, {}, function () {
-            console.info('update success')
-          })
-        } else {
-          let csrfStore = {
-            csrf: _self.v1, // user id
-            type: 2
-          }
-          _self.$db.insert(csrfStore, (err, ret) => {
-            if (err !== null) {
-              console.info(err)
-            }
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('v1', _self.v1)
     },
     setV2 () {
       // console.info('?')
       let _self = this
-      db.find({ type: 2 }, (err, docs) => {
-        console.info(docs)
-        if (docs !== null && docs.length !== 0) {
-          console.info(_self.v2)
-          _self.$db.update({ _id: docs[0]._id }, { $set: { v2: _self.v2 } }, {}, function () {
-            console.info('update success')
-          })
-        } else {
-          let csrfStore = {
-            csrf: _self.v2, // user id
-            type: 2
-          }
-          _self.$db.insert(csrfStore, (err, ret) => {
-            if (err !== null) {
-              console.info(err)
-            }
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('v2', _self.v2)
     },
     testVoice () {
       if (this.v1 !== '') {

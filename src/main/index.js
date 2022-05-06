@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, BrowserWindow, ipcMain, ipcRenderer, globalShortcut } from 'electron'
+import { app, BrowserWindow, ipcMain, ipcRenderer, globalShortcut, crashReporter } from 'electron'
 import '../renderer/store'
 require('electron-referer')('http://www.bilibili.com/')
 /**

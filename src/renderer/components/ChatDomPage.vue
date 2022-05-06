@@ -97,17 +97,14 @@
   </div>
 </template>
 <script>
-import Datastore from 'nedb'
 import path from 'path'
 import {AudioConfig, SpeechSynthesizer} from 'microsoft-cognitiveservices-speech-sdk'
 import ChatWindowPage from './ChatWindowPage.vue'
+const Store = require('electron-store')
+const store = new Store()
 const { LiveWS } = require('bilibili-live-ws-fixed')
 const { remote } = require('electron')
 const sdk = require('microsoft-cognitiveservices-speech-sdk')
-const db = new Datastore({
-  autoload: true,
-  filename: path.join(remote.app.getPath('userData'), '/data.db')
-})
 let speechConfig = null
 require('electron').ipcRenderer.on('did-close-fresh', (event, message) => {
   live.close()
@@ -188,60 +185,31 @@ export default {
       }, 1000)
       log.info('try load config')
       let _self = this
-      db.find({ type: 2 }, (err, docs) => {
-        if (docs !== null && docs.length !== 0) {
-          console.info(docs)
-          log.info('have local config')
-          log.info(docs)
-          muaConfig.roomid = typeof (docs[0].roomid) === 'undefined' ? muaConfig.roomid : docs[0].roomid
-          // fixme load color
-          muaConfig.danmuColor = typeof (docs[0].dmc) === 'undefined' ? muaConfig.danmuColor : docs[0].dmc
-          muaConfig.dmTs = typeof (docs[0].dmTs) === 'undefined' ? muaConfig.dmTs : docs[0].dmTs
-          muaConfig.borderAreaTopColor = typeof (docs[0].btc) === 'undefined' ? muaConfig.borderAreaTopColor : docs[0].btc
-          muaConfig.borderAreaBotColor = typeof (docs[0].bbc) === 'undefined' ? muaConfig.borderAreaBotColor : docs[0].bbc
-          _self.waveDisplay = typeof (docs[0].waveD) === 'undefined' ? _self.waveDisplay : docs[0].waveD
-          muaConfig.danmuAreaColor = typeof (docs[0].bgc) === 'undefined' ? muaConfig.danmuAreaColor : docs[0].bgc
-          muaConfig.danmuFont = typeof (docs[0].dmf) === 'undefined' ? muaConfig.danmuFont : docs[0].dmf
-          muaConfig.scale = typeof (docs[0].scaleX) === 'undefined' ? muaConfig.scale : docs[0].scaleX
-          muaConfig.tts = typeof (docs[0].tts) === 'undefined' ? muaConfig.tts : docs[0].tts
-          muaConfig.ttsGift = typeof (docs[0].ttsGift) === 'undefined' ? muaConfig.ttsGift : docs[0].ttsGift
-          muaConfig.v1 = (typeof (docs[0].v1) === 'undefined' || docs[0].v1 === '') ? muaConfig.v1 : docs[0].v1
-          muaConfig.v2 = (typeof (docs[0].v2) === 'undefined' || docs[0].v2 === '') ? muaConfig.v2 : docs[0].v2
-          muaConfig.voice = (typeof (docs[0].voice) === 'undefined' || docs[0].voice === '') ? muaConfig.voice : docs[0].voice
-          muaConfig.clientId = (typeof (docs[0].clientId) === 'undefined' || docs[0].clientId === '') ? muaConfig.clientId : docs[0].clientId
-          muaConfig.catdb = docs[0].catdb
-          if (!muaConfig.v1 || !muaConfig.v2 || muaConfig.v1 === '' || muaConfig.v2 === '') {
-            muaConfig.tts = false
-            muaConfig.ttsGift = false
-          } else {
-            speechConfig = sdk.SpeechConfig.fromSubscription(muaConfig.v1, muaConfig.v2)
-            speechConfig.speechSynthesisLanguage = 'zh-cn'
-            speechConfig.speechSynthesisVoiceName = muaConfig.voice
-          }
-          muaConfig.alwaysOnTop = typeof (docs[0].alwaysOnTop) === 'undefined' ? true : docs[0].alwaysOnTop
-          if (muaConfig.alwaysOnTop === true) {
-            _self.$electron.remote.getCurrentWindow().setAlwaysOnTop(true)
-          } else {
-            _self.$electron.remote.getCurrentWindow().setAlwaysOnTop(false)
-          }
-          log.info(muaConfig)
-          log.info('init param has loaded. dmc:' + muaConfig.danmuColor + ';bgc:' + muaConfig.danmuAreaColor + ';dmf:' + muaConfig.danmuFont + ';scale:' + muaConfig.scale + ';tts:' + muaConfig.tts)
-        }
-        if (err !== null) {
-          log.info('maybe no local config')
-          console.info(err)
-        }
-        this.connectLive()
-        setInterval(() => {
-          this.updateDanmuList()
-        }, 500)
-        // setInterval(() => {
-        //   this.speakDanmu(null)
-        // }, 800)
-        setInterval(() => {
-          this.speakDanmuReal(null)
-        }, 1000)
-      })
+      Object.assign(muaConfig, ...store)
+      if (store.get('scaleX')) muaConfig.scale = store.get('scaleX')
+      if (!muaConfig.v1 || !muaConfig.v2 || muaConfig.v1 === '' || muaConfig.v2 === '') {
+        muaConfig.tts = false
+        muaConfig.ttsGift = false
+      } else {
+        speechConfig = sdk.SpeechConfig.fromSubscription(muaConfig.v1, muaConfig.v2)
+        speechConfig.speechSynthesisLanguage = 'zh-cn'
+        speechConfig.speechSynthesisVoiceName = muaConfig.voice
+      }
+      if (muaConfig.alwaysOnTop === true) {
+        _self.$electron.remote.getCurrentWindow().setAlwaysOnTop(true)
+      } else {
+        _self.$electron.remote.getCurrentWindow().setAlwaysOnTop(false)
+      }
+      this.connectLive()
+      setInterval(() => {
+        this.updateDanmuList()
+      }, 500)
+      // setInterval(() => {
+      //   this.speakDanmu(null)
+      // }, 800)
+      setInterval(() => {
+        this.speakDanmuReal(null)
+      }, 1000)
     },
     getNewSessionId () {
       var index = 0
@@ -359,19 +327,6 @@ export default {
                   }
                   // speakList.push(danmuStore)
                   _self.speakDanmuReal(danmuStore)
-                  // do repeat check
-                  db.find({time: danmuStore.time}, (err, docs) => {
-                    if (docs.length === 0) {
-                      db.insert(danmuStore, (err, ret) => {
-                        if (err !== null) {
-                          console.info(err)
-                        }
-                      })
-                    }
-                    if (err !== null) {
-                      console.info(err)
-                    }
-                  })
                 } else if (data[index].data.cmd === 'INTERACT_WORD') {
                   let comeInStore = {
                     uuid: 0,
@@ -540,28 +495,7 @@ export default {
       }
     },
     setClientId (cid) {
-      let _self = this
-      db.find({ type: 2 }, (err, docs) => {
-        console.info(docs)
-        if (docs !== null && docs.length !== 0) {
-          _self.$db.update({ _id: docs[0]._id }, { $set: { clientId: cid } }, {}, function () {
-            console.info('update success')
-          })
-        } else {
-          let cidStore = {
-            clientId: _self.cid, // user id
-            type: 2
-          }
-          _self.$db.insert(cidStore, (err, ret) => {
-            if (err !== null) {
-              console.info(err)
-            }
-          })
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      store.set('clientId', cid)
     },
     speakDanmu (gift) {
       if (muaConfig.ttsGift) {

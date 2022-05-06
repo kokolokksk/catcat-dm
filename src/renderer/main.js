@@ -7,7 +7,6 @@ import App from './App'
 import router from './router'
 import store from './store'
 import g from './utils/globel'
-import db from './datastore'
 import VueElectron from 'vue-electron'
 import '@/assets/style/font.less'
 import {theme, themeSetup} from './assets/theme/index.js'
@@ -21,7 +20,6 @@ Vue.component(Badge.name, Badge)
 Vue.config.productionTip = false
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
-Vue.prototype.$db = db
 Vue.prototype.$g = g
 /* eslint-disable no-new */
 

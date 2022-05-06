@@ -6,6 +6,8 @@
 <script>
 const send = require('bilibili-live-danmaku-api')
 const { remote } = require('electron')
+const Store = require('electron-store')
+const store = new Store()
 require('electron').ipcRenderer.on('setchat-close-fresh', (event, message) => {
   location.reload()
 })
@@ -26,25 +28,13 @@ export default {
   methods: {
     initData () {
       let _self = this
-      this.$db.find({ type: 2 }, (err, docs) => {
-        if (docs !== null && docs.length !== 0) {
-          console.info(docs)
-          _self.roomid = docs[0].roomid
-          _self.SESSDATA = docs[0].SESSDATA
-          _self.csrf = docs[0].csrf
-          _self.top = typeof (docs[0].chatAlwaysOnTop) === 'undefined' ? false : docs[0].chatAlwaysOnTop
-          _self.borderAreaBotColor = typeof (docs[0].bbc) === 'undefined' ? _self.borderAreaBotColor : docs[0].bbc.replace(') 80%', ',0.8)').replace('rgb', 'rgba')
-          console.info(_self.borderAreaBotColor)
-          if (_self.top === true) {
-            _self.$electron.remote.getCurrentWindow().setAlwaysOnTop(true)
-          } else {
-            _self.$electron.remote.getCurrentWindow().setAlwaysOnTop(false)
-          }
-        }
-        if (err !== null) {
-          console.info(err)
-        }
-      })
+      Object.assign(_self, ...store)
+      if (store.get('bbc')) _self.borderAreaBotColor = store.get('bbc').replace(') 80%', ',0.8)').replace('rgb', 'rgba')
+      if (_self.top === true) {
+        _self.$electron.remote.getCurrentWindow().setAlwaysOnTop(true)
+      } else {
+        _self.$electron.remote.getCurrentWindow().setAlwaysOnTop(false)
+      }
     },
     sendDm () {
       // console.info('?')
