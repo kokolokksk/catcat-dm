@@ -30,6 +30,7 @@
   </div>
 </template>
 <script>
+const log = require('electron-log')
 let aa, roomid, uid
 export default {
   data () {
@@ -41,6 +42,7 @@ export default {
     }
   },
   mounted () {
+    log.info('on mounted')
     aa = setInterval(() => {
       console.info(Window.roomid)
       if (Window.roomid !== null && Window.roomid !== undefined) {
@@ -52,6 +54,7 @@ export default {
   },
   methods: {
     load (num) {
+      log.info('on load')
       clearInterval(aa)
       let _self = this
       let a = this.$http

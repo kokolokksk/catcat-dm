@@ -64,15 +64,6 @@ export default new Router({
       component: require('@/components/AboutPage').default
     },
     {
-      path: '/settingTTS',
-      name: 'settingTTSWindow',
-      meta: {
-        // 页面标题title
-        title: 'TTS'
-      },
-      component: require('@/components/TTSSettingPage').default
-    },
-    {
       path: '*',
       redirect: '/'
     }
