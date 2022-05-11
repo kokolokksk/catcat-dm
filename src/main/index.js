@@ -2,8 +2,6 @@
 
 import { app, BrowserWindow, ipcMain, ipcRenderer, globalShortcut } from 'electron'
 import '../renderer/store'
-const Store = require('electron-store')
-Store.initRenderer()
 const log = require('electron-log')
 require('electron-referer')('http://www.bilibili.com/')
 /**

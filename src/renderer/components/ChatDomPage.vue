@@ -100,8 +100,7 @@
 import path from 'path'
 import {AudioConfig, SpeechSynthesizer} from 'microsoft-cognitiveservices-speech-sdk'
 import ChatWindowPage from './ChatWindowPage.vue'
-const Store = require('electron-store')
-const store = new Store()
+const catConfig = require('electron-json-storage')
 const { LiveWS } = require('bilibili-live-ws-fixed')
 const { remote } = require('electron')
 const sdk = require('microsoft-cognitiveservices-speech-sdk')
@@ -185,8 +184,59 @@ export default {
       }, 1000)
       log.info('try load config')
       let _self = this
-      Object.assign(muaConfig, ...store)
-      if (store.get('scaleX')) muaConfig.scale = store.get('scaleX')
+      if ((typeof catConfig.getSync('roomid') === 'number')) Window.roomid = _self.roomid = catConfig.getSync('roomid')
+      if (typeof catConfig.getSync('tts') === 'boolean') {
+        muaConfig.tts = catConfig.getSync('tts')
+      }
+      if (typeof catConfig.getSync('ttsGift') === 'boolean') {
+        muaConfig.ttsGift = catConfig.getSync('ttsGift')
+      }
+      if (typeof catConfig.getSync('alwaysOnTop') === 'boolean') {
+        muaConfig.alwaysOnTop = catConfig.getSync('alwaysOnTop')
+      }
+      if (typeof catConfig.getSync('catdb') === 'boolean') {
+        muaConfig.catdb = catConfig.getSync('catdb')
+      }
+      if (typeof catConfig.getSync('waveD') === 'boolean') {
+        _self.waveDisplay = catConfig.getSync('waveD')
+      }
+      /* if (catConfig.getSync('roomId')) {
+        _self.roomId = catConfig.getSync('roomId')
+      } */
+      if (typeof catConfig.getSync('dmTs') === 'string') {
+        muaConfig.dmTs = catConfig.getSync('dmTs')
+      }
+      /* if (catConfig.getSync('scaleX')) {
+        _self.scaleX = catConfig.getSync('scaleX')
+      } */
+      if (typeof catConfig.getSync('clientId') === 'string') {
+        muaConfig.clientId = catConfig.getSync('clientId')
+      }
+      if (typeof catConfig.getSync('bgc') === 'string') {
+        muaConfig.danmuAreaColor = catConfig.getSync('bgc')
+      }
+      if (typeof catConfig.getSync('btc') === 'string') {
+        muaConfig.borderAreaTopColor = catConfig.getSync('btc')
+      }
+      if (typeof catConfig.getSync('bbc') === 'string') {
+        muaConfig.borderAreaBotColor = catConfig.getSync('bbc')
+      }
+      if (typeof catConfig.getSync('dmc') === 'string') {
+        muaConfig.danmuColor = catConfig.getSync('dmc')
+      }
+      /* if (typeof catConfig.getSync('dmf') == 'string') {
+        muaConfig.dmf = catConfig.getSync('dmf')
+      } */
+      if (typeof catConfig.getSync('voice') === 'string') {
+        muaConfig.voice = catConfig.getSync('voice')
+      }
+      if (typeof catConfig.getSync('v1') === 'string') {
+        muaConfig.v1 = catConfig.getSync('v1')
+      }
+      if (typeof catConfig.getSync('v2') === 'string') {
+        muaConfig.v2 = catConfig.getSync('v2')
+      }
+      if (typeof catConfig.getSync('scaleX') === 'string') muaConfig.scale = catConfig.getSync('scaleX')
       if (!muaConfig.v1 || !muaConfig.v2 || muaConfig.v1 === '' || muaConfig.v2 === '') {
         muaConfig.tts = false
         muaConfig.ttsGift = false
@@ -495,7 +545,7 @@ export default {
       }
     },
     setClientId (cid) {
-      store.set('clientId', cid)
+      catConfig.set('clientId', cid)
     },
     speakDanmu (gift) {
       if (muaConfig.ttsGift) {

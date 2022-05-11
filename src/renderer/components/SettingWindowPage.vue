@@ -100,13 +100,13 @@
   </div> 
 </template>
 <script>
+/* eslint-disable */
 import '@simonwep/pickr/dist/themes/nano.min.css'
 import Pickr from '@simonwep/pickr'
 import path from 'path'
-const Store = require('electron-store')
-const store = new Store()
+const { app, remote, clipboard } = require('electron')
+const catConfig = require('electron-json-storage')
 let packageS = require('../../../package.json')
-const { remote, clipboard } = require('electron')
 const sdk = require('microsoft-cognitiveservices-speech-sdk')
 // Simple example, see optional options for more configuration.
 let speechConfig = null
@@ -194,10 +194,68 @@ export default {
   methods: {
     initData () {
       let _self = this
-      if (store.get('roomid')) Window.roomid = _self.roomid = store.get('roomid')
-      Object.assign(_self, store.store())
+      if ((typeof catConfig.getSync('roomid') == 'number')) Window.roomid = _self.roomid = catConfig.getSync('roomid')
+      _self.clientId = catConfig.getSync('clientId')
+      if (typeof catConfig.getSync('tts') == 'boolean') {
+        _self.tts = catConfig.getSync('tts')
+      }
+      if (typeof catConfig.getSync('ttsGift') == 'boolean') {
+        _self.ttsGift = catConfig.getSync('ttsGift')
+      }
+      if (typeof catConfig.getSync('waveD') == 'boolean') {
+        _self.waveD = catConfig.getSync('waveD')
+      }
+      if (typeof catConfig.getSync('alwaysOnTop') == 'boolean') {
+        _self.alwaysOnTop = catConfig.getSync('alwaysOnTop')
+      }
+      if (typeof catConfig.getSync('catdb') == 'boolean') {
+        _self.catdb = catConfig.getSync('catdb')
+      } 
+      /* if (catConfig.getSync('roomId')) {
+        _self.roomId = catConfig.getSync('roomId')
+      } */
+      if (typeof catConfig.getSync('dmTs') == 'string') {
+        _self.dmTs = catConfig.getSync('dmTs')
+      }
+      /* if (catConfig.getSync('scaleX')) {
+        _self.scaleX = catConfig.getSync('scaleX')
+      } */
+      if (typeof catConfig.getSync('clientId') == 'string') {
+        _self.clientId = catConfig.getSync('clientId')
+      }
+      if (typeof catConfig.getSync('bgc') == 'string') {
+        _self.bgc = catConfig.getSync('bgc')
+      }
+      if (typeof catConfig.getSync('btc') == 'string') {
+        _self.btc = catConfig.getSync('btc')
+      }
+      if (typeof catConfig.getSync('bbc') == 'string') {
+        _self.bbc = catConfig.getSync('bbc')
+      }
+      if (typeof catConfig.getSync('dmc') == 'string') {
+        _self.dmc = catConfig.getSync('dmc')
+      }
+      if (typeof catConfig.getSync('dmf') == 'string') {
+        _self.dmf = catConfig.getSync('dmf')
+      }
+      if (typeof catConfig.getSync('voice') == 'string') {
+        _self.voice = catConfig.getSync('voice')
+      }
+      if (typeof catConfig.getSync('SESSDATA') == 'string') {
+        _self.SESSDATA = catConfig.getSync('SESSDATA')
+      }
+      if (typeof catConfig.getSync('csrf') == 'string') {
+        _self.csrf = catConfig.getSync('csrf')
+      }
+      if (typeof catConfig.getSync('v1') == 'string') {
+        _self.v1 = catConfig.getSync('v1')
+      }
+      if (typeof catConfig.getSync('v2') == 'string') {
+        _self.v2 = catConfig.getSync('v2')
+      }
+      console.info(this.clientId)
       try {
-        if (_self.clientId) {
+        if (!_self.clientId) {
           this.$http.get('http://db.loli.monster/cat/client/generateClientId')
             .then(function (response) {
               // handle success
@@ -216,12 +274,12 @@ export default {
       // fixme load color
       document.getElementById('pc3').style.backgroundColor = _self.bgc
       document.getElementById('pc4').style.color = _self.dmc
-      if (_self.btc) {
+      if (typeof _self.btc=='string') {
         document.getElementById('pc44').style.backgroundColor = _self.btc.replace(' 20%', '')
       } else {
         document.getElementById('pc44').style.backgroundColor = '#fff'
       }
-      if (_self.bbc) {
+      if (typeof _self.bbc == 'string') {
         document.getElementById('pc55').style.backgroundColor = _self.bbc.replace(' 80%', '')
       } else {
         document.getElementById('pc55').style.backgroundColor = '#fff'
@@ -425,37 +483,37 @@ export default {
     },
     setTTS () {
       let _self = this
-      store.set('tts', _self.tts)
+      catConfig.set('tts', _self.tts)
     },
     setTTSGift () {
       let _self = this
-      store.set('ttsGift', _self.ttsGift)
+      catConfig.set('ttsGift', _self.ttsGift)
     },
     setWaveD () {
       let _self = this
-      store.set('waveD', _self.waveD)
+      catConfig.set('waveD', _self.waveD)
     },
     setAlwaysOnTop () {
       let _self = this
-      store.set('alwaysOnTop', _self.alwaysOnTop)
+      catConfig.set('alwaysOnTop', _self.alwaysOnTop)
     },
     setChatAlwaysOnTop () {
       let _self = this
-      store.set('chatAlwaysOnTop', _self.chatAlwaysOnTop)
+      catConfig.set('chatAlwaysOnTop', _self.chatAlwaysOnTop)
     },
     setCatdb () {
       let _self = this
-      store.set('catdb', _self.catdb)
+      catConfig.set('catdb', _self.catdb)
     },
     setRoomId () {
       // console.info('?')
       let _self = this
-      store.set('roomId', _self.roomid)
+      catConfig.set('roomId', _self.roomid)
     },
     setDmTs () {
       // console.info('?')
       let _self = this
-      store.set('dmTs', _self.dmTs)
+      catConfig.set('dmTs', _self.dmTs)
     },
     copyClientId () {
       // console.info('?')
@@ -470,39 +528,39 @@ export default {
     setScaleX () {
       // console.info('?')
       let _self = this
-      store.set('scaleX', _self.scaleX)
+      catConfig.set('scaleX', _self.scaleX)
     },
     setClientId (cid) {
       // console.info('?')
-      store.set('clientId', cid)
+      catConfig.set('clientId', cid)
     },
     setBackgroundColor () {
       let color = document.getElementById('pc3').style.backgroundColor
       console.info(color)
-      store.set('bgc', color)
+      catConfig.set('bgc', color)
     },
     setBorderAreaTopColor () {
       let color = document.getElementById('pc444').style.backgroundColor
       console.info(color)
-      store.set('btc', color + ' 20%')
+      catConfig.set('btc', color + ' 20%')
     },
     setBorderAreaBotColor () {
       let color = document.getElementById('pc555').style.backgroundColor
       console.info(color)
-      store.set('bbc', color + ' 80%')
+      catConfig.set('bbc', color + ' 80%')
     },
     setDanmuColor () {
       let color = document.getElementById('pc4').style.color
       console.info(color)
-      store.set('dmc', color)
+      catConfig.set('dmc', color)
     },
     setDmf () {
       let _self = this
-      store.set('dmf', _self.dmf)
+      catConfig.set('dmf', _self.dmf)
     },
     setVoice () {
       let _self = this
-      store.set('voice', _self.voice)
+      catConfig.set('voice', _self.voice)
     },
     checkUpdate () {
       let a = this.$http
@@ -520,22 +578,22 @@ export default {
     setSESSDATA () {
       // console.info('?')
       let _self = this
-      store.set('SESSDATA', _self.SESSDATA)
+      catConfig.set('SESSDATA', _self.SESSDATA)
     },
     setCsrf () {
       // console.info('?')
       let _self = this
-      store.set('csrf', _self.csrf)
+      catConfig.set('csrf', _self.csrf)
     },
     setV1 () {
       // console.info('?')
       let _self = this
-      store.set('v1', _self.v1)
+      catConfig.set('v1', _self.v1)
     },
     setV2 () {
       // console.info('?')
       let _self = this
-      store.set('v2', _self.v2)
+      catConfig.set('v2', _self.v2)
     },
     testVoice () {
       if (this.v1 !== '') {
@@ -575,6 +633,7 @@ export default {
     }
   }
 }
+/* eslint-disable */
 </script>
 <style>
     .pickr {

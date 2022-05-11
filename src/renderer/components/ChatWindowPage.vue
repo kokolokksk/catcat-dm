@@ -6,8 +6,7 @@
 <script>
 const send = require('bilibili-live-danmaku-api')
 const { remote } = require('electron')
-const Store = require('electron-store')
-const store = new Store()
+const catConfig = require('electron-json-storage')
 require('electron').ipcRenderer.on('setchat-close-fresh', (event, message) => {
   location.reload()
 })
@@ -28,8 +27,17 @@ export default {
   methods: {
     initData () {
       let _self = this
-      Object.assign(_self, ...store)
-      if (store.get('bbc')) _self.borderAreaBotColor = store.get('bbc').replace(') 80%', ',0.8)').replace('rgb', 'rgba')
+      _self.roomid = Window.roomid
+      if (typeof catConfig.getSync('SESSDATA') === 'string') {
+        _self.SESSDATA = catConfig.getSync('SESSDATA')
+      }
+      if (typeof catConfig.getSync('csrf') === 'string') {
+        _self.csrf = catConfig.getSync('csrf')
+      }
+      if (typeof catConfig.getSync('alwaysOnTop') === 'boolean') {
+        _self.top = catConfig.getSync('alwaysOnTop')
+      }
+      if (typeof catConfig.getSync('bbc') === 'string') _self.borderAreaBotColor = catConfig.getSync('bbc').replace(') 80%', ',0.8)').replace('rgb', 'rgba')
       if (_self.top === true) {
         _self.$electron.remote.getCurrentWindow().setAlwaysOnTop(true)
       } else {
