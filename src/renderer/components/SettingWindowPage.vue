@@ -93,7 +93,7 @@
     <p class="line"/>
     Ocp-Apim-Subscription-Key:<input type='text' v-model = v1 name= "v1" /><a-button class="left-margin" type="default" @click="setV1" >设置</a-button>
     <p class="line"/>
-    REGION_IDENTIFIER:<input type='text' v-model = v2 name= "roomid" /><a-button class="left-margin" type="default" @click="setV2" >设置</a-button>
+    REGION_IDENTIFIER:<input type='text' v-model = v2 name= "v2" /><a-button class="left-margin" type="default" @click="setV2" >设置</a-button>
     <a-divider />
     当前版本:{{packageS.version}}<a-button class="left-margin" type="default" @click="checkUpdate" >检查更新</a-button>
     <p class="line"/>
@@ -110,7 +110,6 @@ let packageS = require('../../../package.json')
 const sdk = require('microsoft-cognitiveservices-speech-sdk')
 // Simple example, see optional options for more configuration.
 let speechConfig = null
-let roomid
 export default {
   data () {
     return {
@@ -508,7 +507,7 @@ export default {
     setRoomId () {
       // console.info('?')
       let _self = this
-      catConfig.set('roomId', _self.roomid)
+      catConfig.set('roomid', _self.roomid * 1)
     },
     setDmTs () {
       // console.info('?')

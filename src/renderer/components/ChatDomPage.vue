@@ -184,7 +184,7 @@ export default {
       }, 1000)
       log.info('try load config')
       let _self = this
-      if ((typeof catConfig.getSync('roomid') === 'number')) Window.roomid = _self.roomid = catConfig.getSync('roomid')
+      if ((typeof catConfig.getSync('roomid') === 'number')) muaConfig.roomid = catConfig.getSync('roomid')
       if (typeof catConfig.getSync('tts') === 'boolean') {
         muaConfig.tts = catConfig.getSync('tts')
       }
@@ -291,6 +291,7 @@ export default {
       // get init configure
       let _self = this
       // let roomid = 2808861
+      console.info('roomId:' + muaConfig.roomid)
       live = new LiveWS(Number(muaConfig.roomid))
       live.on('open', () => {
         log.info('正在尝试连接到弹幕服务器······')
