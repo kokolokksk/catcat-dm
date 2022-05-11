@@ -33,7 +33,7 @@
       <div class="danmu-container"  v-bind:style="{ fontSize:'11pt', backgroundImage: 'linear-gradient(0deg, rgba(241, 147, 156,0.1), '+ muaConfig.danmuAreaColor+ ')'}">
         <div :style="'transform: translateY('+(28-allDmList.length*4)+'vh)'">
           <div v-for="(item) in allDmList" class="danmu" :style="{ color : muaConfig.danmuColor}" :key="item.uuid">
-            <div class="fans" >
+            <div class="fans" :style="{display:fansDisplay === true ? 'bloack' : 'none'}">
               <div v-if="item.xz_name" 
             :class="{
             xzn_1:item.xz_level>=1 && item.xz_level<=4,
@@ -112,6 +112,7 @@ require('electron').ipcRenderer.on('did-close-fresh', (event, message) => {
 const log = require('electron-log')
 let live
 let waveDisplay = true
+let fansDisplay = false
 let waitUpdateDmList = []
 let dispalyDmList = []
 let allDmList = []
@@ -159,6 +160,7 @@ export default {
       comeInList,
       giftList,
       waveDisplay,
+      fansDisplay,
       muaConfig,
       live,
       class1:false
@@ -199,6 +201,9 @@ export default {
       }
       if (typeof catConfig.getSync('waveD') === 'boolean') {
         _self.waveDisplay = catConfig.getSync('waveD')
+      }
+      if (typeof catConfig.getSync('fansDisplay') === 'boolean') {
+        _self.fansDisplay = catConfig.getSync('fansDisplay')
       }
       /* if (catConfig.getSync('roomId')) {
         _self.roomId = catConfig.getSync('roomId')

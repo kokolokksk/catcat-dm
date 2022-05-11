@@ -44,18 +44,21 @@ export default {
   mounted () {
     log.info('on mounted')
     aa = setInterval(() => {
-      console.info(Window.roomid)
-      if (Window.roomid !== null && Window.roomid !== undefined) {
-        roomid = Window.roomid
-        clearInterval(aa)
-        this.load(roomid)
-      }
+      this.checkRoomIdChange()
     }, 1000)
   },
   methods: {
+    checkRoomIdChange () {
+      console.info(Window.roomid)
+      if (Window.roomid !== roomid) {
+        if (Window.roomid) {
+          roomid = Window.roomid
+          this.load(roomid)
+        }
+      }
+    },
     load (num) {
       log.info('on load')
-      clearInterval(aa)
       let _self = this
       let a = this.$http
       a.get('http://api.live.bilibili.com/room/v1/Room/room_init?id=' + num)

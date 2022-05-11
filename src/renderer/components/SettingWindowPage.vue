@@ -63,6 +63,8 @@
     <!-- chat置顶:<a-switch default-checked v-model="chatAlwaysOnTop" checked-children="开" un-checked-children="关" @change="setChatAlwaysOnTop" />
     <p class="line"/> -->
     波浪:<a-switch default-checked v-model="waveD" checked-children="开" un-checked-children="关" @change="setWaveD" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a-badge color="#87d068" text="将弹幕中的波浪动画开启" />
+   <p class="line"/>
+    粉丝牌显示:<a-switch default-checked v-model="fansDisplay" checked-children="开" un-checked-children="关" @change="setFansDisplay" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a-badge color="#87d068" text="是否显示粉丝牌" />
     <!-- <p class="line"/>
     缩放倍率:<input type='text' v-model = scaleX name= "scaleX" /><a-button class="left-margin" @click="setScaleX" type='default'>设置</a-button>
     <p class="line"/>
@@ -126,6 +128,7 @@ export default {
       menuIndex:-1,
       roomid:0,
       waveD:true,
+      fansDisplay:false,
       scaleX:1,
       fc:'Consolas',
       dmf:'1',
@@ -492,6 +495,10 @@ export default {
       let _self = this
       catConfig.set('waveD', _self.waveD)
     },
+    setFansDisplay () {
+      let _self = this
+      catConfig.set('fansDisplay', _self.fansDisplay)
+    },
     setAlwaysOnTop () {
       let _self = this
       catConfig.set('alwaysOnTop', _self.alwaysOnTop)
@@ -508,6 +515,7 @@ export default {
       // console.info('?')
       let _self = this
       catConfig.set('roomid', _self.roomid * 1)
+      Window.roomid = _self.roomid * 1
     },
     setDmTs () {
       // console.info('?')
