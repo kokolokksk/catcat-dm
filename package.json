@@ -1,6 +1,6 @@
 {
   "name": "catcatdm",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "author": "loveloliii <loli@loli.monster>",
   "description": "catcat danmu for bilibili",
   "license": "MIT",
@@ -51,8 +51,7 @@
         {
           "target": "7z",
           "arch": [
-            "x64",
-            "ia32"
+            "x64"
           ]
         }
       ]

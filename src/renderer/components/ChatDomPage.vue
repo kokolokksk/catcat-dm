@@ -10,7 +10,7 @@
           <div class="wave waveMiddle" style="background-image: url('static/wave-mid.png')"></div>
         </div>
         <div class="waveWrapperInner bgBottom"  v-bind:style="{backgroundImage: 'linear-gradient(to top, ' + muaConfig.borderAreaTopColor+', '+muaConfig.borderAreaBotColor + ')'}">
-          <div class="wave waveBottom" :style="{display:waveDisplay === true ? 'bloack' : 'none'}"  style="background-image: url('static/wave-bot.png')"></div>
+          <div class="wave waveBottom" :style="{display:waveDisplay === true ? 'block' : 'none'}"  style="background-image: url('static/wave-bot.png')"></div>
         </div>
       </div>
     </div>
@@ -32,8 +32,10 @@
     <!-- danmu -->
       <div class="danmu-container"  v-bind:style="{ fontSize:'11pt', backgroundImage: 'linear-gradient(0deg, rgba(241, 147, 156,0.1), '+ muaConfig.danmuAreaColor+ ')'}">
         <div :style="'transform: translateY('+(28-allDmList.length*4)+'vh)'">
-          <div v-for="(item) in allDmList" class="danmu" :style="{ color : muaConfig.danmuColor}" :key="item.uuid">
-            <div class="fans" :style="{display:fansDisplay === true ? 'bloack' : 'none'}">
+          <div v-for="(item) in allDmList" class="danmu" :style="{ color : muaConfig.danmuColor}" :key="item.uuid" :class="{
+            card_type_4:item.type === 4
+          }">
+            <div class="fans" :style="{display:fansDisplay === true ? 'inline-flex' : 'none'}">
               <div v-if="item.xz_name" 
             :class="{
             xzn_1:item.xz_level>=1 && item.xz_level<=4,
@@ -60,7 +62,9 @@
             xzl_10:item.xz_level>=37 && item.xz_level<=40  
             }">&nbsp;{{item.xz_level}}&nbsp;</div>
             </div>
-            <div class="dm-name">&nbsp;{{item.nickname}}:</div>
+            <div class="dm-name" :class="{
+              card_type_4dn:item.type == 4
+            }">&nbsp;{{item.nickname?item.nickname + ':':''}}</div>
             <div :style="{textShadow:muaConfig.dmTs}" class="dm-c" :class="{
             xzl_dm_1:item.xz_level>=1 && item.xz_level<=4 && item.xz_name === '呐卷s',
             xzl_dm_2:item.xz_level>=5 && item.xz_level<=8 && item.xz_name === '呐卷s',
@@ -71,7 +75,8 @@
             xzl_dm_7:item.xz_level>=25 && item.xz_level<=28 && item.xz_name === '呐卷s',
             xzl_dm_8:item.xz_level>=29 && item.xz_level<=32 && item.xz_name === '呐卷s',
             xzl_dm_9:item.xz_level>=33 && item.xz_level<=36 && item.xz_name === '呐卷s',
-            xzl_dm_10:item.xz_level>=37 && item.xz_level<=40 && item.xz_name === '呐卷s' 
+            xzl_dm_10:item.xz_level>=37 && item.xz_level<=40 && item.xz_name === '呐卷s',
+            card_type_4dc:item.type == 4 
             }">{{item.danmu}}</div>
           </div>
         </div>
@@ -83,13 +88,13 @@
         </div>
          
       </div>
-      <div class="gift-container"> 
+      <!-- <div class="gift-container"> 
         <div :style="'transform: translateY('+(8-giftList.length*4)+'vh)'">
           <div v-for="item in giftList" class="gift" :key="item.uuid">
             <div class="dm-name">{{item.uname}}赠送了{{item.giftName}}</div>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="chat-container">
         <chat-window-page/>
       </div>
@@ -375,7 +380,7 @@ export default {
                   // add to list
                   console.info(danmuStore)
                   _self.uploadDm(danmuStore)
-                  allDmList.push(danmuStore)
+                  _self.filterDm(allDmList, danmuStore)
                   if (dispalyDmList.length < 7) {
                     dispalyDmList.push(danmuStore)
                   } else {
@@ -412,6 +417,7 @@ export default {
                 } else if (data[index].data.cmd === 'SEND_GIFT') {
                   let giftStore = {
                     uuid: 0,
+                    danmu:'',
                     giftName:'',
                     userid: '',
                     uname: '',
@@ -431,6 +437,8 @@ export default {
                   if (giftList.length >= 999) {
                     giftList.splice(0, giftList.length - 3)
                   }
+                  giftStore.danmu = '感谢' + giftStore.uname + '赠送的' + giftStore.giftName
+                  _self.filterDm(allDmList, giftStore)
                   // _self.speakDanmu(giftStore)
                   // if (giftList.length >= 3) {
                   //   giftList.shift()
@@ -449,6 +457,7 @@ export default {
                   let giftStore = {
                     uuid: 0,
                     giftName:'',
+                    danmu:'',
                     userid: '',
                     uname: '',
                     num:0,
@@ -461,6 +470,8 @@ export default {
                   giftStore.uname = data[index].data.data.user_info.uname
                   giftStore.giftName = data[index].data.data.gift.gift_name + ':' + data[index].data.data.message
                   giftList.push(giftStore)
+                  giftStore.danmu = giftStore.giftName
+                  allDmList.push(giftStore)
                   if (giftList.length >= 99999) {
                     giftList.splice(0, giftList.length - 3)
                   }
@@ -475,6 +486,7 @@ export default {
                     giftName:'',
                     userid: '',
                     uname: '',
+                    danmu:'',
                     num:0,
                     uname_color: '',
                     time: '',
@@ -485,6 +497,8 @@ export default {
                   giftStore.uname = data[index].data.data.username
                   giftStore.giftName = '购买的' + data[index].data.data.role_name
                   giftList.push(giftStore)
+                  giftStore.danmu = '感谢' + giftStore.uname + giftStore.giftName
+                  allDmList.push(giftStore)
                   if (giftList.length >= 99999) {
                     giftList.splice(0, giftList.length - 3)
                   }
@@ -499,6 +513,7 @@ export default {
                     giftName:'',
                     userid: '',
                     uname: '',
+                    danmu:'',
                     num:0,
                     uname_color: '',
                     time: '',
@@ -509,6 +524,8 @@ export default {
                   giftStore.uname = data[index].data.data.username
                   giftStore.giftName = '续费的' + data[index].data.data.role_name
                   giftList.push(giftStore)
+                  giftStore.danmu = '感谢' + giftStore.uname + giftStore.giftName
+                  allDmList.push(giftStore)
                   if (giftList.length >= 99999) {
                     giftList.splice(0, giftList.length - 3)
                   }
@@ -527,6 +544,23 @@ export default {
         })
       // 74185
       })
+    },
+    filterDm (list, dm) {
+      let hasSame = false
+      if (list.length > 7) {
+        for (let i = list.length - 1; i > list.length - 8; i--) {
+          let count = 1
+          if (list[i].userid === dm.userid && list[i].danmu.split('*')[0] === dm.danmu) {
+            console.info('has same danmu')
+            hasSame = true
+            count++
+            list[i].danmu = list[i].danmu + '*' + count
+          }
+        }
+      }
+      if (!hasSame) {
+        list.push(dm)
+      }
     },
     openSettingN () {
       console.info('come in openSetting windows')
@@ -673,6 +707,11 @@ export default {
     100% {
         transform: translateX(-50%) translateZ(0) scaleY(1)
     }
+}
+.card_type_4 {
+    border: 1px solid orange;
+    background: #ffba3a;
+    font-weight: bold;
 }
 .waveWrapper {
     overflow: hidden;
