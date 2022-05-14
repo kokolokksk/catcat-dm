@@ -36,7 +36,7 @@
 - [x] 背景颜色自定义
 - [x] 弹幕颜色
 - [x] 人气
-- [ ] TTS欢迎礼物
+- [x] TTS欢迎礼物
 - [x] 进入直播间 
 - [x] 礼物(基本显示)
 - [x] 发送弹幕
@@ -47,7 +47,7 @@
 
 
 #### 下一步
-- 在梦里已经写过了，需要的去梦里下载。
+- 显示优化。
 
 ### 感谢（Thanks）
 - [![MistEO](https://avatars.githubusercontent.com/u/18511905?s=70&v=4)](https://github.com/MistEO)提出的bug

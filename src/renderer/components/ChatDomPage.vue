@@ -31,7 +31,7 @@
     <div id="c-bg">
     <!-- danmu -->
       <div class="danmu-container"  v-bind:style="{ fontSize:'11pt', backgroundImage: 'linear-gradient(0deg, rgba(241, 147, 156,0.1), '+ muaConfig.danmuAreaColor+ ')'}">
-        <div :style="'transform: translateY('+(28-allDmList.length*4)+'vh)'">
+        <div :style="'transform: translateY('+(auto_height)+'vh)'">
           <div v-for="(item) in allDmList" class="danmu" :style="{ color : muaConfig.danmuColor}" :key="item.uuid" :class="{
             card_type_4:item.type === 4
           }">
@@ -105,6 +105,7 @@
 import path from 'path'
 import {AudioConfig, SpeechSynthesizer} from 'microsoft-cognitiveservices-speech-sdk'
 import ChatWindowPage from './ChatWindowPage.vue'
+import { now } from 'moment'
 const catConfig = require('electron-json-storage')
 const { LiveWS } = require('bilibili-live-ws-fixed')
 const { remote } = require('electron')
@@ -155,6 +156,7 @@ let muaConfig = {
   dmTs: '1px 1px 1px  #fff'
 
 }
+let auto_height = 50
 export default {
   components: { ChatWindowPage },
   data () {
@@ -162,6 +164,7 @@ export default {
       dispalyDmList,
       allDmList,
       waitUpdateDmList,
+      auto_height,
       comeInList,
       giftList,
       waveDisplay,
@@ -210,6 +213,7 @@ export default {
       if (typeof catConfig.getSync('fansDisplay') === 'boolean') {
         _self.fansDisplay = catConfig.getSync('fansDisplay')
       }
+      console.info('fans display state:' + _self.fansDisplay)
       /* if (catConfig.getSync('roomId')) {
         _self.roomId = catConfig.getSync('roomId')
       } */
@@ -261,9 +265,9 @@ export default {
         _self.$electron.remote.getCurrentWindow().setAlwaysOnTop(false)
       }
       this.connectLive()
-      setInterval(() => {
-        this.updateDanmuList()
-      }, 500)
+      // setInterval(() => {
+      //   this.updateDanmuList()
+      // }, 500)
       // setInterval(() => {
       //   this.speakDanmu(null)
       // }, 800)
@@ -281,14 +285,6 @@ export default {
         index++
       }
       return stringBuilder
-    },
-    updateDanmuList () {
-      if (dispalyDmList.length > 7) {
-        dispalyDmList.shift()
-      }
-      if (waitUpdateDmList.length > 0) {
-        dispalyDmList.push(waitUpdateDmList.shift())
-      }
     },
     count () {
       let t = new Date()
@@ -318,6 +314,7 @@ export default {
           type: 1
         }
         dispalyDmList.push(sysInfo)
+        _self.auto_height -= 4
         allDmList.push(sysInfo)
       })
       live.on('live', () => {
@@ -335,6 +332,7 @@ export default {
           type: 1
         }
         dispalyDmList.push(sysInfo)
+        _self.auto_height -= 4
         allDmList.push(sysInfo)
         live.on('heartbeat', (online) => {
           log.info('···heartbeat···')
@@ -379,14 +377,17 @@ export default {
                   danmuStore.sessionId = muaConfig.sessionId
                   // add to list
                   console.info(danmuStore)
-                  _self.uploadDm(danmuStore)
-                  _self.filterDm(allDmList, danmuStore)
-                  if (dispalyDmList.length < 7) {
-                    dispalyDmList.push(danmuStore)
+                  if (danmu.length > 16) {
+                    _self.auto_height -= 8
                   } else {
-                    waitUpdateDmList.push(danmuStore)
+                    _self.auto_height -= 4
                   }
-                  // speakList.push(danmuStore)
+                  allDmList.push(danmuStore)
+                  let start = Date.now()
+                  _self.uploadDm(danmuStore)
+                  let end = Date.now()
+                  console.warn('uploadDm function cast ' + (end - start) + 'ms')
+                  console.warn(allDmList)
                   _self.speakDanmuReal(danmuStore)
                 } else if (data[index].data.cmd === 'INTERACT_WORD') {
                   let comeInStore = {
@@ -438,7 +439,10 @@ export default {
                     giftList.splice(0, giftList.length - 3)
                   }
                   giftStore.danmu = '感谢' + giftStore.uname + '赠送的' + giftStore.giftName
-                  _self.filterDm(allDmList, giftStore)
+                  let start = Date.now()
+                  _self.filterDm(giftStore)
+                  let end = Date.now()
+                  console.warn('filter gift function cast ' + (end - start) + 'ms')
                   // _self.speakDanmu(giftStore)
                   // if (giftList.length >= 3) {
                   //   giftList.shift()
@@ -471,6 +475,7 @@ export default {
                   giftStore.giftName = data[index].data.data.gift.gift_name + ':' + data[index].data.data.message
                   giftList.push(giftStore)
                   giftStore.danmu = giftStore.giftName
+                  _self.auto_height -= 4
                   allDmList.push(giftStore)
                   if (giftList.length >= 99999) {
                     giftList.splice(0, giftList.length - 3)
@@ -498,6 +503,7 @@ export default {
                   giftStore.giftName = '购买的' + data[index].data.data.role_name
                   giftList.push(giftStore)
                   giftStore.danmu = '感谢' + giftStore.uname + giftStore.giftName
+                  _self.auto_height -= 4
                   allDmList.push(giftStore)
                   if (giftList.length >= 99999) {
                     giftList.splice(0, giftList.length - 3)
@@ -525,6 +531,7 @@ export default {
                   giftStore.giftName = '续费的' + data[index].data.data.role_name
                   giftList.push(giftStore)
                   giftStore.danmu = '感谢' + giftStore.uname + giftStore.giftName
+                  _self.auto_height -= 4
                   allDmList.push(giftStore)
                   if (giftList.length >= 99999) {
                     giftList.splice(0, giftList.length - 3)
@@ -545,21 +552,25 @@ export default {
       // 74185
       })
     },
-    filterDm (list, dm) {
+    filterDm (dm) {
       let hasSame = false
-      if (list.length > 7) {
-        for (let i = list.length - 1; i > list.length - 8; i--) {
+      if (allDmList.length > 6) {
+        for (let i = allDmList.length - 1; i > allDmList.length - 7; i--) {
           let count = 1
-          if (list[i].userid === dm.userid && list[i].danmu.split('*')[0] === dm.danmu) {
+          if (allDmList[i].userid === dm.userid && allDmList[i].danmu.split('*')[0] === dm.danmu) {
             console.info('has same danmu')
             hasSame = true
             count++
-            list[i].danmu = list[i].danmu + '*' + count
+            allDmList[i].danmu = allDmList[i].danmu + '*' + count
           }
         }
       }
       if (!hasSame) {
-        list.push(dm)
+        this.auto_height -= 4
+        allDmList.push(dm)
+      }
+      if (allDmList.length >= 999) {
+        allDmList.splice(0, allDmList.length - 6)
       }
     },
     openSettingN () {
@@ -709,7 +720,7 @@ export default {
     }
 }
 .card_type_4 {
-    border: 1px solid orange;
+    border: 0px solid orange;
     background: #ffba3a;
     font-weight: bold;
 }

@@ -181,6 +181,12 @@ app.on('ready', () => {
       dmWindow.webContents.openDevTools()
     }
   })
+  globalShortcut.register('CommandOrControl+F5', () => {
+    console.log('CommandOrControl+F5 is pressed')
+    if (dmWindow != null) {
+      dmWindow.webContents.send('did-close-fresh', 'refresh')
+    }
+  })
 })
 
 app.on('window-all-closed', () => {
@@ -188,7 +194,10 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-
+app.on('will-quit', () => {
+  globalShortcut.unregister('CommandOrControl+M')
+  globalShortcut.unregister('CommandOrControl+F5')
+})
 app.on('activate', () => {
   if (mainWindow === null) {
     createWindow()
