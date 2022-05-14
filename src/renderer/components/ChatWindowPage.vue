@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-const send = require('bilibili-live-danmaku-api')
+import send from '../utils/send'
 const { remote } = require('electron')
 const catConfig = require('electron-json-storage')
 require('electron').ipcRenderer.on('setchat-close-fresh', (event, message) => {
@@ -27,7 +27,9 @@ export default {
   methods: {
     initData () {
       let _self = this
-      _self.roomid = Window.roomid
+      if (typeof catConfig.getSync('SESSDATA') === 'string') {
+        _self.roomid = catConfig.getSync('roomid')
+      }
       if (typeof catConfig.getSync('SESSDATA') === 'string') {
         _self.SESSDATA = catConfig.getSync('SESSDATA')
       }
@@ -45,12 +47,21 @@ export default {
       }
     },
     sendDm () {
-      // console.info('?')
+      console.info('?')
       let _self = this
       const msg = _self.danmu/* Message */
       const roomid = _self.roomid/* Roomid */
       const SESSDATA = _self.SESSDATA/* Cookie: SESSDATA */
       const csrf = _self.csrf/* Cookie: bili_jct */
+      // bubble: 0
+      // msg: test
+      // color: 16777215
+      // mode: 1
+      // fontsize: 25
+      // rnd: 1652516236
+      // roomid: x
+      // csrf: x
+      // csrf_token: x
       if (msg !== '') {
         send({
           msg,
