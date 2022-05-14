@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-import send from '../utils/send'
+const send = require('bilibili-live-danmaku-api')
 const { remote } = require('electron')
 const catConfig = require('electron-json-storage')
 require('electron').ipcRenderer.on('setchat-close-fresh', (event, message) => {

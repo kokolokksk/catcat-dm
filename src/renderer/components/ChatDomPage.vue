@@ -31,7 +31,7 @@
     <div id="c-bg">
     <!-- danmu -->
       <div class="danmu-container"  v-bind:style="{ fontSize:'11pt', backgroundImage: 'linear-gradient(0deg, rgba(241, 147, 156,0.1), '+ muaConfig.danmuAreaColor+ ')'}">
-        <div :style="'transform: translateY('+(auto_height)+'vh)'">
+        <div :style="'transform: translateY('+(autoHeight)+'vh)'">
           <div v-for="(item) in allDmList" class="danmu" :style="{ color : muaConfig.danmuColor}" :key="item.uuid" :class="{
             card_type_4:item.type === 4
           }">
@@ -156,7 +156,7 @@ let muaConfig = {
   dmTs: '1px 1px 1px  #fff'
 
 }
-let auto_height = 50
+let autoHeight = 50
 export default {
   components: { ChatWindowPage },
   data () {
@@ -164,7 +164,7 @@ export default {
       dispalyDmList,
       allDmList,
       waitUpdateDmList,
-      auto_height,
+      autoHeight,
       comeInList,
       giftList,
       waveDisplay,
@@ -314,7 +314,7 @@ export default {
           type: 1
         }
         dispalyDmList.push(sysInfo)
-        _self.auto_height -= 4
+        _self.autoHeight -= 4
         allDmList.push(sysInfo)
       })
       live.on('live', () => {
@@ -332,7 +332,7 @@ export default {
           type: 1
         }
         dispalyDmList.push(sysInfo)
-        _self.auto_height -= 4
+        _self.autoHeight -= 4
         allDmList.push(sysInfo)
         live.on('heartbeat', (online) => {
           log.info('···heartbeat···')
@@ -378,9 +378,9 @@ export default {
                   // add to list
                   console.info(danmuStore)
                   if (danmu.length > 16) {
-                    _self.auto_height -= 8
+                    _self.autoHeight -= 8
                   } else {
-                    _self.auto_height -= 4
+                    _self.autoHeight -= 4
                   }
                   allDmList.push(danmuStore)
                   let start = Date.now()
@@ -475,7 +475,7 @@ export default {
                   giftStore.giftName = data[index].data.data.gift.gift_name + ':' + data[index].data.data.message
                   giftList.push(giftStore)
                   giftStore.danmu = giftStore.giftName
-                  _self.auto_height -= 4
+                  _self.autoHeight -= 4
                   allDmList.push(giftStore)
                   if (giftList.length >= 99999) {
                     giftList.splice(0, giftList.length - 3)
@@ -503,7 +503,7 @@ export default {
                   giftStore.giftName = '购买的' + data[index].data.data.role_name
                   giftList.push(giftStore)
                   giftStore.danmu = '感谢' + giftStore.uname + giftStore.giftName
-                  _self.auto_height -= 4
+                  _self.autoHeight -= 4
                   allDmList.push(giftStore)
                   if (giftList.length >= 99999) {
                     giftList.splice(0, giftList.length - 3)
@@ -531,7 +531,7 @@ export default {
                   giftStore.giftName = '续费的' + data[index].data.data.role_name
                   giftList.push(giftStore)
                   giftStore.danmu = '感谢' + giftStore.uname + giftStore.giftName
-                  _self.auto_height -= 4
+                  _self.autoHeight -= 4
                   allDmList.push(giftStore)
                   if (giftList.length >= 99999) {
                     giftList.splice(0, giftList.length - 3)
@@ -566,7 +566,7 @@ export default {
         }
       }
       if (!hasSame) {
-        this.auto_height -= 4
+        this.autoHeight -= 4
         allDmList.push(dm)
       }
       if (allDmList.length >= 999) {
