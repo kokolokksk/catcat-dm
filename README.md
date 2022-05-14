@@ -16,7 +16,6 @@
 - 现已可以通过[catcat-data-web](https://db.loli.monster)查看历史弹幕！(需要开启弹幕上传。)
 >dom版
  - ![界面截图](./desc/danmu2.png)
- - ![主程序界面](./desc/application.png)
 
 - [下载地址](https://github.com/kokolokksk/mua/releases/latest)
 ## Windows
