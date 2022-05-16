@@ -31,7 +31,8 @@
     <div id="c-bg">
     <!-- danmu -->
       <div class="danmu-container"  v-bind:style="{ fontSize:'11pt', backgroundImage: 'linear-gradient(0deg, rgba(241, 147, 156,0.1), '+ muaConfig.danmuAreaColor+ ')'}">
-        <div :style="'transform: translateY('+(autoHeight)+'vh)'">
+        <div>
+        <div :style="'transform: translateY('+(autoHeight)+'vh)'" style="transform-origin:0px">
           <div v-for="(item) in allDmList" class="danmu" :style="{ color : muaConfig.danmuColor}" :key="item.uuid" :class="{
             card_type_4:item.type === 4
           }">
@@ -79,6 +80,7 @@
             card_type_4dc:item.type == 4 
             }">{{item.danmu}}</div>
           </div>
+        </div>
         </div>
       </div>
       <div class="comein-container"> 
@@ -156,7 +158,7 @@ let muaConfig = {
   dmTs: '1px 1px 1px  #fff'
 
 }
-let autoHeight = 50
+let autoHeight = 12
 export default {
   components: { ChatWindowPage },
   data () {
@@ -314,7 +316,7 @@ export default {
           type: 1
         }
         dispalyDmList.push(sysInfo)
-        _self.autoHeight -= 4
+        // _self.autoHeight -= 4
         allDmList.push(sysInfo)
       })
       live.on('live', () => {
@@ -332,7 +334,7 @@ export default {
           type: 1
         }
         dispalyDmList.push(sysInfo)
-        _self.autoHeight -= 4
+        // _self.autoHeight -= 4
         allDmList.push(sysInfo)
         live.on('heartbeat', (online) => {
           log.info('···heartbeat···')
@@ -377,12 +379,17 @@ export default {
                   danmuStore.sessionId = muaConfig.sessionId
                   // add to list
                   console.info(danmuStore)
-                  if (danmu.length > 16) {
-                    _self.autoHeight -= 8
+                  if (danmu.length > 32) {
+                    if (allDmList.length > 7) {
+                      _self.autoHeight -= 8
+                    }
                   } else {
-                    _self.autoHeight -= 4
+                    if (allDmList.length > 7) {
+                      _self.autoHeight -= 4
+                    }
                   }
                   allDmList.push(danmuStore)
+                  _self.shiftDanmu()
                   let start = Date.now()
                   _self.uploadDm(danmuStore)
                   let end = Date.now()
@@ -475,7 +482,9 @@ export default {
                   giftStore.giftName = data[index].data.data.gift.gift_name + ':' + data[index].data.data.message
                   giftList.push(giftStore)
                   giftStore.danmu = giftStore.giftName
-                  _self.autoHeight -= 4
+                  if (allDmList.length > 7) {
+                    _self.autoHeight -= 4
+                  }
                   allDmList.push(giftStore)
                   if (giftList.length >= 99999) {
                     giftList.splice(0, giftList.length - 3)
@@ -503,7 +512,9 @@ export default {
                   giftStore.giftName = '购买的' + data[index].data.data.role_name
                   giftList.push(giftStore)
                   giftStore.danmu = '感谢' + giftStore.uname + giftStore.giftName
-                  _self.autoHeight -= 4
+                  if (allDmList.length > 7) {
+                    _self.autoHeight -= 4
+                  }
                   allDmList.push(giftStore)
                   if (giftList.length >= 99999) {
                     giftList.splice(0, giftList.length - 3)
@@ -531,7 +542,9 @@ export default {
                   giftStore.giftName = '续费的' + data[index].data.data.role_name
                   giftList.push(giftStore)
                   giftStore.danmu = '感谢' + giftStore.uname + giftStore.giftName
-                  _self.autoHeight -= 4
+                  if (allDmList.length > 7) {
+                    _self.autoHeight -= 4
+                  }
                   allDmList.push(giftStore)
                   if (giftList.length >= 99999) {
                     giftList.splice(0, giftList.length - 3)
@@ -566,11 +579,19 @@ export default {
         }
       }
       if (!hasSame) {
-        this.autoHeight -= 4
+        if (allDmList.length > 7) {
+          this.autoHeight -= 4
+        }
         allDmList.push(dm)
+        this.shiftDanmu()
       }
       if (allDmList.length >= 999) {
         allDmList.splice(0, allDmList.length - 6)
+      }
+    },
+    shiftDanmu () {
+      if (allDmList.length > 7) {
+        allDmList.shift()
       }
     },
     openSettingN () {
