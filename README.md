@@ -14,6 +14,7 @@
 - tts 需要Azure平台相应key
 - 弹幕阴影建议设置值```1px 1px 1px  #fff``` 或者 ```1px 1px 1px  #000```
 - 现已可以通过[catcat-data-web](https://db.loli.monster)查看历史弹幕！(需要开启弹幕上传。)
+- Ctrl+Shift+F5 重载弹幕窗口。
 >dom版
  - ![界面截图](./desc/danmu2.png)
 

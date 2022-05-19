@@ -160,8 +160,8 @@ function createSettingWindow () {
 }
 app.on('ready', () => {
   createWindow()
-  globalShortcut.register('CommandOrControl+M', () => {
-    console.log('CommandOrControl+M is pressed')
+  globalShortcut.register('CommandOrControl+Shift+M', () => {
+    console.log('CommandOrControl+Shift+M is pressed')
     if (mainWindow != null) {
       mainWindow.webContents.openDevTools()
     }
@@ -169,8 +169,8 @@ app.on('ready', () => {
       dmWindow.webContents.openDevTools()
     }
   })
-  globalShortcut.register('CommandOrControl+F5', () => {
-    console.log('CommandOrControl+F5 is pressed')
+  globalShortcut.register('CommandOrControl+Shift+F5', () => {
+    console.log('CommandOrControl+Shift+F5 is pressed')
     if (dmWindow != null) {
       dmWindow.webContents.send('did-close-fresh', 'refresh')
     }
