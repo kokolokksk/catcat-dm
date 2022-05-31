@@ -6,7 +6,7 @@
 
 > CatCatDM! 
 > >The meta-electron-catcat-bilibili-danmu application!
-> > > [在此重构](https://github.com/LoveLoliii/catcat-dm-react)
+> > > [(https://github.com/kokolokksk/catcat-dm-react)](https://github.com/kokolokksk/catcat-dm-react)
 ### 说明
  哔哩哔哩 直播弹幕姬
 
