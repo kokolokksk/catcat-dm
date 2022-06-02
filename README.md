@@ -2,11 +2,10 @@
 [![HitCount](http://hits.dwyl.com/kokolokksk/catcat-dm.svg)](http://hits.dwyl.com/kokolokksk/catcat-dm)
 ![](https://img.shields.io/github/stars/kokolokksk/catcat-dm?color=green&style=flat-square)
 
-# CatCatDM
+# ~~CatCatDM~~
 
 > CatCatDM! 
-> >The meta-electron-catcat-bilibili-danmu application!
-> > > [(https://github.com/kokolokksk/catcat-dm-react)](https://github.com/kokolokksk/catcat-dm-react)
+> >本项目不再更新，请移至[此处](https://github.com/kokolokksk/catcat-dm-react)!
 ### 说明
  哔哩哔哩 直播弹幕姬
 
